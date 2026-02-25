@@ -46,10 +46,10 @@ dev = [
 orp-validate = "orp_validator.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/openreason/openreason"
+Homepage = "https://gitlab.com/publicreason/orp"
 Documentation = "https://openreason.org/docs"
-Repository = "https://github.com/openreason/openreason"
-Issues = "https://github.com/openreason/openreason/issues"
+Repository = "https://gitlab.com/publicreason/orp"
+Issues = "https://gitlab.com/publicreason/orp/-/issues"
 
 [tool.setuptools]
 packages = ["orp_validator"]

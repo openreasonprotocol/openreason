@@ -124,7 +124,7 @@ known_limitations:
 
 access:
   public: true
-  url: "https://github.com/openreason"
+  url: "https://gitlab.com/publicreason/orp"
   license: "Creative Commons CC-BY — open for reuse with attribution"
 
 attested_by:

@@ -168,8 +168,8 @@ OpenReason is not owned by any individual, company, or government. It is steward
 
 ```bash
 # Clone the repository
-git clone https://github.com/openreason/openreason.git
-cd openreason
+git clone git@gitlab.com:publicreason/orp.git
+cd orp
 
 # Create virtual environment
 python3 -m venv .venv

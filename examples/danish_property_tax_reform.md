@@ -666,5 +666,5 @@ invitation: >
 ---
 
 *This document is ORP-Full compliant under OpenReason Protocol v0.1.*
-*Fork it: [github.com/openreason/examples](https://github.com/openreason/examples)*
+*Fork it: [gitlab.com/publicreason/orp](https://gitlab.com/publicreason/orp)*
 *Challenge it: open an issue or publish a response document in L5.*

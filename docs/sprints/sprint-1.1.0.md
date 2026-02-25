@@ -139,7 +139,7 @@ Create comprehensive test suite using pytest:
 - [ ] Tests include common error cases (missing required fields, wrong types)
 - [ ] Tests validate error message quality (are they actionable?)
 - [ ] Tests run via `pytest` with clear output
-- [ ] CI/CD ready (can run in GitHub Actions when we add it)
+- [ ] CI/CD ready (can run in GitLab CI when we add it)
 
 **Dependencies:**
 - Task 2 (Python validator library) must be complete

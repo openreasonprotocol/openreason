@@ -87,13 +87,13 @@ A fully worked ORP-Full compliant document produced using only Phase 1 tooling, 
 ## Phase 2 — Developer Experience
 *Target: v0.3*
 
-Making ORP feel native to existing developer workflows. The goal is zero friction adoption — a developer who already uses GitHub and VS Code should be able to work with ORP documents without learning new tools.
+Making ORP feel native to existing developer workflows. The goal is zero friction adoption — a developer who already uses GitLab and VS Code should be able to work with ORP documents without learning new tools.
 
-### 2.1 GitHub integration
+### 2.1 GitLab integration
 
-- ORP document templates for GitHub repositories
-- GitHub Action that validates ORP compliance on pull requests
-- Automatic fork registry updates when a document is forked via pull request
+- ORP document templates for GitLab repositories
+- GitLab CI pipeline that validates ORP compliance on merge requests
+- Automatic fork registry updates when a document is forked via merge request
 - Issue templates for critique and amendment proposals
 
 ### 2.2 VS Code extension

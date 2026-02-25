@@ -184,3 +184,62 @@ def test_check_shows_next_steps_standard(runner, standard_doc):
     assert "To reach ORP-Full, add:" in result.output
     assert "L4: Accountability Ledger" in result.output
     assert "L5: Fork Registry" in result.output
+
+
+def test_check_json_file(runner, tmp_path):
+    """Test checking a JSON format file."""
+    import json
+
+    doc = {
+        "orp_version": "0.1",
+        "document_id": "test-json",
+        "title": "JSON Document",
+        "domain": "policy",
+        "authors": [{"name": "Author", "role": "author"}],
+        "created": "2026-02-25",
+        "last_modified": "2026-02-25",
+        "status": "draft",
+        "compliance_level": "ORP-Basic",
+        "summary": "JSON test",
+        "l1_data_provenance": [
+            {
+                "dataset_id": "ds1",
+                "name": "Dataset",
+                "description": "Desc",
+                "source": "government",
+                "collection_method": "Method",
+                "date_range": "2024",
+                "geographic_scope": "Global",
+                "inclusion_criteria": {"description": "All"},
+                "exclusion_criteria": [],
+                "cleaning_decisions": [],
+                "synthetic_elements": {"present": False},
+                "known_limitations": ["None"],
+                "access": {"public": True},
+                "attested_by": [
+                    {"name": "A", "role": "author", "date": "2026-02-25", "statement": "OK"}
+                ],
+            }
+        ],
+    }
+
+    doc_path = tmp_path / "test.json"
+    with open(doc_path, "w") as f:
+        json.dump(doc, f)
+
+    result = runner.invoke(cli, ["check", str(doc_path)])
+
+    assert result.exit_code == 2
+    assert "ORP-Basic" in result.output
+
+
+def test_check_error_quiet_mode(runner, tmp_path):
+    """Test error handling in quiet mode."""
+    bad_yaml = tmp_path / "bad.yaml"
+    bad_yaml.write_text("invalid: yaml: [[[")
+
+    result = runner.invoke(cli, ["check", str(bad_yaml), "--quiet"])
+
+    assert result.exit_code == 4
+    # In quiet mode, error should not be verbose
+    assert result.output == ""

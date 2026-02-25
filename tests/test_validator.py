@@ -1,6 +1,7 @@
 """Tests for ORP validator core functionality."""
 
 import pytest
+import yaml
 from pytest import fixture
 from pathlib import Path
 from orp_validator import validate, ValidationResult, ComplianceLevel
@@ -274,3 +275,98 @@ def test_validation_result_to_dict(minimal_header, minimal_l1):
     assert "errors" in result_dict
     assert "warnings" in result_dict
     assert "layers_present" in result_dict
+
+
+def test_markdown_with_yaml_frontmatter(tmp_path):
+    """Test validating markdown file with YAML frontmatter."""
+    md_content = """# My Policy Proposal
+
+```yaml
+orp_version: "0.1"
+document_id: "markdown-001"
+title: "Markdown Document"
+domain: "policy"
+authors:
+  - name: "Author"
+    role: "author"
+created: "2026-02-25"
+last_modified: "2026-02-25"
+status: "draft"
+compliance_level: "ORP-Basic"
+summary: "Test from markdown"
+l1_data_provenance:
+  - dataset_id: "ds1"
+    name: "Dataset"
+    description: "Desc"
+    source: "government"
+    collection_method: "Method"
+    date_range: "2024"
+    geographic_scope: "Global"
+    inclusion_criteria:
+      description: "All"
+    exclusion_criteria: []
+    cleaning_decisions: []
+    synthetic_elements:
+      present: false
+    known_limitations:
+      - "None"
+    access:
+      public: true
+    attested_by:
+      - name: "A"
+        role: "author"
+        date: "2026-02-25"
+        statement: "OK"
+```
+
+Some markdown content here.
+"""
+
+    md_path = tmp_path / "test.md"
+    md_path.write_text(md_content)
+
+    result = validate(md_path)
+
+    assert result.valid is True
+    assert result.compliance_level == ComplianceLevel.BASIC
+
+
+def test_markdown_without_frontmatter(tmp_path):
+    """Test markdown file without YAML frontmatter fails gracefully."""
+    md_content = """# Just Markdown
+
+No YAML frontmatter here.
+"""
+
+    md_path = tmp_path / "test.md"
+    md_path.write_text(md_content)
+
+    result = validate(md_path)
+
+    # Should fail validation since there's no ORP content
+    assert result.valid is False
+
+
+def test_file_not_found():
+    """Test that FileNotFoundError is raised for non-existent file."""
+    with pytest.raises(FileNotFoundError):
+        validate(Path("/nonexistent/file.yaml"))
+
+
+def test_invalid_yaml_syntax(tmp_path):
+    """Test that invalid YAML raises appropriate error."""
+    bad_yaml = tmp_path / "bad.yaml"
+    bad_yaml.write_text("this is: not: valid: yaml: [[[")
+
+    with pytest.raises(yaml.YAMLError):
+        validate(bad_yaml)
+
+
+def test_error_formatting_minitems(minimal_header):
+    """Test error formatting for minItems validator."""
+    doc = {**minimal_header, "l1_data_provenance": []}  # Empty array, needs at least 1
+
+    result = validate(doc)
+    assert not result.valid
+    # Should have an error about minimum items
+    assert any("at least" in error.lower() for error in result.errors)

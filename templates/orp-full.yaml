@@ -208,7 +208,7 @@ l5_fork_registry:
     fork_reason: "Original proposal"  # Or explain why you forked
     key_differences: "N/A - original document"
 
-  known_forks:
+  known_forks: []
     # When someone forks your document, add it here
     # Example:
     # - document_id: "alternative-proposal-001"
@@ -220,7 +220,7 @@ l5_fork_registry:
     #     international comparison data. Results in 20% higher revenue estimate.
     #   url: "https://example.com/alternative-proposal.yaml"
 
-  responses:
+  responses: []
     # Track critiques, endorsements, amendments, questions
     # Example:
     # - response_id: "RESP-001"

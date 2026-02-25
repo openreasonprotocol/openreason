@@ -239,3 +239,17 @@ def test_diff_json_format_documents(runner, tmp_path):
 
     assert result.exit_code == 1
     assert "difference" in result.output.lower()
+
+
+def test_diff_error_handling(runner, tmp_path):
+    """Test error handling for malformed documents."""
+    bad_yaml = tmp_path / "bad.yaml"
+    good_yaml = tmp_path / "good.yaml"
+
+    bad_yaml.write_text("invalid: yaml: [[[")
+    good_yaml.write_text("field: value")
+
+    result = runner.invoke(cli, ["diff", str(bad_yaml), str(good_yaml)])
+
+    assert result.exit_code == 2
+    assert "Error:" in result.output

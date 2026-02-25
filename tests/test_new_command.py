@@ -258,3 +258,24 @@ def test_new_dates_populated(runner, tmp_path):
     assert "created" in doc
     assert "last_modified" in doc
     assert doc["created"] == doc["last_modified"]
+
+
+def test_new_invalid_compliance_level(runner, tmp_path):
+    """Test error handling for invalid compliance level."""
+    output_file = tmp_path / "test.yaml"
+
+    # This will be caught by Click's choice validation before reaching our code
+    result = runner.invoke(
+        cli,
+        [
+            "new",
+            str(output_file),
+            "--compliance", "invalid",
+            "--title", "Test",
+            "--domain", "policy",
+            "--author", "Author",
+            "--non-interactive",
+        ],
+    )
+
+    assert result.exit_code != 0

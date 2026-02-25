@@ -1,0 +1,259 @@
+# ORP-Full Document Template
+# OpenReason Protocol v0.1 - Full Compliance Level
+#
+# ORP-Full requires: Header + L1 + L2 + L3 + L4 + L5
+# Complete transparency: data, simulation, empathy, accountability, and forkability.
+
+# --- HEADER BLOCK ---
+
+orp_version: "0.1"
+document_id: "CHANGE-ME-003"
+title: "Your Fully Documented Proposal"
+domain: "policy"
+authors:
+  - name: "Your Name"
+    role: "author"
+  - name: "Collaborator Name"
+    role: "contributor"
+created: "2026-02-25"
+last_modified: "2026-02-25"
+status: "open-for-comment"
+forked_from: null
+compliance_level: "ORP-Full"
+summary: |
+  This template demonstrates ORP-Full compliance with all five layers.
+  Use it as a reference for documenting complex policy or AI decisions
+  with complete transparency and accountability.
+
+# --- L1: DATA PROVENANCE ---
+# See orp-basic.yaml for detailed field explanations
+
+l1_data_provenance:
+  - dataset_id: "dataset-001"
+    name: "Primary data source"
+    description: "Detailed description"
+    source: "government"
+    collection_method: "How collected"
+    date_range: "2020-2024"
+    geographic_scope: "National"
+    inclusion_criteria:
+      description: "What was included"
+    exclusion_criteria: []
+    cleaning_decisions: []
+    synthetic_elements:
+      present: false
+    known_limitations:
+      - "Known limitation"
+    access:
+      public: true
+      url: null
+      license: "License"
+    attested_by:
+      - name: "Data Analyst"
+        role: "analyst"
+        date: "2026-02-25"
+        statement: "Data provenance is accurate."
+
+# --- L2: CONSEQUENCE SIMULATION ---
+# See orp-standard.yaml for detailed field explanations
+
+l2_consequence_simulation:
+  affected_population:
+    description: "Who is affected"
+    size_estimate: "Population size"
+    segments:
+      - segment: "Group 1"
+        description: "Description"
+        estimated_size: "Size"
+
+  variables:
+    independent:
+      - variable: "var1"
+        description: "What it represents"
+        range: "0-100"
+        default_value: "50"
+    dependent:
+      - variable: "outcome1"
+        description: "What we measure"
+        unit: "units"
+
+  model:
+    type: "Model type"
+    assumptions:
+      - assumption: "Key assumption"
+        basis: "Why we assume this"
+        sensitivity: "Impact if wrong"
+
+  scenarios:
+    - scenario_id: "S1"
+      name: "Baseline"
+      description: "Current state"
+      variable_values:
+        var1: "50"
+      outcomes:
+        outcome1: "100"
+
+  primary_scenario: "S1"
+
+  model_code:
+    available: false
+    repository: null
+
+# --- L3: EMPATHY MAPPING ---
+# See orp-standard.yaml for detailed field explanations
+
+l3_empathy_mapping:
+  stakeholder_map:
+    - stakeholder: "Stakeholder group"
+      description: "Who they are"
+      estimated_population: "Size"
+      relationship_to_proposal: "How they're involved"
+      impacts_by_scenario:
+        - scenario_id: "S1"
+          financial_impact: "Financial effect"
+          quality_of_life_impact: "QoL effect"
+          direction: "benefits"
+
+  minority_stress_test:
+    description: "How minorities are protected"
+    groups_tested:
+      - group: "Minority group"
+        scenario_tested: "Edge case tested"
+        outcome: "What happened"
+        mitigation: "How we address it"
+
+  unresolved_impacts: []
+
+  net_welfare_assessment:
+    methodology: "How we assessed overall impact"
+    conclusion: "Summary conclusion"
+    confidence: "medium"
+    confidence_basis: "Why this confidence level"
+
+# --- L4: ACCOUNTABILITY LEDGER ---
+# Immutable log of every decision and who made it
+
+l4_accountability_ledger:
+
+  entries:
+    - entry_id: "L4-001"
+      timestamp: "2026-02-25T10:00:00Z"  # ISO 8601 with timezone
+      decision_type: "framing"  # Options: data | methodology | assumption | exclusion | framing | other
+      description: "Decided to focus on homeowners rather than renters"
+      decided_by:
+        - name: "Project Lead"
+      basis: |
+        Homeowners are directly affected by property tax changes.
+        Renters are indirectly affected through rent prices but this
+        requires separate analysis of landlord behavior.
+      alternatives_considered: |
+        Include both homeowners and renters in single analysis.
+        Rejected because rental market dynamics are different enough
+        to require dedicated modeling.
+      dissenting_views: null  # Or describe dissenting opinions if any
+
+    - entry_id: "L4-002"
+      timestamp: "2026-02-25T11:30:00Z"
+      decision_type: "data"
+      description: "Excluded data from 2008-2010 financial crisis period"
+      decided_by:
+        - name: "Data Analyst"
+      basis: |
+        2008-2010 period shows extreme volatility not representative
+        of normal market conditions. Including it would skew baseline.
+      alternatives_considered: |
+        Include all historical data but weight crisis period less heavily.
+        Use robust statistical methods that handle outliers.
+      dissenting_views: |
+        Team member argued that excluding crisis data removes important
+        information about system behavior under stress. Noted for review.
+
+    - entry_id: "L4-003"
+      timestamp: "2026-02-25T14:00:00Z"
+      decision_type: "methodology"
+      description: "Selected agent-based model over econometric regression"
+      decided_by:
+        - name: "Modeling Team"
+      basis: |
+        Agent-based modeling allows us to capture individual behavioral
+        responses and emergent market effects that regression cannot model.
+      alternatives_considered: |
+        Econometric regression - simpler but cannot capture behavioral dynamics.
+        Hybrid approach - too complex for initial analysis.
+      dissenting_views: null
+
+    # Add entries for EVERY significant decision made during analysis
+    # This creates an audit trail showing reasoning evolution
+
+  review_history:
+    # Optional: track external reviews
+    - review_id: "REV-001"
+      date: "2026-03-01"
+      reviewer: "External Policy Analyst"
+      scope: "L2 modeling assumptions"
+      findings: |
+        Sensitivity analysis on assumption L4-003 shows outcomes
+        are robust to ±20% variation. Model appears sound.
+      changes_resulting:
+        - "L4-004"  # Reference to ledger entry if review led to changes
+
+# --- L5: FORK REGISTRY ---
+# Track document lineage, forks, and critical responses
+
+l5_fork_registry:
+
+  this_document:
+    document_id: "CHANGE-ME-003"
+    forked_from: null  # If this is a fork, put parent document_id here
+    fork_reason: "Original proposal"  # Or explain why you forked
+    key_differences: "N/A - original document"
+
+  known_forks:
+    # When someone forks your document, add it here
+    # Example:
+    # - document_id: "alternative-proposal-001"
+    #   author: "Opposition Party"
+    #   created: "2026-03-15"
+    #   fork_reason: "Challenge core assumption about price elasticity"
+    #   key_differences: |
+    #     Uses different elasticity coefficient (0.8 vs our 0.5) based on
+    #     international comparison data. Results in 20% higher revenue estimate.
+    #   url: "https://example.com/alternative-proposal.yaml"
+
+  responses:
+    # Track critiques, endorsements, amendments, questions
+    # Example:
+    # - response_id: "RESP-001"
+    #   type: "critique"  # Options: critique | endorsement | amendment-proposal | question
+    #   author: "Academic Researcher"
+    #   date: "2026-03-10"
+    #   summary: |
+    #     Questions the assumption about behavioral response elasticity.
+    #     Cites three international studies suggesting higher elasticity.
+    #   url: "https://example.com/critique-001.pdf"
+    #   resolution: |
+    #     Acknowledged in L4-005. Updated sensitivity analysis to test
+    #     higher elasticity scenarios. Results show assumption is robust
+    #     within ±30% range.
+
+# --- END OF ORP-FULL TEMPLATE ---
+#
+# Congratulations! You have ORP-Full compliance.
+#
+# This is the gold standard for transparent, accountable reasoning.
+#
+# Next steps:
+# 1. Validate: orp validate your-document.yaml
+# 2. Publish: Make it publicly accessible
+# 3. Invite critique: Share with stakeholders and critics
+# 4. Respond: Update L5 with responses and forks
+# 5. Iterate: Treat this as a living document
+#
+# The power of ORP-Full is that any party can:
+# - See exactly what data you used and what you excluded
+# - Run your simulations with different assumptions
+# - Understand how different groups are affected
+# - Trace every decision back to who made it and why
+# - Fork your work to propose alternatives
+#
+# This is what democratic transparency looks like in practice.

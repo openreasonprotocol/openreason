@@ -68,10 +68,44 @@ ORP is structured in five layers. See [docs/specs/ORP_SPEC.md](docs/specs/ORP_SP
 pip install orp-validator
 ```
 
+### Create a New Document
+
+```bash
+orp new my-proposal.yaml
+```
+
+The CLI will interactively prompt you for basic information and generate a valid ORP-Basic template. Edit the file and fill in the placeholders.
+
 ### Validate a Document
 
 ```bash
-orp-validate my-proposal.yaml
+orp validate my-proposal.yaml
+```
+
+### Check Compliance Level
+
+```bash
+orp check my-proposal.yaml
+```
+
+Quick check showing which layers are present and what compliance level you've achieved.
+
+### Compare Documents
+
+```bash
+orp diff original.yaml fork.yaml
+```
+
+See exactly what changed between two documents or forks.
+
+### All Commands
+
+```bash
+orp --help                    # Show all available commands
+orp new <file>               # Create new ORP document
+orp validate <file>          # Full validation with detailed errors
+orp check <file>             # Quick compliance level check
+orp diff <file1> <file2>     # Compare two documents
 ```
 
 ### Example Output
@@ -83,10 +117,14 @@ ORP Validation Report: my-proposal.yaml
 
 ✓ Valid
 
-Compliance Level: ORP-Full
+Compliance Level: ORP-Basic
+
+Warnings:
+  1. Document is ORP-Basic. Add L2 (Consequence Simulation) and
+     L3 (Empathy Mapping) for ORP-Standard.
 
 Summary:
-  Document is valid and meets ORP-Full requirements.
+  Document is valid and meets ORP-Basic requirements.
 ============================================================
 ```
 

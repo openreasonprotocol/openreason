@@ -10,9 +10,74 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- CLI scaffolding commands (`orp new`, `orp diff`, `orp check`) - Sprint 1.2
 - JavaScript/TypeScript validator - Sprint 1.3
 - REST API validator endpoint - Sprint 1.4
+- GitLab CI/CD integration examples
+
+---
+
+## [0.2.0] - 2026-02-25
+
+### Added
+- **CLI Command Groups** - New `orp` command with subcommands
+  - `orp new` - Interactive scaffolding for new ORP documents
+  - `orp check` - Quick compliance level assessment without full validation
+  - `orp diff` - Compare two ORP documents and highlight differences
+  - `orp validate` - Full validation (replaces `orp-validate`)
+  - Backward compatibility maintained with `orp-validate` command
+
+- **Document Templates**
+  - `templates/orp-basic.yaml` - ORP-Basic template with helpful comments
+  - `templates/orp-standard.yaml` - ORP-Standard template
+  - `templates/orp-full.yaml` - ORP-Full template with all 5 layers
+  - Templates included in package distribution
+
+- **`orp new` Command Features**
+  - Interactive prompts for header fields
+  - Non-interactive mode with flags (`--title`, `--domain`, `--author`, `--non-interactive`)
+  - Compliance level selection (`--compliance basic|standard|full`)
+  - Output format selection (`--format yaml|json`)
+  - Auto-validation of generated documents
+  - Document ID auto-generation from filename
+
+- **`orp check` Command Features**
+  - Fast layer detection without schema validation
+  - Compliance level determination (Basic/Standard/Full/None)
+  - Guidance on achieving higher compliance
+  - Quiet mode (`--quiet`) for automation
+  - JSON output mode (`--json`)
+  - Exit codes: 0=Full, 1=Standard, 2=Basic, 3=None, 4=Error
+
+- **`orp diff` Command Features**
+  - Side-by-side comparison of two documents
+  - Fork relationship detection
+  - Colored diff output (added/removed/changed)
+  - Metadata filtering (exclude `last_modified` by default)
+  - Layer-specific diffs (`--layer l2`)
+  - JSON output for automation
+
+- **Test Suite**
+  - 49 tests total (up from 20)
+  - New command tests: 11 tests for `orp new`, 9 tests for `orp check`, 12 tests for `orp diff`
+  - Maintained 81% code coverage
+  - Integration tests for CLI workflows
+
+- **Infrastructure**
+  - GitLab CI/CD pipeline configuration (`.gitlab-ci.yml`)
+  - Automated testing across Python 3.9-3.12
+  - Code quality checks (black, ruff, mypy)
+  - Coverage reporting
+
+### Changed
+- CLI architecture refactored to use Click command groups
+- Main entry point changed from `orp-validate` to `orp` with subcommands
+- Updated README with new CLI commands and examples
+- Package now includes templates directory
+
+### Sprint
+- Completed: sprint-1.2.0 (CLI Scaffolding Commands)
+- Code version: v0.2.0
+- Protocol version: ORP v0.1
 
 ---
 

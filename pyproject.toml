@@ -43,7 +43,8 @@ dev = [
 ]
 
 [project.scripts]
-orp-validate = "orp_validator.cli:main"
+orp = "orp_validator.main:main"
+orp-validate = "orp_validator.cli:main"  # Deprecated, kept for backward compatibility
 
 [project.urls]
 Homepage = "https://gitlab.com/publicreason/orp"
@@ -52,7 +53,8 @@ Repository = "https://gitlab.com/publicreason/orp"
 Issues = "https://gitlab.com/publicreason/orp/-/issues"
 
 [tool.setuptools]
-packages = ["orp_validator"]
+packages = ["orp_validator", "orp_validator.commands"]
+package-data = {"orp_validator" = ["../templates/*.yaml"]}
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

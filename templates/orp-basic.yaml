@@ -1,0 +1,126 @@
+# ORP-Basic Document Template
+# OpenReason Protocol v0.1 - Basic Compliance Level
+#
+# ORP-Basic requires: Header + L1 (Data Provenance)
+# This is the minimum viable transparency standard.
+
+# --- HEADER BLOCK ---
+# Required for all ORP documents
+
+orp_version: "0.1"
+document_id: "CHANGE-ME-001"  # Unique identifier - use your own scheme
+title: "Your Document Title Here"
+domain: "policy"  # Options: policy | ai-training | governance | other
+authors:
+  - name: "Your Name"
+    role: "author"  # Options: author | contributor | reviewer
+created: "2026-02-25"  # ISO 8601 date format (YYYY-MM-DD)
+last_modified: "2026-02-25"
+status: "draft"  # Options: draft | open-for-comment | ratified | superseded
+forked_from: null  # Parent document_id if this is a fork, null if original
+compliance_level: "ORP-Basic"
+summary: |
+  Write a plain-language summary of what this document proposes or analyzes.
+
+  Aim for 3-5 sentences that a non-expert can understand. This is what appears
+  in search results and document lists. Make it count.
+
+# --- L1: DATA PROVENANCE ---
+# Document every dataset used in your reasoning.
+# This is where bias lives - be thorough and honest.
+
+l1_data_provenance:
+  - dataset_id: "dataset-001"
+    name: "Descriptive name for this dataset"
+    description: |
+      What does this dataset contain? Why did you use it?
+
+      Be specific. "Government data" is not specific enough.
+      "2024 Danish household income data from Statistics Denmark" is better.
+
+    source: "Where did this data come from? (government | academic | commercial | synthetic | other)"
+
+    collection_method: |
+      How was this data gathered?
+
+      Examples:
+      - Census survey (mandatory response)
+      - Voluntary online survey
+      - Administrative records from tax filings
+      - Web scraping from public sources
+      - Simulated using model X with assumptions Y
+
+    date_range: "What time period does this data cover? (e.g., 2020-2024 or Q1 2024)"
+
+    geographic_scope: "What geographic area? (e.g., Denmark national, Copenhagen municipality, Global)"
+
+    inclusion_criteria:
+      description: |
+        What was included in this dataset and why?
+
+        If you used all available data, say so explicitly.
+        If you filtered or selected, explain the criteria.
+
+    exclusion_criteria:
+      # List anything you excluded and why
+      - excluded: "What was left out?"
+        reason: "Why did you exclude it?"
+        potential_impact: |
+          How might excluding this affect your conclusions?
+
+          This is the honesty field. If you don't know, say "Unknown - should be investigated."
+
+      # Add more exclusions if applicable
+      # If nothing was excluded, use an empty list: []
+
+    cleaning_decisions:
+      # Document how you cleaned or transformed the data
+      - decision: "What did you do to the data?"
+        reason: "Why was this necessary?"
+        alternatives_considered: "What else could you have done instead?"
+
+      # Add more cleaning decisions
+      # If no cleaning was done, use an empty list: []
+
+    synthetic_elements:
+      present: false  # Set to true if any data was generated or simulated
+      # If true, add description field:
+      # description: |
+      #   Explain what was synthesized, how, and with what assumptions.
+
+    known_limitations:
+      - "What does this dataset NOT capture well?"
+      - "What blind spots or biases might it have?"
+      - "What would you ideally want that this dataset doesn't provide?"
+
+    access:
+      public: true  # Can others access this data?
+      url: null  # Link if public, null if not
+      license: "Specify the data license if known"
+
+    attested_by:
+      - name: "Your Name"
+        role: "Data analyst"
+        date: "2026-02-25"
+        statement: |
+          I confirm the above documentation is accurate to the best of my knowledge.
+          I understand that this attestation creates accountability for data provenance claims.
+
+  # Add more datasets if you used multiple sources
+  # Copy the structure above and change the dataset_id
+
+# --- END OF ORP-BASIC TEMPLATE ---
+#
+# You now have a valid ORP-Basic document!
+#
+# To achieve higher compliance:
+# - ORP-Standard: Add L2 (Consequence Simulation) + L3 (Empathy Mapping)
+# - ORP-Full: Add L4 (Accountability Ledger) + L5 (Fork Registry)
+#
+# See templates/orp-standard.yaml and templates/orp-full.yaml for examples.
+#
+# Validate your document:
+#   orp validate your-document.yaml
+#
+# Check compliance level:
+#   orp check your-document.yaml

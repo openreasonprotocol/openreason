@@ -1,0 +1,217 @@
+# ORP-Standard Document Template
+# OpenReason Protocol v0.1 - Standard Compliance Level
+#
+# ORP-Standard requires: Header + L1 + L2 + L3
+# Adds consequence simulation and empathy mapping to Basic compliance.
+
+# --- HEADER BLOCK ---
+
+orp_version: "0.1"
+document_id: "CHANGE-ME-002"
+title: "Your Policy Proposal Title"
+domain: "policy"
+authors:
+  - name: "Your Name"
+    role: "author"
+created: "2026-02-25"
+last_modified: "2026-02-25"
+status: "draft"
+forked_from: null
+compliance_level: "ORP-Standard"
+summary: |
+  Plain language summary (3-5 sentences) explaining what this proposal does
+  and why it matters.
+
+# --- L1: DATA PROVENANCE ---
+# See orp-basic.yaml for detailed comments on L1 fields
+
+l1_data_provenance:
+  - dataset_id: "dataset-001"
+    name: "Your dataset name"
+    description: "What it contains and why you used it"
+    source: "government"
+    collection_method: "How it was gathered"
+    date_range: "2020-2024"
+    geographic_scope: "Your region"
+    inclusion_criteria:
+      description: "What was included"
+    exclusion_criteria: []
+    cleaning_decisions: []
+    synthetic_elements:
+      present: false
+    known_limitations:
+      - "Limitation 1"
+    access:
+      public: true
+      url: null
+      license: "License info"
+    attested_by:
+      - name: "Your Name"
+        role: "analyst"
+        date: "2026-02-25"
+        statement: "I confirm this is accurate."
+
+# --- L2: CONSEQUENCE SIMULATION ---
+# Model the outcomes of your proposal across different scenarios
+
+l2_consequence_simulation:
+
+  affected_population:
+    description: "Who is affected by this proposal?"
+    size_estimate: "Approximate number (e.g., 2.5 million Danish homeowners)"
+    segments:
+      - segment: "First-time buyers"
+        description: "People purchasing their first home"
+        estimated_size: "~50,000 per year"
+      - segment: "Existing homeowners"
+        description: "People who already own property"
+        estimated_size: "~2.4 million"
+      # Add more segments as needed
+
+  variables:
+    independent:
+      # Things you can change in your simulation
+      - variable: "tax_rate"
+        description: "The tax rate applied"
+        range: "0% to 2%"
+        default_value: "1.0%"
+      # Add more independent variables
+
+    dependent:
+      # Outcomes you're measuring
+      - variable: "annual_tax_burden"
+        description: "Average tax paid per household per year"
+        unit: "DKK"
+      - variable: "housing_affordability_index"
+        description: "Ratio of median income to median house price"
+        unit: "ratio"
+      # Add more dependent variables
+
+  model:
+    type: "Describe your modeling approach (e.g., agent-based, econometric, spreadsheet)"
+    assumptions:
+      - assumption: "House prices remain stable"
+        basis: "Historical trend from 2015-2024 shows <2% annual variation"
+        sensitivity: "High - 10% price change affects outcomes by ~15%"
+      - assumption: "Income distribution follows current patterns"
+        basis: "Statistics Denmark 2024 data"
+        sensitivity: "Medium - affects distributional impacts but not aggregate"
+      # Add more assumptions
+
+  scenarios:
+    - scenario_id: "S1-baseline"
+      name: "Current System"
+      description: "Continue with existing tax structure"
+      variable_values:
+        tax_rate: "current_rates"
+      outcomes:
+        annual_tax_burden: "8,500 DKK average"
+        housing_affordability_index: "4.2"
+
+    - scenario_id: "S2-proposal"
+      name: "Proposed Reform"
+      description: "Implementation of new tax structure"
+      variable_values:
+        tax_rate: "1.0%"
+      outcomes:
+        annual_tax_burden: "7,200 DKK average"
+        housing_affordability_index: "4.0"
+
+    # Add more scenarios (optimistic, pessimistic, etc.)
+
+  primary_scenario: "S2-proposal"
+
+  model_code:
+    available: false  # Set to true if you're publishing the model
+    repository: null  # URL to code repository if available
+    # language: "Python"  # Uncomment if code is available
+
+# --- L3: EMPATHY MAPPING ---
+# Who wins? Who loses? How are minorities affected?
+
+l3_empathy_mapping:
+
+  stakeholder_map:
+    - stakeholder: "First-time homebuyers"
+      description: "Young adults (25-35) purchasing first property"
+      estimated_population: "50,000 annually"
+      relationship_to_proposal: "Directly affected by tax changes on purchase"
+      impacts_by_scenario:
+        - scenario_id: "S1-baseline"
+          financial_impact: "High entry barrier due to existing tax structure"
+          quality_of_life_impact: "Delayed homeownership, extended renting"
+          direction: "harmed"
+        - scenario_id: "S2-proposal"
+          financial_impact: "Reduced entry cost by ~15%"
+          quality_of_life_impact: "Earlier homeownership possible"
+          direction: "benefits"
+      vulnerability_flags:
+        - "Income constraints make them price-sensitive"
+        - "Often single-income households at time of purchase"
+
+    - stakeholder: "Elderly homeowners on fixed income"
+      description: "Retirees (65+) living in owned property"
+      estimated_population: "~400,000"
+      relationship_to_proposal: "Affected by ongoing tax liability"
+      impacts_by_scenario:
+        - scenario_id: "S2-proposal"
+          financial_impact: "Annual tax may strain fixed income"
+          quality_of_life_impact: "Risk of forced sale if cannot afford ongoing tax"
+          direction: "harmed"
+      vulnerability_flags:
+        - "Fixed income limits ability to absorb tax increases"
+        - "May have high property value but low liquid assets"
+
+    # Add more stakeholder groups
+
+  minority_stress_test:
+    description: |
+      Explicit testing of how minority groups are affected by edge cases.
+      This catches impacts that average analysis misses.
+
+    groups_tested:
+      - group: "Single parents in social housing"
+        scenario_tested: "What if they inherit property while on benefits?"
+        outcome: |
+          Inheritance could trigger benefit loss while creating tax liability.
+          Creates perverse incentive to refuse inheritance.
+        mitigation: |
+          Proposal includes exemption for inherited property valued under
+          threshold if owner continues to occupy as primary residence.
+
+      - group: "Recent immigrants"
+        scenario_tested: "What if they own property abroad?"
+        outcome: |
+          Unclear whether foreign property holdings affect eligibility for
+          tax credits. Could disadvantage immigrant homeowners.
+        mitigation: |
+          Clarify in legislation that only Danish property is counted.
+          Flag for review in implementation phase.
+
+      # Add more stress tests
+
+  unresolved_impacts:
+    - "Long-term effect on property market liquidity - insufficient data to model"
+    - "Impact on multi-generational households - current data doesn't capture this"
+
+  net_welfare_assessment:
+    methodology: |
+      Weighted sum of financial impacts across all stakeholder groups,
+      with additional weight (2x) for vulnerable populations.
+    conclusion: |
+      Net positive welfare impact. 60% of population benefits, 30% neutral,
+      10% harmed. Mitigation measures address most vulnerable groups.
+    confidence: "medium"
+    confidence_basis: |
+      Based on solid historical data for core population segments but limited
+      data on edge cases and behavioral responses to new tax structure.
+
+# --- END OF ORP-STANDARD TEMPLATE ---
+#
+# You now have ORP-Standard compliance!
+#
+# To achieve ORP-Full, add:
+# - L4: Accountability Ledger (track who decided what and why)
+# - L5: Fork Registry (document forks and responses)
+#
+# See templates/orp-full.yaml for complete example.

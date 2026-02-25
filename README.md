@@ -60,6 +60,52 @@ ORP is structured in five layers. See [docs/specs/ORP_SPEC.md](docs/specs/ORP_SP
 
 ---
 
+## Quick Start
+
+### Installation
+
+```bash
+pip install orp-validator
+```
+
+### Validate a Document
+
+```bash
+orp-validate my-proposal.yaml
+```
+
+### Example Output
+
+```
+============================================================
+ORP Validation Report: my-proposal.yaml
+============================================================
+
+✓ Valid
+
+Compliance Level: ORP-Full
+
+Summary:
+  Document is valid and meets ORP-Full requirements.
+============================================================
+```
+
+### Python API
+
+```python
+from orp_validator import validate
+
+result = validate("my-proposal.yaml")
+
+if result.valid:
+    print(f"✓ Valid! Compliance: {result.compliance_level.value}")
+else:
+    for error in result.errors:
+        print(f"Error: {error}")
+```
+
+---
+
 ## Worked example
 
 The Danish Property Tax Reform proposal published alongside this repository is the first worked example of an ORP-compliant policy document. It demonstrates all five layers in practice and shows how a complex policy debate can be made transparent, simulatable, and forkable.
@@ -110,6 +156,40 @@ OpenReason is not owned by any individual, company, or government. It is steward
   - `docs/CONTRIBUTING.md` — How to contribute
   - `docs/ROADMAP.md` — Development phases and timeline
 - `examples/` — Worked examples of ORP-compliant documents
+- `schemas/` — JSON Schema for ORP documents
+- `orp_validator/` — Python validator package
+- `tests/` — Test suite
+
+---
+
+## Development
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/openreason/openreason.git
+cd openreason
+
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install in development mode
+pip install -e ".[dev]"
+```
+
+### Run Tests
+
+```bash
+pytest tests/ -v --cov=orp_validator
+```
+
+### Validate an ORP Document
+
+```bash
+orp-validate examples/danish_property_tax_reform.md --verbose
+```
 
 ---
 

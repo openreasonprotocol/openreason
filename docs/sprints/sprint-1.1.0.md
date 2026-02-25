@@ -1,10 +1,10 @@
 # Sprint 1-1: JSON Schema and Basic Validation
 
 **Version:** `sprint-1.1.0`
-**Status:** Planned
-**Start Date:** TBD
-**Target End Date:** TBD
-**Actual End Date:** N/A
+**Status:** Completed
+**Start Date:** 2026-02-25
+**Target End Date:** 2026-02-25
+**Actual End Date:** 2026-02-25
 
 **Code Target Version:** `v0.1.0`
 **Protocol Version Supported:** `0.1`

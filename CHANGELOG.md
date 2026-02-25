@@ -9,10 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned
-- JavaScript/TypeScript validator - Sprint 1.3
-- REST API validator endpoint - Sprint 1.4
+### Planned (Phase 1 Completion)
+- **Sprint 1.3.0** (v0.2.1): Danish Property Tax reference implementation as pure YAML
+- **Sprint 1.4.0** (v0.3.0): PyPI publication and automated releases
+- **Sprint 1.5.0** (v0.4.0): REST API validator service at api.publicreasonproject.org
+- **Sprint 1.6.0** (v0.5.0): Documentation website at publicreasonproject.org with interactive validator
+
+See `docs/sprints/PHASE1_PLAN.md` for complete sequencing rationale and sprint details.
+
+### Deferred to Phase 2
+- JavaScript/TypeScript validator (REST API provides browser validation)
 - GitLab CI/CD integration examples
+- VS Code extension
+- ORP Registry
 
 ---
 

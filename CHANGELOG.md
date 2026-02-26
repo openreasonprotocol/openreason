@@ -10,8 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned (Phase 1 Completion)
-- **Sprint 1.3.0** (v0.2.1): Danish Property Tax reference implementation as pure YAML
-- **Sprint 1.4.0** (v0.3.0): PyPI publication and automated releases
 - **Sprint 1.5.0** (v0.4.0): REST API validator service at api.publicreasonproject.org
 - **Sprint 1.6.0** (v0.5.0): Documentation website at publicreasonproject.org with interactive validator
 
@@ -22,6 +20,56 @@ See `docs/sprints/PHASE1_PLAN.md` for complete sequencing rationale and sprint d
 - GitLab CI/CD integration examples
 - VS Code extension
 - ORP Registry
+
+---
+
+## [0.3.0] - 2026-02-26
+
+### Added
+- **PyPI Publication** - Package now available on PyPI
+  - Install with: `pip install orp-validator`
+  - Published to https://pypi.org/project/orp-validator/
+  - Tested on TestPyPI before production release
+
+### Changed
+- **Package Structure** - Moved resources inside package for proper distribution
+  - `schemas/` → `orp_validator/schemas/`
+  - `templates/` → `orp_validator/templates/`
+  - Uses `importlib.resources` for portable resource loading
+  - Ensures schemas and templates are included in wheel distribution
+
+- **Package Metadata** - Added contact information
+  - Authors: OpenReason Contributors <hello@publicreasonproject.org>
+  - Maintainer: Asbjørn Ras <asbjorn@publicreasonproject.org>
+  - Homepage: https://publicreasonproject.org
+
+### Fixed
+- Schema and template files now properly included in pip installations
+- Package version correctly reports 0.3.0
+
+### Infrastructure
+- MANIFEST.in created for package data inclusion
+- PyPI accounts configured (production and test)
+- API tokens set up for automated uploads
+
+**Sprint**: sprint-1.4.0
+**Install**: `pip install orp-validator`
+**PyPI**: https://pypi.org/project/orp-validator/0.3.0/
+
+---
+
+## [0.2.1] - 2026-02-25
+
+### Added
+- **Danish Property Tax Reform** - First ORP-Full reference implementation
+  - Complete YAML document with all 5 layers
+  - Real-world policy proposal demonstrating protocol in practice
+  - Validates as ORP-Full with zero errors
+  - Available at `examples/danish_property_tax_reform.yaml`
+  - Documentation in `examples/README.md`
+
+**Sprint**: sprint-1.3.0
+**Validation**: `orp validate examples/danish_property_tax_reform.yaml`
 
 ---
 

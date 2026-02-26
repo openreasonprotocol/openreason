@@ -5,8 +5,10 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 import yaml
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 from orp_validator import validate as validate_document
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from models import (
     CheckRequest,
@@ -17,6 +19,9 @@ from models import (
     ValidateRequest,
     ValidateResponse,
 )
+
+# Rate limiter
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/api/v1", tags=["validation"])
 
@@ -33,9 +38,11 @@ router = APIRouter(prefix="/api/v1", tags=["validation"])
         200: {"description": "Validation completed (check 'valid' field for result)"},
         400: {"description": "Invalid request (malformed YAML/JSON)"},
         413: {"description": "Request too large (>1MB)"},
+        429: {"description": "Too many requests - rate limit exceeded"},
     },
 )
-async def validate(request: ValidateRequest) -> ValidateResponse:
+@limiter.limit("60/minute")
+async def validate(request: ValidateRequest, http_request: Request) -> ValidateResponse:
     """Validate an ORP document with full schema validation.
 
     Args:
@@ -114,9 +121,11 @@ async def validate(request: ValidateRequest) -> ValidateResponse:
     responses={
         200: {"description": "Compliance check completed"},
         400: {"description": "Invalid request (malformed YAML/JSON)"},
+        429: {"description": "Too many requests - rate limit exceeded"},
     },
 )
-async def check(request: CheckRequest) -> CheckResponse:
+@limiter.limit("60/minute")
+async def check(request: CheckRequest, http_request: Request) -> CheckResponse:
     """Quick compliance level check without full validation.
 
     Args:
@@ -243,9 +252,11 @@ def _get_next_steps(compliance_level: str) -> str:
     responses={
         200: {"description": "Comparison completed"},
         400: {"description": "Invalid request (malformed documents)"},
+        429: {"description": "Too many requests - rate limit exceeded"},
     },
 )
-async def diff(request: DiffRequest) -> DiffResponse:
+@limiter.limit("60/minute")
+async def diff(request: DiffRequest, http_request: Request) -> DiffResponse:
     """Compare two ORP documents.
 
     Args:

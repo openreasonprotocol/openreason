@@ -10,7 +10,10 @@ readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.9"
 license = {text = "MIT"}
 authors = [
-    {name = "OpenReason Contributors"}
+    {name = "OpenReason Contributors", email = "hello@publicreasonproject.org"}
+]
+maintainers = [
+    {name = "Asbjørn Ras", email = "asbjorn@publicreasonproject.org"}
 ]
 keywords = ["orp", "openreason", "transparency", "policy", "validator", "governance", "ai-training"]
 classifiers = [

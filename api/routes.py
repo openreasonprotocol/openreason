@@ -2,7 +2,7 @@
 
 import tempfile
 from pathlib import Path
-from typing import Dict
+from typing import Any, Dict, List
 
 import yaml
 from fastapi import APIRouter, HTTPException, status
@@ -11,6 +11,7 @@ from orp_validator import validate as validate_document
 from models import (
     CheckRequest,
     CheckResponse,
+    DiffChange,
     DiffRequest,
     DiffResponse,
     ValidateRequest,
@@ -229,3 +230,245 @@ def _get_next_steps(compliance_level: str) -> str:
         return "Full compliance achieved!"
     else:
         return "Add L1 (Data Provenance) to achieve ORP-Basic compliance"
+
+
+@router.post(
+    "/diff",
+    response_model=DiffResponse,
+    summary="Compare two ORP documents",
+    description=(
+        "Compares two ORP documents and returns their differences. "
+        "Can detect fork relationships and filter by specific layers."
+    ),
+    responses={
+        200: {"description": "Comparison completed"},
+        400: {"description": "Invalid request (malformed documents)"},
+    },
+)
+async def diff(request: DiffRequest) -> DiffResponse:
+    """Compare two ORP documents.
+
+    Args:
+        request: Diff request containing two documents
+
+    Returns:
+        Comparison result with differences and fork detection
+
+    Raises:
+        HTTPException: If documents cannot be parsed
+    """
+    try:
+        # Parse both documents
+        try:
+            doc1 = yaml.safe_load(request.document1)
+            doc2 = yaml.safe_load(request.document2)
+        except yaml.YAMLError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid YAML/JSON: {str(e)}",
+            ) from e
+
+        if not isinstance(doc1, dict) or not isinstance(doc2, dict):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Both documents must be YAML/JSON objects",
+            )
+
+        # Filter out metadata fields if requested
+        if not request.include_metadata:
+            metadata_fields = ["last_modified", "created"]
+            for field in metadata_fields:
+                doc1.pop(field, None)
+                doc2.pop(field, None)
+
+        # Filter to specific layer if requested
+        if request.layer:
+            if request.layer not in doc1 and request.layer not in doc2:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Layer '{request.layer}' not found in either document",
+                )
+            doc1 = {request.layer: doc1.get(request.layer)}
+            doc2 = {request.layer: doc2.get(request.layer)}
+
+        # Detect fork relationship
+        is_fork = False
+        fork_direction = None
+        if "forked_from" in doc2:
+            forked_from_id = doc2.get("forked_from")
+            if doc1.get("document_id") == forked_from_id:
+                is_fork = True
+                fork_direction = "document2 forked from document1"
+        elif "forked_from" in doc1:
+            forked_from_id = doc1.get("forked_from")
+            if doc2.get("document_id") == forked_from_id:
+                is_fork = True
+                fork_direction = "document1 forked from document2"
+
+        # Compare documents
+        differences = _compare_dicts(doc1, doc2, prefix="")
+
+        return DiffResponse(
+            identical=len(differences) == 0,
+            is_fork=is_fork,
+            fork_direction=fork_direction,
+            differences=differences,
+            num_changes=len(differences),
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Diff error: {str(e)}",
+        ) from e
+
+
+def _compare_dicts(
+    dict1: Dict[str, Any], dict2: Dict[str, Any], prefix: str = ""
+) -> List[DiffChange]:
+    """Recursively compare two dictionaries and return differences.
+
+    Args:
+        dict1: First dictionary
+        dict2: Second dictionary
+        prefix: Field path prefix for nested fields
+
+    Returns:
+        List of differences
+    """
+    differences: List[DiffChange] = []
+
+    # Find keys in dict1 but not dict2 (removed)
+    for key in dict1:
+        if key not in dict2:
+            field_path = f"{prefix}.{key}" if prefix else key
+            differences.append(
+                DiffChange(
+                    type="removed",
+                    field=field_path,
+                    old_value=_serialize_value(dict1[key]),
+                    new_value=None,
+                )
+            )
+
+    # Find keys in dict2 but not dict1 (added)
+    for key in dict2:
+        if key not in dict1:
+            field_path = f"{prefix}.{key}" if prefix else key
+            differences.append(
+                DiffChange(
+                    type="added",
+                    field=field_path,
+                    old_value=None,
+                    new_value=_serialize_value(dict2[key]),
+                )
+            )
+
+    # Compare values for common keys
+    for key in dict1:
+        if key not in dict2:
+            continue
+
+        field_path = f"{prefix}.{key}" if prefix else key
+        val1 = dict1[key]
+        val2 = dict2[key]
+
+        # If both are dicts, recurse
+        if isinstance(val1, dict) and isinstance(val2, dict):
+            differences.extend(_compare_dicts(val1, val2, field_path))
+        # If both are lists, compare element by element
+        elif isinstance(val1, list) and isinstance(val2, list):
+            differences.extend(_compare_lists(val1, val2, field_path))
+        # Otherwise compare values directly
+        elif val1 != val2:
+            differences.append(
+                DiffChange(
+                    type="changed",
+                    field=field_path,
+                    old_value=_serialize_value(val1),
+                    new_value=_serialize_value(val2),
+                )
+            )
+
+    return differences
+
+
+def _compare_lists(
+    list1: List[Any], list2: List[Any], prefix: str
+) -> List[DiffChange]:
+    """Compare two lists element by element.
+
+    Args:
+        list1: First list
+        list2: Second list
+        prefix: Field path prefix
+
+    Returns:
+        List of differences
+    """
+    differences: List[DiffChange] = []
+
+    max_len = max(len(list1), len(list2))
+
+    for i in range(max_len):
+        field_path = f"{prefix}[{i}]"
+
+        # Element only in list1 (removed)
+        if i >= len(list2):
+            differences.append(
+                DiffChange(
+                    type="removed",
+                    field=field_path,
+                    old_value=_serialize_value(list1[i]),
+                    new_value=None,
+                )
+            )
+        # Element only in list2 (added)
+        elif i >= len(list1):
+            differences.append(
+                DiffChange(
+                    type="added",
+                    field=field_path,
+                    old_value=None,
+                    new_value=_serialize_value(list2[i]),
+                )
+            )
+        # Both have element at index i
+        else:
+            val1 = list1[i]
+            val2 = list2[i]
+
+            # If both are dicts, recurse
+            if isinstance(val1, dict) and isinstance(val2, dict):
+                differences.extend(_compare_dicts(val1, val2, field_path))
+            # If both are lists, recurse
+            elif isinstance(val1, list) and isinstance(val2, list):
+                differences.extend(_compare_lists(val1, val2, field_path))
+            # Otherwise compare directly
+            elif val1 != val2:
+                differences.append(
+                    DiffChange(
+                        type="changed",
+                        field=field_path,
+                        old_value=_serialize_value(val1),
+                        new_value=_serialize_value(val2),
+                    )
+                )
+
+    return differences
+
+
+def _serialize_value(value: Any) -> str:
+    """Serialize a value to string for display.
+
+    Args:
+        value: Value to serialize
+
+    Returns:
+        String representation
+    """
+    if isinstance(value, (dict, list)):
+        return yaml.dump(value, default_flow_style=True).strip()
+    return str(value)

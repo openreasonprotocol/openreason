@@ -36,6 +36,7 @@ dependencies = [
     "jsonschema>=4.20.0",
     "pyyaml>=6.0",
     "click>=8.1.0",
+    "importlib-resources>=5.0; python_version < '3.10'",
 ]
 
 [project.optional-dependencies]

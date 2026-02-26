@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import Any, Optional
 
 try:
-    from importlib.resources import files  # Python 3.9+
-except ImportError:
-    from importlib_resources import files  # type: ignore
+    from importlib.resources import files  # Python 3.10+
+except (ImportError, AttributeError):
+    from importlib_resources import files  # type: ignore # Python 3.9 backport
 
 import click
 import yaml

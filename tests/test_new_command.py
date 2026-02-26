@@ -1,6 +1,5 @@
 """Tests for orp new command."""
 
-
 import pytest
 import yaml
 from click.testing import CliRunner

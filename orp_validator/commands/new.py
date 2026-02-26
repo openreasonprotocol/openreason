@@ -3,7 +3,7 @@
 import sys
 from datetime import date
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 try:
     from importlib.resources import files  # Python 3.9+
@@ -95,6 +95,10 @@ def new(
                 err=True,
             )
             sys.exit(1)
+        # Type narrowing: all() check ensures these are not None
+        assert title is not None
+        assert domain is not None
+        assert author is not None
         doc_info = {
             "title": title,
             "domain": domain.lower(),
@@ -130,27 +134,27 @@ def new(
     click.echo(f"  3. Run 'orp check {filename}' for quick compliance check")
 
 
-def _load_builtin_template(compliance: str) -> dict:
+def _load_builtin_template(compliance: str) -> dict[str, Any]:
     """Load built-in template for specified compliance level."""
     try:
         template_content = (
             files("orp_validator.templates").joinpath(f"orp-{compliance}.yaml").read_text()
         )
-        return yaml.safe_load(template_content)
+        return yaml.safe_load(template_content)  # type: ignore[no-any-return]
     except FileNotFoundError:
         click.echo(f"Error: Template orp-{compliance}.yaml not found", err=True)
         sys.exit(1)
 
 
-def _load_custom_template(template_path: Path) -> dict:
+def _load_custom_template(template_path: Path) -> dict[str, Any]:
     """Load custom template from file."""
     with open(template_path, encoding="utf-8") as f:
-        return yaml.safe_load(f)
+        return yaml.safe_load(f)  # type: ignore[no-any-return]
 
 
 def _gather_info_interactive(
     title: Optional[str], domain: Optional[str], author: Optional[str]
-) -> dict:
+) -> dict[str, str]:
     """Gather document information interactively."""
     click.echo("\nCreating new ORP document. Please provide the following information:\n")
 
@@ -179,7 +183,9 @@ def _gather_info_interactive(
     }
 
 
-def _populate_template(template: dict, info: dict, filename: Path) -> dict:
+def _populate_template(
+    template: dict[str, Any], info: dict[str, str], filename: Path
+) -> dict[str, Any]:
     """Populate template with user information."""
     # Generate document ID from filename
     doc_id = filename.stem.replace(" ", "-").replace("_", "-").lower()
@@ -205,7 +211,7 @@ def _populate_template(template: dict, info: dict, filename: Path) -> dict:
     return template
 
 
-def _write_document(filename: Path, document: dict, output_format: str) -> None:
+def _write_document(filename: Path, document: dict[str, Any], output_format: str) -> None:
     """Write document to file in specified format."""
     if output_format == "yaml":
         with open(filename, "w", encoding="utf-8") as f:

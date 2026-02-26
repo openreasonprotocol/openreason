@@ -137,7 +137,7 @@ class ORPValidator:
 
         # Try YAML first (superset of JSON)
         try:
-            return yaml.safe_load(content)
+            return yaml.safe_load(content)  # type: ignore[no-any-return]
         except yaml.YAMLError as e:
             raise yaml.YAMLError(f"Failed to parse document: {e}") from e
 

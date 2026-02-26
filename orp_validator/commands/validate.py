@@ -3,6 +3,7 @@
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import click
 
@@ -59,7 +60,7 @@ def validate(document: Path, output_json: bool, verbose: bool) -> None:
         sys.exit(2)
 
 
-def _print_human_readable(document: Path, result, verbose: bool) -> None:
+def _print_human_readable(document: Path, result: Any, verbose: bool) -> None:
     """Print validation results in human-readable format."""
     # Header
     click.echo(f"\n{'='*60}")

@@ -3,6 +3,7 @@
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import click
 import yaml
@@ -80,7 +81,7 @@ def check(document: Path, quiet: bool, output_json: bool) -> None:
         sys.exit(4)
 
 
-def _detect_layers(doc_data: dict) -> dict:
+def _detect_layers(doc_data: dict[str, Any]) -> dict[str, bool]:
     """Detect which ORP layers are present in the document."""
     return {
         "l1_data_provenance": "l1_data_provenance" in doc_data,
@@ -91,7 +92,9 @@ def _detect_layers(doc_data: dict) -> dict:
     }
 
 
-def _determine_compliance(doc_data: dict, layers_present: dict) -> ComplianceLevel:
+def _determine_compliance(
+    doc_data: dict[str, Any], layers_present: dict[str, bool]
+) -> ComplianceLevel:
     """Determine compliance level based on layers present."""
     # Check required header fields
     required_header = [
@@ -137,7 +140,7 @@ def _determine_compliance(doc_data: dict, layers_present: dict) -> ComplianceLev
     return ComplianceLevel.NONE
 
 
-def _output_json(compliance_level: ComplianceLevel, layers_present: dict) -> None:
+def _output_json(compliance_level: ComplianceLevel, layers_present: dict[str, bool]) -> None:
     """Output results in JSON format."""
     result = {
         "compliance_level": compliance_level.value,
@@ -147,7 +150,7 @@ def _output_json(compliance_level: ComplianceLevel, layers_present: dict) -> Non
 
 
 def _output_human_readable(
-    document: Path, compliance_level: ComplianceLevel, layers_present: dict
+    document: Path, compliance_level: ComplianceLevel, layers_present: dict[str, bool]
 ) -> None:
     """Output results in human-readable format."""
     # Compliance level with color

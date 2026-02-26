@@ -77,16 +77,16 @@ def diff(
         sys.exit(2)
 
 
-def _load_document(path: Path) -> dict:
+def _load_document(path: Path) -> dict[str, Any]:
     """Load document from file."""
     with open(path, encoding="utf-8") as f:
         if path.suffix in [".yaml", ".yml"]:
-            return yaml.safe_load(f)
+            return yaml.safe_load(f)  # type: ignore[no-any-return]
         else:
-            return json.load(f)
+            return json.load(f)  # type: ignore[no-any-return]
 
 
-def _is_fork(doc1: dict, doc2: dict) -> bool:
+def _is_fork(doc1: dict[str, Any], doc2: dict[str, Any]) -> bool:
     """Check if doc2 is a fork of doc1."""
     doc1_id = doc1.get("document_id")
     doc2_forked_from = doc2.get("forked_from")
@@ -94,7 +94,9 @@ def _is_fork(doc1: dict, doc2: dict) -> bool:
     return doc2_forked_from == doc1_id
 
 
-def _compute_diff(doc1: dict, doc2: dict, include_metadata: bool) -> list[dict[str, Any]]:
+def _compute_diff(
+    doc1: dict[str, Any], doc2: dict[str, Any], include_metadata: bool
+) -> list[dict[str, Any]]:
     """Compute differences between two documents."""
     differences = []
 

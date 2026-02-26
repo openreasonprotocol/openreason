@@ -1,5 +1,10 @@
 # OpenReason (ORP)
 
+[![PyPI version](https://badge.fury.io/py/orp-validator.svg)](https://badge.fury.io/py/orp-validator)
+[![Python Support](https://img.shields.io/pypi/pyversions/orp-validator.svg)](https://pypi.org/project/orp-validator/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitLab Pipeline](https://gitlab.com/publicreason/orp/badges/main/pipeline.svg)](https://gitlab.com/publicreason/orp/-/pipelines)
+
 > A public protocol for transparent, simulatable reasoning in policy, AI, and democratic decision-making.
 
 ---
@@ -233,8 +238,26 @@ pytest tests/ -v --cov=orp_validator
 ### Validate an ORP Document
 
 ```bash
-orp-validate examples/danish_property_tax_reform.md --verbose
+orp validate examples/danish_property_tax_reform.yaml
 ```
+
+### Run Linting
+
+```bash
+black orp_validator/ tests/
+ruff check orp_validator/ tests/
+mypy orp_validator/
+```
+
+### Continuous Integration
+
+The project uses GitLab CI/CD for automated testing, linting, and releases:
+- **Tests**: Run on Python 3.9, 3.10, 3.11, 3.12
+- **Coverage**: Reports generated for each commit
+- **Releases**: Automated package building on tags
+- **PyPI**: Manual deployment trigger for tagged releases
+
+See `.gitlab-ci.yml` for pipeline configuration.
 
 ---
 

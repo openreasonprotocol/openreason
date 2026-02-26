@@ -1,10 +1,10 @@
 # Sprint 1.4.0: PyPI Publication + Packaging
 
 **Version:** `sprint-1.4.0`
-**Status:** Planned
-**Start Date:** TBD
-**Target End Date:** TBD
-**Actual End Date:** (if completed)
+**Status:** Completed
+**Start Date:** 2026-02-25
+**Target End Date:** 2026-02-26
+**Actual End Date:** 2026-02-26
 
 **Code Target Version:** `v0.3.0`
 **Protocol Version Supported:** `0.1`
@@ -314,22 +314,92 @@ This sprint is complete when:
 
 ## Retrospective
 
-*(Added after sprint completes)*
-
 ### What Worked Well
-- TBD
+- PyPI publication process went smoothly after initial package restructuring
+- TestPyPI testing caught packaging issues before production release
+- GitLab CI/CD pipeline configuration was straightforward
+- Badge integration improved README visibility
 
 ### What Didn't Work
-- TBD
+- Python 3.9 compatibility issues not caught until CI ran
+- Initial package structure had schemas/templates outside package directory
+- Resource loading with `importlib.resources` required version-specific handling
+- Force push to protected branch caused git divergence (resolved with rebase)
 
 ### What We Learned
-- TBD
+
+**Critical lesson: Python 3.9 resource loading**
+
+The package initially failed all tests on Python 3.9 (40 failures) due to `importlib.resources.files()` not existing before Python 3.10.
+
+**Solution implemented:**
+```python
+import sys
+
+if sys.version_info >= (3, 10):
+    from importlib.resources import files
+else:
+    # Python 3.9: use importlib_resources backport
+    try:
+        from importlib_resources import files  # type: ignore
+    except ImportError:
+        # Fallback if backport not installed
+        files = None
+
+# Then use fallback to direct paths if files is None
+if files is not None:
+    content = files("orp_validator.schemas").joinpath("file.json").read_text()
+else:
+    path = Path(__file__).parent / "schemas" / "file.json"
+    with open(path, encoding="utf-8") as f:
+        content = f.read()
+```
+
+**Why this matters:**
+- Python 3.9 still widely used in production environments
+- PyPI packages must work across all declared Python versions
+- Resource loading is non-trivial when supporting multiple Python versions
+- GitLab CI multi-version testing caught this early
+
+**Files affected:**
+- `orp_validator/validator.py:66-87` - Schema loading
+- `orp_validator/commands/new.py:142-157` - Template loading
+- `pyproject.toml:39` - Added `importlib-resources>=5.0; python_version < '3.10'`
+
+**Testing approach:**
+- Added comprehensive documentation to CONTRIBUTING.md
+- Local testing with Python 3.9 recommended before pushing
+- CI tests across Python 3.9, 3.10, 3.11, 3.12
+- Fallback paths ensure it works even without backport package
 
 ### What Assumptions Were Wrong
-- TBD
+
+**Assumption:** Package resources "just work" when bundled in a wheel
+**Reality:** Resource loading APIs changed between Python versions, requiring explicit compatibility handling
+
+**Assumption:** Linting fixes could be amended to previous commit
+**Reality:** Protected branches prevent force push, requiring git rebase workflow instead
+
+**Assumption:** importlib_resources backport would always be installed
+**Reality:** Need fallback to direct file paths for robustness
 
 ### Changes for Next Sprint
-- TBD
+
+1. **Test multi-version compatibility earlier** - Don't wait for CI to catch Python version issues
+2. **Document version-specific patterns** - Added to CONTRIBUTING.md for future contributors
+3. **Run full linting suite before pushing** - Especially after compatibility fixes
+4. **Use git rebase workflow** - For protected branches, never attempt force push
+
+### Technical Debt Created
+
+None - all issues resolved during sprint.
+
+### Technical Debt Resolved
+
+- Package structure now correct (schemas/templates inside package)
+- Python 3.9 fully supported with robust fallback mechanism
+- All linting issues resolved (Black, Ruff, Mypy strict mode)
+- Git history clean after rebase resolution
 
 ---
 

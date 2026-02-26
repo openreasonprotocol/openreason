@@ -127,13 +127,118 @@ Challenge ideas, not people. Disagree with reasoning, not with identity. Be spec
 
 ---
 
+## Development practices
+
+### Python version compatibility
+
+The `orp-validator` package supports Python 3.9+ as declared in `pyproject.toml`. This creates specific requirements when working with package resources (schemas, templates).
+
+**Resource loading approach:**
+
+```python
+import sys
+from pathlib import Path
+
+if sys.version_info >= (3, 10):
+    from importlib.resources import files
+else:
+    # Python 3.9: use importlib_resources backport
+    try:
+        from importlib_resources import files  # type: ignore
+    except ImportError:
+        # Fallback if backport not installed
+        files = None
+
+# Then in code that needs resources:
+if files is not None:
+    content = files("orp_validator.schemas").joinpath("file.json").read_text()
+else:
+    # Fallback to direct file paths
+    path = Path(__file__).parent / "schemas" / "file.json"
+    with open(path, encoding="utf-8") as f:
+        content = f.read()
+```
+
+**Why this pattern:**
+- `importlib.resources.files()` was added in Python 3.10
+- The `importlib_resources` backport provides the same API for Python 3.9
+- Fallback to direct paths ensures it works even if backport isn't installed
+- Schemas and templates must be inside the package directory to be included in wheels
+
+**Testing multi-version compatibility:**
+
+Before pushing code that touches resource loading:
+
+```bash
+# Test locally with Python 3.9 (if available)
+python3.9 -m venv /tmp/test-py39
+source /tmp/test-py39/bin/activate
+pip install -e ".[dev]"
+pytest tests/ -v
+
+# Or rely on GitLab CI which tests Python 3.9, 3.10, 3.11, 3.12
+git push origin <branch>
+# Watch pipeline at https://gitlab.com/publicreason/orp/-/pipelines
+```
+
+**When to be extra careful:**
+- Adding new package resources (schemas, templates, data files)
+- Modifying how resources are loaded
+- Changing package structure in `pyproject.toml`
+- Any code using `importlib.resources`, `importlib.metadata`, or `__file__` paths
+
+### Running the full test suite locally
+
+```bash
+# Activate virtual environment
+source .venv/bin/activate
+
+# Install dev dependencies
+pip install -e ".[dev]"
+
+# Run all linting checks
+black --check orp_validator/ tests/
+ruff check orp_validator/ tests/
+mypy orp_validator/
+
+# Run tests with coverage
+pytest tests/ -v --cov=orp_validator --cov-report=term-missing
+
+# Quick smoke test: validate the example
+orp validate examples/danish_property_tax_reform.yaml
+```
+
+**Expected results:**
+- Black: All files formatted correctly
+- Ruff: No linting errors
+- Mypy: No type errors (strict mode enabled)
+- Pytest: 69 tests passing, 93%+ coverage
+- Example validation: ORP-Full compliance
+
+### Before pushing to GitLab
+
+The GitLab CI pipeline is strict. Before pushing:
+
+1. **Run all linters locally** (see above) - don't rely on CI to catch formatting
+2. **Ensure tests pass** - all 69 tests should pass with good coverage
+3. **Test resource loading** - if you touched validator.py or commands/new.py
+4. **Check git history** - ensure commit message follows conventions
+
+If CI fails on Python 3.9 specifically:
+- Usually resource loading or import compatibility issue
+- Check the fallback paths are working
+- Verify `importlib-resources` is in dependencies for Python < 3.10
+
+---
+
 ## Getting started
 
-1. Read [README.md](README.md) for project overview
-2. Read [ORP_SPEC.md](ORP_SPEC.md) for the technical specification
-3. Read [REE_PHILOSOPHY.md](REE_PHILOSOPHY.md) for the underlying principles
+1. Read [README.md](../README.md) for project overview
+2. Read [docs/specs/ORP_SPEC.md](specs/ORP_SPEC.md) for the technical specification
+3. Read [docs/specs/REE_PHILOSOPHY.md](specs/REE_PHILOSOPHY.md) for the underlying principles
 4. Look at the worked example in `examples/`
-5. Identify where you want to contribute and follow the relevant guidance above
+5. Read the **Development practices** section above for code contribution guidelines
+6. Identify where you want to contribute and follow the relevant guidance above
 
 ---
 

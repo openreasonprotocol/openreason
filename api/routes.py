@@ -42,11 +42,11 @@ router = APIRouter(prefix="/api/v1", tags=["validation"])
     },
 )
 @limiter.limit("60/minute")
-async def validate(request: ValidateRequest, http_request: Request) -> ValidateResponse:
+async def validate(body: ValidateRequest, request: Request) -> ValidateResponse:
     """Validate an ORP document with full schema validation.
 
     Args:
-        request: Validation request containing document text
+        body: Validation request containing document text
 
     Returns:
         Validation result with errors, warnings, and compliance level
@@ -57,7 +57,7 @@ async def validate(request: ValidateRequest, http_request: Request) -> ValidateR
     try:
         # Parse document to check if it's valid YAML/JSON
         try:
-            doc_data = yaml.safe_load(request.document)
+            doc_data = yaml.safe_load(body.document)
         except yaml.YAMLError as e:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -125,11 +125,11 @@ async def validate(request: ValidateRequest, http_request: Request) -> ValidateR
     },
 )
 @limiter.limit("60/minute")
-async def check(request: CheckRequest, http_request: Request) -> CheckResponse:
+async def check(body: CheckRequest, request: Request) -> CheckResponse:
     """Quick compliance level check without full validation.
 
     Args:
-        request: Check request containing document text
+        body: Check request containing document text
 
     Returns:
         Compliance level and next steps
@@ -140,7 +140,7 @@ async def check(request: CheckRequest, http_request: Request) -> CheckResponse:
     try:
         # Parse document
         try:
-            doc_data = yaml.safe_load(request.document)
+            doc_data = yaml.safe_load(body.document)
         except yaml.YAMLError as e:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -256,11 +256,11 @@ def _get_next_steps(compliance_level: str) -> str:
     },
 )
 @limiter.limit("60/minute")
-async def diff(request: DiffRequest, http_request: Request) -> DiffResponse:
+async def diff(body: DiffRequest, request: Request) -> DiffResponse:
     """Compare two ORP documents.
 
     Args:
-        request: Diff request containing two documents
+        body: Diff request containing two documents
 
     Returns:
         Comparison result with differences and fork detection
@@ -271,8 +271,8 @@ async def diff(request: DiffRequest, http_request: Request) -> DiffResponse:
     try:
         # Parse both documents
         try:
-            doc1 = yaml.safe_load(request.document1)
-            doc2 = yaml.safe_load(request.document2)
+            doc1 = yaml.safe_load(body.document1)
+            doc2 = yaml.safe_load(body.document2)
         except yaml.YAMLError as e:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -286,21 +286,21 @@ async def diff(request: DiffRequest, http_request: Request) -> DiffResponse:
             )
 
         # Filter out metadata fields if requested
-        if not request.include_metadata:
+        if not body.include_metadata:
             metadata_fields = ["last_modified", "created"]
             for field in metadata_fields:
                 doc1.pop(field, None)
                 doc2.pop(field, None)
 
         # Filter to specific layer if requested
-        if request.layer:
-            if request.layer not in doc1 and request.layer not in doc2:
+        if body.layer:
+            if body.layer not in doc1 and body.layer not in doc2:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Layer '{request.layer}' not found in either document",
+                    detail=f"Layer '{body.layer}' not found in either document",
                 )
-            doc1 = {request.layer: doc1.get(request.layer)}
-            doc2 = {request.layer: doc2.get(request.layer)}
+            doc1 = {body.layer: doc1.get(body.layer)}
+            doc2 = {body.layer: doc2.get(body.layer)}
 
         # Detect fork relationship
         is_fork = False

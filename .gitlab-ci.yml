@@ -128,6 +128,31 @@ validate:examples:
     - merge_requests
     - main
 
+# API Tests
+test:api:
+  stage: test
+  before_script:
+    - cd api
+    - python --version
+    - pip install --upgrade pip
+    - python -m venv .venv
+    - source .venv/bin/activate
+    - pip install -r requirements.txt
+  script:
+    - pytest tests/ -v --cov=. --cov-report=term --cov-report=xml --cov-fail-under=80
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: api/coverage.xml
+    paths:
+      - api/htmlcov/
+    expire_in: 1 week
+  only:
+    - merge_requests
+    - main
+
 # PyPI Release (only on tags)
 # Requires PYPI_TOKEN variable set in GitLab CI/CD settings
 release:pypi:

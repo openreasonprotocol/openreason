@@ -5,6 +5,11 @@ from datetime import date
 from pathlib import Path
 from typing import Optional
 
+try:
+    from importlib.resources import files  # Python 3.9+
+except ImportError:
+    from importlib_resources import files  # type: ignore
+
 import click
 import yaml
 
@@ -126,15 +131,12 @@ def new(
 
 def _load_builtin_template(compliance: str) -> dict:
     """Load built-in template for specified compliance level."""
-    package_dir = Path(__file__).parent.parent.parent
-    template_path = package_dir / "templates" / f"orp-{compliance}.yaml"
-
-    if not template_path.exists():
-        click.echo(f"Error: Template {template_path} not found", err=True)
+    try:
+        template_content = files("orp_validator.templates").joinpath(f"orp-{compliance}.yaml").read_text()
+        return yaml.safe_load(template_content)
+    except FileNotFoundError:
+        click.echo(f"Error: Template orp-{compliance}.yaml not found", err=True)
         sys.exit(1)
-
-    with open(template_path, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
 
 
 def _load_custom_template(template_path: Path) -> dict:

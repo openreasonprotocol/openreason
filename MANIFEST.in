@@ -1,0 +1,5 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+recursive-include orp_validator/schemas *.json
+recursive-include orp_validator/templates *.yaml

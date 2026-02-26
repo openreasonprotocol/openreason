@@ -4,26 +4,29 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "orp-validator"
-version = "0.1.0"
+version = "0.3.0"
 description = "Validator for OpenReason Protocol (ORP) v0.1 documents"
-readme = "README.md"
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.9"
 license = {text = "MIT"}
 authors = [
     {name = "OpenReason Contributors"}
 ]
-keywords = ["openreason", "orp", "validation", "policy", "transparency"]
+keywords = ["orp", "openreason", "transparency", "policy", "validator", "governance", "ai-training"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Quality Assurance",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: OS Independent",
 ]
 
 dependencies = [
@@ -47,14 +50,18 @@ orp = "orp_validator.main:main"
 orp-validate = "orp_validator.cli:main"  # Deprecated, kept for backward compatibility
 
 [project.urls]
-Homepage = "https://gitlab.com/publicreason/orp"
-Documentation = "https://openreason.org/docs"
+Homepage = "https://publicreasonproject.org"
+Documentation = "https://publicreasonproject.org/docs"
 Repository = "https://gitlab.com/publicreason/orp"
 Issues = "https://gitlab.com/publicreason/orp/-/issues"
+Changelog = "https://gitlab.com/publicreason/orp/-/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
-packages = ["orp_validator", "orp_validator.commands"]
-package-data = {"orp_validator" = ["../templates/*.yaml"]}
+packages = ["orp_validator", "orp_validator.commands", "orp_validator.schemas", "orp_validator.templates"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+orp_validator = ["schemas/*.json", "templates/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

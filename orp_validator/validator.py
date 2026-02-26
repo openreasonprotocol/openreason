@@ -6,6 +6,11 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+try:
+    from importlib.resources import files  # Python 3.9+
+except ImportError:
+    from importlib_resources import files  # type: ignore
+
 import yaml
 from jsonschema import Draft7Validator, ValidationError as JSONSchemaValidationError
 
@@ -59,12 +64,12 @@ class ORPValidator:
                         If None, uses bundled schema for ORP v0.1.
         """
         if schema_path is None:
-            # Use bundled schema
-            package_dir = Path(__file__).parent.parent
-            schema_path = package_dir / "schemas" / "orp-v0.1.schema.json"
-
-        with open(schema_path, "r", encoding="utf-8") as f:
-            self.schema = json.load(f)
+            # Use bundled schema via importlib.resources
+            schema_content = files("orp_validator.schemas").joinpath("orp-v0.1.schema.json").read_text()
+            self.schema = json.loads(schema_content)
+        else:
+            with open(schema_path, "r", encoding="utf-8") as f:
+                self.schema = json.load(f)
 
         self.validator = Draft7Validator(self.schema)
 

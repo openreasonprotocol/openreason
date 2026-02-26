@@ -2,7 +2,7 @@
 
 **Phase 1 Goal:** Core Tooling - The minimum viable toolkit that makes ORP documents easy to produce, validate, and compare.
 
-**Status:** Sprints 1.1-1.2 Complete | Sprints 1.3-1.6 Planned
+**Status:** Sprints 1.1-1.4 Complete | Sprints 1.5-1.6 Planned
 
 ---
 
@@ -29,6 +29,27 @@
 - `orp diff` - Document comparison
 - Document templates (basic/standard/full)
 - 69 tests, 95% coverage
+
+### ✅ Sprint 1.3.0 - Danish Property Tax Reference Implementation
+**Code Version:** v0.2.1
+**Completed:** 2026-02-25
+
+**Delivered:**
+- `examples/danish_property_tax_reform.yaml` - First ORP-Full example
+- Validates with zero errors
+- All 5 layers with substantive real-world content
+- Example documentation
+
+### ✅ Sprint 1.4.0 - PyPI Publication + Packaging
+**Code Version:** v0.3.0
+**Completed:** 2026-02-26
+
+**Delivered:**
+- Published to PyPI: `pip install orp-validator`
+- GitLab CI/CD pipeline with release automation
+- Python 3.9+ compatibility (with resource loading fallback)
+- Badges and documentation updates
+- 69 tests, 93% coverage
 
 ---
 

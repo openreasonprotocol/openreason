@@ -5,10 +5,15 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Optional
 
-try:
-    from importlib.resources import files  # Python 3.10+
-except (ImportError, AttributeError):
-    from importlib_resources import files  # type: ignore # Python 3.9 backport
+if sys.version_info >= (3, 10):
+    from importlib.resources import files
+else:
+    # Python 3.9: use importlib_resources backport
+    try:
+        from importlib_resources import files  # type: ignore
+    except ImportError:
+        # Fallback if backport not installed
+        files = None  # type: ignore
 
 import click
 import yaml
@@ -137,10 +142,16 @@ def new(
 def _load_builtin_template(compliance: str) -> dict[str, Any]:
     """Load built-in template for specified compliance level."""
     try:
-        template_content = (
-            files("orp_validator.templates").joinpath(f"orp-{compliance}.yaml").read_text()
-        )
-        return yaml.safe_load(template_content)  # type: ignore[no-any-return]
+        if files is not None:
+            template_content = (
+                files("orp_validator.templates").joinpath(f"orp-{compliance}.yaml").read_text()
+            )
+            return yaml.safe_load(template_content)  # type: ignore[no-any-return]
+        else:
+            # Fallback for when importlib.resources is not available
+            template_path = Path(__file__).parent.parent / "templates" / f"orp-{compliance}.yaml"
+            with open(template_path, encoding="utf-8") as f:
+                return yaml.safe_load(f)  # type: ignore[no-any-return]
     except FileNotFoundError:
         click.echo(f"Error: Template orp-{compliance}.yaml not found", err=True)
         sys.exit(1)

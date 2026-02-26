@@ -6,10 +6,17 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional, Union
 
-try:
-    from importlib.resources import files  # Python 3.10+
-except (ImportError, AttributeError):
-    from importlib_resources import files  # type: ignore # Python 3.9 backport
+import sys
+
+if sys.version_info >= (3, 10):
+    from importlib.resources import files
+else:
+    # Python 3.9: use importlib_resources backport
+    try:
+        from importlib_resources import files  # type: ignore
+    except ImportError:
+        # Fallback if backport not installed
+        files = None  # type: ignore
 
 import yaml
 from jsonschema import Draft7Validator
@@ -66,10 +73,16 @@ class ORPValidator:
         """
         if schema_path is None:
             # Use bundled schema via importlib.resources
-            schema_content = (
-                files("orp_validator.schemas").joinpath("orp-v0.1.schema.json").read_text()
-            )
-            self.schema = json.loads(schema_content)
+            if files is not None:
+                schema_content = (
+                    files("orp_validator.schemas").joinpath("orp-v0.1.schema.json").read_text()
+                )
+                self.schema = json.loads(schema_content)
+            else:
+                # Fallback for when importlib.resources is not available
+                schema_path = Path(__file__).parent / "schemas" / "orp-v0.1.schema.json"
+                with open(schema_path, encoding="utf-8") as f:
+                    self.schema = json.load(f)
         else:
             with open(schema_path, encoding="utf-8") as f:
                 self.schema = json.load(f)

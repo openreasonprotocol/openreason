@@ -60,21 +60,45 @@ See `docs/specs/ORP_SPEC.md` for full technical specification.
 ```
 open-reason/
 ├── README.md                          # Project overview
-├── CLAUDE.md                          # This file
+├── CLAUDE.md                          # This file (YOU ARE HERE)
+├── CHANGELOG.md                       # Version history and releases
+├── pyproject.toml                     # Python package configuration
+├── orp_validator/                     # CLI and validator library
+│   ├── cli.py                        # Main CLI entry point
+│   ├── validator.py                  # Core validation logic
+│   ├── commands/                     # CLI command implementations
+│   ├── schemas/                      # JSON Schema for ORP v0.1
+│   └── templates/                    # Document templates (basic/standard/full)
+├── tests/                            # CLI/validator test suite
+├── examples/
+│   └── danish_property_tax_reform.yaml # First ORP-Full worked example
+├── api/                              # REST API (PRODUCTION at api.publicreasonproject.org)
+│   ├── main.py                       # FastAPI application
+│   ├── routes.py                     # API route handlers
+│   ├── models.py                     # Pydantic request/response models
+│   ├── requirements.txt              # API dependencies
+│   ├── Dockerfile                    # Container configuration
+│   ├── docker-compose.yml            # Local development setup
+│   ├── pytest.ini                    # Test configuration
+│   ├── TESTING.md                    # Manual testing documentation
+│   ├── README.md                     # API documentation
+│   └── tests/                        # 39 automated tests (96% coverage)
+│       ├── conftest.py               # Shared test fixtures
+│       ├── test_validate_endpoint.py # /api/v1/validate tests
+│       ├── test_check_endpoint.py    # /api/v1/check tests
+│       ├── test_diff_endpoint.py     # /api/v1/diff tests
+│       ├── test_security.py          # CORS, headers, security tests
+│       └── README.md                 # Testing guide
 ├── docs/
 │   ├── CONTRIBUTING.md               # How to contribute
 │   ├── ROADMAP.md                    # Development phases and priorities
 │   ├── specs/
 │   │   ├── ORP_SPEC.md              # Protocol specification v0.1
 │   │   └── REE_PHILOSOPHY.md        # Philosophical foundation
-│   ├── governance/
-│   │   ├── GOVERNANCE.md            # Governance model
-│   │   └── ORP_META.md              # Protocol's own provenance
-│   └── sprints/
-│       └── [sprint planning docs]
-├── examples/
-│   └── danish_property_tax_reform.md # First ORP-Full worked example
-└── [future: src/, tests/, tools/]
+│   └── governance/
+│       ├── GOVERNANCE.md            # Governance model
+│       └── ORP_META.md              # Protocol's own provenance
+└── .gitlab-ci.yml                    # CI/CD pipeline configuration
 ```
 
 ---
@@ -228,6 +252,32 @@ Agents assist, they do not attest. Anything produced by an AI must be reviewed a
 - **Test the error path** — does `orp validate` give useful errors?
 - **Test idempotency** — running `orp check` twice should produce the same result
 
+### For the REST API (CRITICAL - api.publicreasonproject.org):
+- **ALL tests must pass before ANY deployment** — The API is public-facing at https://api.publicreasonproject.org
+- **Minimum 80% code coverage required** — Enforced by CI/CD pipeline
+- **Run tests before committing:** `cd api && pytest tests/ -v --cov=. --cov-report=term-missing`
+- **39 automated tests covering:**
+  - All three endpoints (/api/v1/validate, /api/v1/check, /api/v1/diff)
+  - Security features (CORS, headers, rate limiting, injection attempts)
+  - Error handling (invalid YAML, missing fields, wrong types, size limits)
+  - Edge cases (large documents, nested changes, fork detection, metadata filtering)
+- **Test files location:** `api/tests/` (see `api/tests/README.md` for details)
+- **CI/CD integration:** Tests run automatically on all merge requests and main branch commits
+- **Coverage reports:** Generated in `api/htmlcov/` and uploaded to GitLab artifacts
+
+**Before adding new API features:**
+1. Write tests first (TDD approach)
+2. Add to appropriate file in `api/tests/` (follow existing patterns)
+3. Run full test suite locally
+4. Ensure coverage stays above 80%
+5. All tests must pass before merge
+
+**Before deploying to production:**
+1. Verify all tests pass in CI/CD
+2. Check coverage report (must be ≥80%)
+3. Manually test critical paths if major changes
+4. Review test failures carefully - they catch real issues
+
 ---
 
 ## Communication Style
@@ -299,15 +349,38 @@ We'll know it's failing if:
 
 ---
 
+## Current Production Services
+
+**🚀 Live and operational:**
+
+### REST API
+- **URL:** https://api.publicreasonproject.org
+- **Endpoints:**
+  - `POST /api/v1/validate` - Full schema validation
+  - `POST /api/v1/check` - Quick compliance check
+  - `POST /api/v1/diff` - Document comparison
+- **Documentation:** https://api.publicreasonproject.org/docs (Swagger UI)
+- **Status:** Production-ready with 39 automated tests (96% coverage)
+- **Deployment:** DigitalOcean (134.209.250.174), Docker, nginx, SSL via Let's Encrypt
+- **CI/CD:** Automated testing on all commits via GitLab CI
+
+### Python Package
+- **PyPI:** https://pypi.org/project/orp-validator/
+- **Install:** `pip install orp-validator`
+- **Version:** 0.3.0
+- **Commands:** `orp new`, `orp validate`, `orp check`, `orp diff`
+
+---
+
 ## Contact and Governance
 
-- **Founder:** Asbjørn (current steward during Phase 0)
+- **Founder:** Asbjørn (current steward during Phase 1)
 - **Governance:** See `docs/governance/GOVERNANCE.md`
-- **Repository:** [TBD — not yet on GitHub]
-- **License:** Creative Commons CC-BY (documentation), MIT (code, when written)
+- **Repository:** https://gitlab.com/publicreason/orp
+- **License:** Creative Commons CC-BY (documentation), MIT (code)
 
 ---
 
 *This document should evolve as the project grows. If you find yourself repeatedly explaining the same thing to Claude, add it here.*
 
-*Last updated: 2026-02-25 (Phase 0)*
+*Last updated: 2026-02-26 (Phase 1 - Sprint 1.6 complete)*

@@ -3,7 +3,7 @@
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import click
 import yaml
@@ -79,7 +79,7 @@ def diff(
 
 def _load_document(path: Path) -> dict:
     """Load document from file."""
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         if path.suffix in [".yaml", ".yml"]:
             return yaml.safe_load(f)
         else:
@@ -94,7 +94,7 @@ def _is_fork(doc1: dict, doc2: dict) -> bool:
     return doc2_forked_from == doc1_id
 
 
-def _compute_diff(doc1: dict, doc2: dict, include_metadata: bool) -> List[Dict[str, Any]]:
+def _compute_diff(doc1: dict, doc2: dict, include_metadata: bool) -> list[dict[str, Any]]:
     """Compute differences between two documents."""
     differences = []
 
@@ -109,29 +109,37 @@ def _compute_diff(doc1: dict, doc2: dict, include_metadata: bool) -> List[Dict[s
             continue
 
         if key not in doc1:
-            differences.append({
-                "type": "added",
-                "field": key,
-                "value": doc2[key],
-            })
+            differences.append(
+                {
+                    "type": "added",
+                    "field": key,
+                    "value": doc2[key],
+                }
+            )
         elif key not in doc2:
-            differences.append({
-                "type": "removed",
-                "field": key,
-                "value": doc1[key],
-            })
+            differences.append(
+                {
+                    "type": "removed",
+                    "field": key,
+                    "value": doc1[key],
+                }
+            )
         elif doc1[key] != doc2[key]:
-            differences.append({
-                "type": "changed",
-                "field": key,
-                "old_value": doc1[key],
-                "new_value": doc2[key],
-            })
+            differences.append(
+                {
+                    "type": "changed",
+                    "field": key,
+                    "old_value": doc1[key],
+                    "new_value": doc2[key],
+                }
+            )
 
     return differences
 
 
-def _output_json(file1: Path, file2: Path, is_fork: bool, differences: List[Dict[str, Any]]) -> None:
+def _output_json(
+    file1: Path, file2: Path, is_fork: bool, differences: list[dict[str, Any]]
+) -> None:
     """Output diff in JSON format."""
     result = {
         "file1": str(file1),
@@ -147,10 +155,10 @@ def _output_human_readable(
     file1: Path,
     file2: Path,
     is_fork: bool,
-    differences: List[Dict[str, Any]],
+    differences: list[dict[str, Any]],
 ) -> None:
     """Output diff in human-readable format."""
-    click.echo(f"\nComparing ORP Documents")
+    click.echo("\nComparing ORP Documents")
     click.echo("=" * 60)
     click.echo(f"\nFile 1: {file1}")
     click.echo(f"File 2: {file2}")
@@ -176,9 +184,9 @@ def _output_human_readable(
 
         elif diff["type"] == "changed":
             click.secho(f"~ Changed: {diff['field']}", fg="yellow")
-            click.echo(f"  Old: ", nl=False)
+            click.echo("  Old: ", nl=False)
             _print_value("  ", diff["old_value"], inline=True)
-            click.echo(f"  New: ", nl=False)
+            click.echo("  New: ", nl=False)
             _print_value("  ", diff["new_value"], inline=True)
 
         click.echo()

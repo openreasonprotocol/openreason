@@ -45,7 +45,12 @@ def basic_doc(tmp_path):
                 "known_limitations": ["Test"],
                 "access": {"public": True},
                 "attested_by": [
-                    {"name": "Test", "role": "author", "date": "2026-02-25", "statement": "Accurate"}
+                    {
+                        "name": "Test",
+                        "role": "author",
+                        "date": "2026-02-25",
+                        "statement": "Accurate",
+                    }
                 ],
             }
         ],
@@ -68,11 +73,24 @@ def standard_doc(basic_doc, tmp_path):
     doc["l2_consequence_simulation"] = {
         "affected_population": {"description": "Test", "size_estimate": "100"},
         "variables": {
-            "independent": [{"variable": "v", "description": "V", "range": "0-1", "default_value": "0"}],
+            "independent": [
+                {"variable": "v", "description": "V", "range": "0-1", "default_value": "0"}
+            ],
             "dependent": [{"variable": "o", "description": "O", "unit": "units"}],
         },
-        "model": {"type": "Test", "assumptions": [{"assumption": "A", "basis": "B", "sensitivity": "S"}]},
-        "scenarios": [{"scenario_id": "S1", "name": "S", "description": "D", "variable_values": {"v": "0"}, "outcomes": {"o": "1"}}],
+        "model": {
+            "type": "Test",
+            "assumptions": [{"assumption": "A", "basis": "B", "sensitivity": "S"}],
+        },
+        "scenarios": [
+            {
+                "scenario_id": "S1",
+                "name": "S",
+                "description": "D",
+                "variable_values": {"v": "0"},
+                "outcomes": {"o": "1"},
+            }
+        ],
         "primary_scenario": "S1",
     }
     doc["l3_empathy_mapping"] = {
@@ -87,7 +105,9 @@ def standard_doc(basic_doc, tmp_path):
         ],
         "minority_stress_test": {
             "description": "Test",
-            "groups_tested": [{"group": "G", "scenario_tested": "T", "outcome": "O", "mitigation": "M"}],
+            "groups_tested": [
+                {"group": "G", "scenario_tested": "T", "outcome": "O", "mitigation": "M"}
+            ],
         },
         "unresolved_impacts": [],
         "net_welfare_assessment": {

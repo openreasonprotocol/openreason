@@ -283,17 +283,17 @@ def test_validate_full_compliance(runner, tmp_path):
                     "basis": "Test basis",
                 }
             ],
-            "review_history": []
+            "review_history": [],
         },
         "l5_fork_registry": {
             "this_document": {
                 "document_id": "test-full",
                 "forked_from": None,
                 "fork_reason": "Original",
-                "key_differences": "N/A"
+                "key_differences": "N/A",
             },
             "known_forks": [],
-            "responses": []
+            "responses": [],
         },
     }
 

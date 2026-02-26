@@ -45,7 +45,7 @@ def check(document: Path, quiet: bool, output_json: bool) -> None:
     """
     try:
         # Load document
-        with open(document, "r", encoding="utf-8") as f:
+        with open(document, encoding="utf-8") as f:
             if document.suffix in [".yaml", ".yml"]:
                 doc_data = yaml.safe_load(f)
             else:
@@ -111,20 +111,24 @@ def _determine_compliance(doc_data: dict, layers_present: dict) -> ComplianceLev
         return ComplianceLevel.NONE
 
     # Check compliance levels from highest to lowest
-    if all([
-        layers_present["l1_data_provenance"],
-        layers_present["l2_consequence_simulation"],
-        layers_present["l3_empathy_mapping"],
-        layers_present["l4_accountability_ledger"],
-        layers_present["l5_fork_registry"],
-    ]):
+    if all(
+        [
+            layers_present["l1_data_provenance"],
+            layers_present["l2_consequence_simulation"],
+            layers_present["l3_empathy_mapping"],
+            layers_present["l4_accountability_ledger"],
+            layers_present["l5_fork_registry"],
+        ]
+    ):
         return ComplianceLevel.FULL
 
-    if all([
-        layers_present["l1_data_provenance"],
-        layers_present["l2_consequence_simulation"],
-        layers_present["l3_empathy_mapping"],
-    ]):
+    if all(
+        [
+            layers_present["l1_data_provenance"],
+            layers_present["l2_consequence_simulation"],
+            layers_present["l3_empathy_mapping"],
+        ]
+    ):
         return ComplianceLevel.STANDARD
 
     if layers_present["l1_data_provenance"]:
@@ -142,7 +146,9 @@ def _output_json(compliance_level: ComplianceLevel, layers_present: dict) -> Non
     click.echo(json.dumps(result, indent=2))
 
 
-def _output_human_readable(document: Path, compliance_level: ComplianceLevel, layers_present: dict) -> None:
+def _output_human_readable(
+    document: Path, compliance_level: ComplianceLevel, layers_present: dict
+) -> None:
     """Output results in human-readable format."""
     # Compliance level with color
     colors = {

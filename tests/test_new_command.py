@@ -1,9 +1,8 @@
 """Tests for orp new command."""
 
-import yaml
-from pathlib import Path
 
 import pytest
+import yaml
 from click.testing import CliRunner
 
 from orp_validator.main import cli
@@ -50,9 +49,12 @@ def test_new_non_interactive(runner, tmp_path):
         [
             "new",
             str(output_file),
-            "--title", "My Policy",
-            "--domain", "policy",
-            "--author", "John Doe",
+            "--title",
+            "My Policy",
+            "--domain",
+            "policy",
+            "--author",
+            "John Doe",
             "--non-interactive",
         ],
     )
@@ -77,10 +79,14 @@ def test_new_standard_compliance(runner, tmp_path):
         [
             "new",
             str(output_file),
-            "--compliance", "standard",
-            "--title", "Test",
-            "--domain", "policy",
-            "--author", "Author",
+            "--compliance",
+            "standard",
+            "--title",
+            "Test",
+            "--domain",
+            "policy",
+            "--author",
+            "Author",
             "--non-interactive",
         ],
     )
@@ -105,10 +111,14 @@ def test_new_full_compliance(runner, tmp_path):
         [
             "new",
             str(output_file),
-            "--compliance", "full",
-            "--title", "Test",
-            "--domain", "policy",
-            "--author", "Author",
+            "--compliance",
+            "full",
+            "--title",
+            "Test",
+            "--domain",
+            "policy",
+            "--author",
+            "Author",
             "--non-interactive",
         ],
     )
@@ -135,10 +145,14 @@ def test_new_json_format(runner, tmp_path):
         [
             "new",
             str(output_file),
-            "--format", "json",
-            "--title", "Test",
-            "--domain", "policy",
-            "--author", "Author",
+            "--format",
+            "json",
+            "--title",
+            "Test",
+            "--domain",
+            "policy",
+            "--author",
+            "Author",
             "--non-interactive",
         ],
     )
@@ -147,6 +161,7 @@ def test_new_json_format(runner, tmp_path):
     assert output_file.exists()
 
     import json
+
     with open(output_file) as f:
         doc = json.load(f)
 
@@ -181,9 +196,12 @@ def test_new_file_exists_overwrite(runner, tmp_path):
         [
             "new",
             str(output_file),
-            "--title", "Test",
-            "--domain", "policy",
-            "--author", "Author",
+            "--title",
+            "Test",
+            "--domain",
+            "policy",
+            "--author",
+            "Author",
             "--non-interactive",
         ],
         input="y\n",
@@ -219,9 +237,12 @@ def test_new_document_id_generation(runner, tmp_path):
         [
             "new",
             str(output_file),
-            "--title", "Test",
-            "--domain", "policy",
-            "--author", "Author",
+            "--title",
+            "Test",
+            "--domain",
+            "policy",
+            "--author",
+            "Author",
             "--non-interactive",
         ],
     )
@@ -243,9 +264,12 @@ def test_new_dates_populated(runner, tmp_path):
         [
             "new",
             str(output_file),
-            "--title", "Test",
-            "--domain", "policy",
-            "--author", "Author",
+            "--title",
+            "Test",
+            "--domain",
+            "policy",
+            "--author",
+            "Author",
             "--non-interactive",
         ],
     )
@@ -270,10 +294,14 @@ def test_new_invalid_compliance_level(runner, tmp_path):
         [
             "new",
             str(output_file),
-            "--compliance", "invalid",
-            "--title", "Test",
-            "--domain", "policy",
-            "--author", "Author",
+            "--compliance",
+            "invalid",
+            "--title",
+            "Test",
+            "--domain",
+            "policy",
+            "--author",
+            "Author",
             "--non-interactive",
         ],
     )

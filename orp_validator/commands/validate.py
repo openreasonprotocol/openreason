@@ -54,6 +54,7 @@ def validate(document: Path, output_json: bool, verbose: bool) -> None:
         click.echo(f"Error: {e}", err=True)
         if verbose:
             import traceback
+
             traceback.print_exc()
         sys.exit(2)
 
@@ -73,12 +74,12 @@ def _print_human_readable(document: Path, result, verbose: bool) -> None:
 
     # Compliance level
     compliance_color = _get_compliance_color(result.compliance_level.value)
-    click.echo(f"\nCompliance Level: ", nl=False)
+    click.echo("\nCompliance Level: ", nl=False)
     click.secho(result.compliance_level.value, fg=compliance_color, bold=True)
 
     # Layers present
     if verbose or not result.valid:
-        click.echo(f"\nLayers Present:")
+        click.echo("\nLayers Present:")
         for layer, present in result.layers_present.items():
             status = "✓" if present else "✗"
             color = "green" if present else "white"
@@ -101,11 +102,11 @@ def _print_human_readable(document: Path, result, verbose: bool) -> None:
         click.echo(f"\n{click.style('Summary:', bold=True)}")
         click.echo(f"  Document is valid and meets {result.compliance_level.value} requirements.")
         if result.compliance_level.value != "ORP-Full":
-            click.echo(f"  See warnings above for guidance on achieving higher compliance.")
+            click.echo("  See warnings above for guidance on achieving higher compliance.")
     else:
         click.echo(f"\n{click.style('Summary:', bold=True)}")
         click.echo(f"  Document has {len(result.errors)} validation error(s).")
-        click.echo(f"  Fix the errors above to achieve ORP compliance.")
+        click.echo("  Fix the errors above to achieve ORP compliance.")
 
     click.echo(f"\n{'='*60}\n")
 

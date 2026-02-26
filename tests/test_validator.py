@@ -1,13 +1,15 @@
 """Tests for ORP validator core functionality."""
 
+from pathlib import Path
+
 import pytest
 import yaml
 from pytest import fixture
-from pathlib import Path
-from orp_validator import validate, ValidationResult, ComplianceLevel
 
+from orp_validator import ComplianceLevel, validate
 
 # Test fixtures
+
 
 @fixture
 def minimal_header():
@@ -57,6 +59,7 @@ def minimal_l1():
 
 
 # Test cases
+
 
 def test_empty_document():
     """Test validation of an empty document."""
@@ -153,10 +156,7 @@ def test_compliance_level_detection(minimal_header, minimal_l1):
     doc_standard = {
         **doc_basic,
         "l2_consequence_simulation": {
-            "affected_population": {
-                "description": "Test pop",
-                "size_estimate": "100"
-            },
+            "affected_population": {"description": "Test pop", "size_estimate": "100"},
             "variables": {
                 "independent": [
                     {
@@ -166,9 +166,7 @@ def test_compliance_level_detection(minimal_header, minimal_l1):
                         "default_value": "5",
                     }
                 ],
-                "dependent": [
-                    {"variable": "out1", "description": "Test", "unit": "units"}
-                ],
+                "dependent": [{"variable": "out1", "description": "Test", "unit": "units"}],
             },
             "model": {
                 "type": "Test model",
@@ -198,9 +196,7 @@ def test_compliance_level_detection(minimal_header, minimal_l1):
                     "description": "Test",
                     "estimated_population": "100",
                     "relationship_to_proposal": "Test",
-                    "impacts_by_scenario": [
-                        {"scenario_id": "S1", "direction": "neutral"}
-                    ],
+                    "impacts_by_scenario": [{"scenario_id": "S1", "direction": "neutral"}],
                 }
             ],
             "minority_stress_test": {

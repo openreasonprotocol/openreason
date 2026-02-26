@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 try:
     from importlib.resources import files  # Python 3.9+
@@ -12,7 +12,8 @@ except ImportError:
     from importlib_resources import files  # type: ignore
 
 import yaml
-from jsonschema import Draft7Validator, ValidationError as JSONSchemaValidationError
+from jsonschema import Draft7Validator
+from jsonschema import ValidationError as JSONSchemaValidationError
 
 
 class ComplianceLevel(Enum):
@@ -38,11 +39,11 @@ class ValidationResult:
 
     valid: bool
     compliance_level: ComplianceLevel
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    layers_present: Dict[str, bool] = field(default_factory=dict)
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    layers_present: dict[str, bool] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "valid": self.valid,
@@ -65,15 +66,17 @@ class ORPValidator:
         """
         if schema_path is None:
             # Use bundled schema via importlib.resources
-            schema_content = files("orp_validator.schemas").joinpath("orp-v0.1.schema.json").read_text()
+            schema_content = (
+                files("orp_validator.schemas").joinpath("orp-v0.1.schema.json").read_text()
+            )
             self.schema = json.loads(schema_content)
         else:
-            with open(schema_path, "r", encoding="utf-8") as f:
+            with open(schema_path, encoding="utf-8") as f:
                 self.schema = json.load(f)
 
         self.validator = Draft7Validator(self.schema)
 
-    def validate(self, document: Union[str, Path, Dict[str, Any]]) -> ValidationResult:
+    def validate(self, document: Union[str, Path, dict[str, Any]]) -> ValidationResult:
         """Validate an ORP document.
 
         Args:
@@ -96,8 +99,8 @@ class ORPValidator:
         layers_present = self._detect_layers(doc_data)
 
         # Validate against schema
-        errors: List[str] = []
-        warnings: List[str] = []
+        errors: list[str] = []
+        warnings: list[str] = []
 
         # Run JSON Schema validation
         for error in self.validator.iter_errors(doc_data):
@@ -117,7 +120,7 @@ class ORPValidator:
             layers_present=layers_present,
         )
 
-    def _load_document(self, path: Path) -> Dict[str, Any]:
+    def _load_document(self, path: Path) -> dict[str, Any]:
         """Load document from file path.
 
         Supports both YAML and JSON formats.
@@ -144,7 +147,7 @@ class ORPValidator:
         Looks for content between ```yaml and ``` markers.
         """
         lines = content.split("\n")
-        yaml_content: List[str] = []
+        yaml_content: list[str] = []
         in_yaml = False
 
         for line in lines:
@@ -164,7 +167,7 @@ class ORPValidator:
 
         return "\n".join(yaml_content)
 
-    def _detect_layers(self, doc_data: Dict[str, Any]) -> Dict[str, bool]:
+    def _detect_layers(self, doc_data: dict[str, Any]) -> dict[str, bool]:
         """Detect which ORP layers are present in the document."""
         return {
             "l1_data_provenance": "l1_data_provenance" in doc_data,
@@ -175,7 +178,7 @@ class ORPValidator:
         }
 
     def _determine_compliance(
-        self, doc_data: Dict[str, Any], layers_present: Dict[str, bool]
+        self, doc_data: dict[str, Any], layers_present: dict[str, bool]
     ) -> ComplianceLevel:
         """Determine the highest compliance level achieved.
 
@@ -228,12 +231,12 @@ class ORPValidator:
 
     def _generate_warnings(
         self,
-        doc_data: Dict[str, Any],
-        layers_present: Dict[str, bool],
+        doc_data: dict[str, Any],
+        layers_present: dict[str, bool],
         compliance_level: ComplianceLevel,
-    ) -> List[str]:
+    ) -> list[str]:
         """Generate helpful warnings for document authors."""
-        warnings: List[str] = []
+        warnings: list[str] = []
 
         # Warn if declared compliance level doesn't match actual
         if "compliance_level" in doc_data:
@@ -280,7 +283,7 @@ class ORPValidator:
             return f"Validation error at '{path}': {error.message}"
 
 
-def validate(document: Union[str, Path, Dict[str, Any]]) -> ValidationResult:
+def validate(document: Union[str, Path, dict[str, Any]]) -> ValidationResult:
     """Validate an ORP document.
 
     Convenience function that creates a validator and validates the document.

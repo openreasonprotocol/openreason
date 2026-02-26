@@ -3,11 +3,10 @@
 import json
 import sys
 from pathlib import Path
-from typing import Optional
 
 import click
 
-from orp_validator import __version__, validate
+from orp_validator import ValidationResult, __version__, validate
 
 
 @click.command()
@@ -63,9 +62,8 @@ def main(document: Path, output_json: bool, verbose: bool) -> None:
         sys.exit(2)
 
 
-def _print_human_readable(document: Path, result: "ValidationResult", verbose: bool) -> None:  # type: ignore[name-defined]
+def _print_human_readable(document: Path, result: ValidationResult, verbose: bool) -> None:
     """Print validation results in human-readable format."""
-    from orp_validator import ValidationResult
 
     # Header
     click.echo(f"\n{'='*60}")
@@ -80,12 +78,12 @@ def _print_human_readable(document: Path, result: "ValidationResult", verbose: b
 
     # Compliance level
     compliance_color = _get_compliance_color(result.compliance_level.value)
-    click.echo(f"\nCompliance Level: ", nl=False)
+    click.echo("\nCompliance Level: ", nl=False)
     click.secho(result.compliance_level.value, fg=compliance_color, bold=True)
 
     # Layers present
     if verbose or not result.valid:
-        click.echo(f"\nLayers Present:")
+        click.echo("\nLayers Present:")
         for layer, present in result.layers_present.items():
             status = "✓" if present else "✗"
             color = "green" if present else "white"
@@ -108,11 +106,11 @@ def _print_human_readable(document: Path, result: "ValidationResult", verbose: b
         click.echo(f"\n{click.style('Summary:', bold=True)}")
         click.echo(f"  Document is valid and meets {result.compliance_level.value} requirements.")
         if result.compliance_level.value != "ORP-Full":
-            click.echo(f"  See warnings above for guidance on achieving higher compliance.")
+            click.echo("  See warnings above for guidance on achieving higher compliance.")
     else:
         click.echo(f"\n{click.style('Summary:', bold=True)}")
         click.echo(f"  Document has {len(result.errors)} validation error(s).")
-        click.echo(f"  Fix the errors above to achieve ORP compliance.")
+        click.echo("  Fix the errors above to achieve ORP compliance.")
 
     click.echo(f"\n{'='*60}\n")
 

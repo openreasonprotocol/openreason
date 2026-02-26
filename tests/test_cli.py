@@ -1,7 +1,6 @@
 """Tests for ORP validator CLI."""
 
 import json
-from pathlib import Path
 
 import pytest
 import yaml

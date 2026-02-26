@@ -72,7 +72,8 @@ def new(
     Examples:
       orp new my-proposal.yaml
       orp new my-proposal.yaml --compliance standard
-      orp new doc.json --format json --title "My Policy" --domain policy --author "John Doe" --non-interactive
+      orp new doc.json --format json --title "My Policy" --domain policy \\
+          --author "John Doe" --non-interactive
     """
     # Check if file already exists
     if filename.exists():
@@ -116,14 +117,14 @@ def new(
     try:
         result = validate_document(filename)
         if result.valid:
-            click.secho(f"  Validation: ✓ Valid", fg="green")
+            click.secho("  Validation: ✓ Valid", fg="green")
         else:
             click.secho(f"  Validation: ✗ Invalid ({len(result.errors)} errors)", fg="yellow")
             click.echo(f"\n  Run 'orp validate {filename}' for details.")
     except Exception:
         click.echo(f"  Run 'orp validate {filename}' to check validity.")
 
-    click.echo(f"\nNext steps:")
+    click.echo("\nNext steps:")
     click.echo(f"  1. Edit {filename} and fill in the placeholders")
     click.echo(f"  2. Run 'orp validate {filename}' to check for errors")
     click.echo(f"  3. Run 'orp check {filename}' for quick compliance check")
@@ -132,7 +133,9 @@ def new(
 def _load_builtin_template(compliance: str) -> dict:
     """Load built-in template for specified compliance level."""
     try:
-        template_content = files("orp_validator.templates").joinpath(f"orp-{compliance}.yaml").read_text()
+        template_content = (
+            files("orp_validator.templates").joinpath(f"orp-{compliance}.yaml").read_text()
+        )
         return yaml.safe_load(template_content)
     except FileNotFoundError:
         click.echo(f"Error: Template orp-{compliance}.yaml not found", err=True)
@@ -141,7 +144,7 @@ def _load_builtin_template(compliance: str) -> dict:
 
 def _load_custom_template(template_path: Path) -> dict:
     """Load custom template from file."""
-    with open(template_path, "r", encoding="utf-8") as f:
+    with open(template_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -159,7 +162,9 @@ def _gather_info_interactive(
     if not domain:
         domain = click.prompt(
             "Domain",
-            type=click.Choice(["policy", "ai-training", "governance", "other"], case_sensitive=False),
+            type=click.Choice(
+                ["policy", "ai-training", "governance", "other"], case_sensitive=False
+            ),
             default="policy",
         )
 
@@ -207,5 +212,6 @@ def _write_document(filename: Path, document: dict, output_format: str) -> None:
             yaml.dump(document, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
     else:  # json
         import json
+
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(document, f, indent=2, ensure_ascii=False)

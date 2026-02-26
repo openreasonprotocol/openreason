@@ -13,7 +13,26 @@ class ValidateRequest(BaseModel):
         description="ORP document as YAML or JSON string",
         min_length=1,
         max_length=1048576,  # 1MB limit
+        example=(
+            "orp_version: '0.1'\n"
+            "document_id: my-policy-001\n"
+            "title: Example Policy Proposal\n"
+            "domain: policy\n"
+            "authors:\n"
+            "  - name: Jane Doe\n"
+            "    role: author\n"
+            "created: '2026-01-01'\n"
+            "last_modified: '2026-01-15'\n"
+            "status: draft\n"
+            "summary: An example ORP document\n"
+            "l1_data_provenance:\n"
+            "  - dataset_id: ds1\n"
+            "    name: Example Dataset\n"
+            "    # ... additional L1 fields"
+        ),
     )
+
+    model_config = {"json_schema_extra": {"example": {"document": "orp_version: '0.1'\n..."}}}
 
 
 class ValidateResponse(BaseModel):

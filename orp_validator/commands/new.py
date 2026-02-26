@@ -13,7 +13,7 @@ else:
         from importlib_resources import files  # type: ignore
     except ImportError:
         # Fallback if backport not installed
-        files = None  # type: ignore
+        files = None
 
 import click
 import yaml

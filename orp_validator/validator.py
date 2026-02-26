@@ -1,12 +1,11 @@
 """Core validation logic for ORP documents."""
 
 import json
+import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional, Union
-
-import sys
 
 if sys.version_info >= (3, 10):
     from importlib.resources import files
@@ -16,7 +15,7 @@ else:
         from importlib_resources import files  # type: ignore
     except ImportError:
         # Fallback if backport not installed
-        files = None  # type: ignore
+        files = None
 
 import yaml
 from jsonschema import Draft7Validator

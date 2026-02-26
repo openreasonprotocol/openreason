@@ -144,11 +144,18 @@ else:
 
 ---
 
-## Worked example
+## Worked Example
 
-The Danish Property Tax Reform proposal published alongside this repository is the first worked example of an ORP-compliant policy document. It demonstrates all five layers in practice and shows how a complex policy debate can be made transparent, simulatable, and forkable.
+The Danish Property Tax Reform proposal is the first ORP-Full compliant reference implementation. It demonstrates all five layers in practice and shows how a complex policy debate can be made transparent, simulatable, and forkable.
 
-[Read the Danish Property Tax Reform →](examples/danish_property_tax_reform.md)
+**Validate it yourself:**
+```bash
+pip install orp-validator
+orp validate examples/danish_property_tax_reform.yaml
+# ✓ Valid - Compliance Level: ORP-Full
+```
+
+[View the Danish Property Tax Reform →](examples/danish_property_tax_reform.yaml) | [Read the explanation →](examples/danish_property_tax_reform.md)
 
 ---
 

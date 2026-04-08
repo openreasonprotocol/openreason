@@ -12,26 +12,39 @@ Skipping layers produces fragile ecosystems. Each phase below must be genuinely 
 
 ---
 
-## Phase 0 — Foundation (current)
-*Status: In progress*
+## Phase 0 — Foundation
+*Status: COMPLETE (2026-02-27)*
 
-The protocol specification and philosophical foundation. No tooling yet. The goal of Phase 0 is to produce documents that are coherent enough to invite rigorous challenge before any code is written.
+The protocol specification and philosophical foundation. The goal of Phase 0 is to produce documents that are coherent enough to invite rigorous challenge before any code is written.
 
-- [x] ORP v0.1 specification (`ORP_SPEC.md`)
-- [x] REE philosophical foundation (`REE_PHILOSOPHY.md`)
+- [x] ORP v0.1 specification (`docs/specs/ORP_SPEC.md`)
+- [x] REE philosophical foundation (`docs/specs/REE_PHILOSOPHY.md`)
 - [x] README and project overview
-- [x] CONTRIBUTING guide
-- [ ] First worked example — Danish Property Tax Reform formatted as ORP-compliant document
-- [ ] ORP_META.md — the protocol's own provenance, documented under ORP
-- [ ] Governance model v0.1 — how decisions about the protocol are made
-- [ ] Public comment period — minimum 60 days open for community challenge before Phase 1 begins
+- [x] CONTRIBUTING guide (`docs/CONTRIBUTING.md`)
+- [x] First worked example — Danish Property Tax Reform (`examples/danish_property_tax_reform.yaml` and `.md`)
+- [x] ORP_META.md — the protocol's own provenance, documented under ORP (`docs/governance/ORP_META.md`)
+- [x] Governance model v0.1 — how decisions about the protocol are made (`docs/governance/GOVERNANCE.md`)
+- [ ] Public comment period — minimum 60 days open for community challenge (READY TO BEGIN)
+
+**Phase 0 is substantively complete.** The public comment period can now begin. All foundation documents exist and are publicly available at https://docs.publicreasonproject.org
 
 ---
 
 ## Phase 1 — Core Tooling
-*Target: v0.2*
+*Status: COMPLETE (2026-02-27)*
+*Delivered: v0.1.0 through v0.5.0*
 
 The minimum viable toolkit that makes ORP documents easy to produce, validate, and compare. No agents yet. No integrations. Just clean, reliable tools that prove the protocol works in practice.
+
+**All Phase 1 deliverables complete:**
+- [x] v0.1.0 - JSON Schema + Python Validator
+- [x] v0.2.0 - CLI Commands (`orp new`, `orp validate`, `orp check`, `orp diff`)
+- [x] v0.2.1 - Reference Implementation (Danish Property Tax Reform)
+- [x] v0.3.0 - PyPI Publication (`pip install orp-validator`)
+- [x] v0.4.0 - REST API (api.publicreasonproject.org)
+- [x] v0.5.0 - Documentation Website (docs.publicreasonproject.org)
+
+See `docs/sprints/PHASE1_PLAN.md` for complete sprint details.
 
 ### 1.1 ORP CLI (`orp`)
 

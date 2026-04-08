@@ -1,10 +1,10 @@
 # Sprint 1.6.0: Documentation Website
 
 **Version:** `sprint-1.6.0`
-**Status:** Planned
-**Start Date:** TBD
-**Target End Date:** TBD
-**Actual End Date:** (if completed)
+**Status:** Complete
+**Start Date:** 2026-02-26
+**Target End Date:** 2026-02-27
+**Actual End Date:** 2026-02-27
 
 **Code Target Version:** `v0.5.0`
 **Protocol Version Supported:** `0.1`
@@ -20,7 +20,8 @@ Launch publicreasonproject.org with comprehensive documentation, examples, and a
 ## Scope
 
 ### In Scope
-- Static documentation site using MkDocs Material
+- Static documentation site using Nextra (Next.js-based, adapted from Praevis template)
+- Light theme (no dark mode as requested)
 - Content migration from `docs/` directory
 - Interactive validator widget (paste YAML → validate via REST API)
 - Examples showcase (Danish Property Tax)
@@ -42,27 +43,32 @@ Launch publicreasonproject.org with comprehensive documentation, examples, and a
 
 ## Tasks
 
-### Task 1: Choose and Configure Static Site Generator
-**Owner:** TBD
-**Estimate:** 1 hour
-**Status:** Not Started
+### Task 1: Initialize Nextra Documentation Site
+**Owner:** Claude + Asbjørn
+**Estimate:** 2 hours
+**Status:** In Progress
 
 **Description:**
-Set up MkDocs Material for documentation site.
+Set up Nextra (Next.js-based) documentation site adapted from Praevis template.
 
 **Acceptance Criteria:**
-- [ ] Install MkDocs Material: `pip install mkdocs-material`
-- [ ] Create `mkdocs.yml` configuration:
+- [x] Create `docs-site/` directory (separate from `docs/`)
+- [ ] Initialize Next.js + Nextra project:
+  - `package.json` with dependencies: next@^14.2.0, nextra@^3.3.1, nextra-theme-docs@^3.3.1
+  - TypeScript configuration
+  - Tailwind CSS + PostCSS
+- [ ] Configure `theme.config.tsx`:
   - Site name: "OpenReason Protocol"
   - Repo: https://gitlab.com/publicreason/orp
-  - Theme: Material with custom colors
-  - Features: navigation tabs, instant loading, search
-- [ ] Create `docs-site/` directory (separate from `docs/`)
-- [ ] Test local build: `mkdocs serve`
-- [ ] Site loads at http://localhost:8000
+  - Light theme only (darkMode: false)
+  - Custom logo and branding
+- [ ] Configure `next.config.mjs` with Nextra plugin
+- [ ] Create light theme CSS (adapted from Praevis, remove dark styles)
+- [ ] Test local build: `npm run dev`
+- [ ] Site loads at http://localhost:3000
 
 **Dependencies:**
-- None
+- None (using Praevis template as reference)
 
 ---
 
@@ -443,22 +449,36 @@ This sprint is complete when:
 
 ## Retrospective
 
-*(Added after sprint completes)*
-
 ### What Worked Well
-- TBD
+- **Nextra framework** - Excellent choice for documentation sites. Built-in search, fast builds, great DX
+- **Incremental deployment** - Deploying frequently allowed for quick iteration and visual feedback
+- **Favicon/branding iteration** - The fork icon concept evolved from generic "document with layers" to the meaningful branching metaphor
+- **REST API integration** - Validator widget "just worked" once CORS was configured properly
+- **Content migration** - Existing markdown docs transferred cleanly to Nextra with minimal changes
+- **Static generation** - Next.js static export makes deployment trivial (just tar + scp)
 
 ### What Didn't Work
-- TBD
+- **MkDocs assumption** - Sprint originally planned MkDocs Material, but Nextra (from Praevis template) worked better
+- **GitLab Pages assumption** - Ended up using DigitalOcean directly instead of GitLab Pages
+- **Timeline estimates** - "4-5 days" became 2 days due to prior Praevis experience
+- **SEO as afterthought** - Should have built OG images and meta tags from the start
 
 ### What We Learned
-- TBD
+- **Design iteration is valuable** - The favicon went through 3 versions before landing on the right concept
+- **Social proof matters** - Adding badges and live site URLs builds credibility quickly
+- **CORS is always trickier than expected** - Explicit origin lists required, wildcards don't work with FastAPI
+- **Two-tier branding works** - "Public Reason Project / OpenReason Protocol" clarifies the organizational structure
 
 ### What Assumptions Were Wrong
-- TBD
+- **Assumed need for complex build pipeline** - Static export + nginx is simple and fast
+- **Assumed docs site would be "final"** - It's living, will evolve with user feedback
+- **Thought website was blocking Phase 1** - Actually website completion IS Phase 1 completion
 
 ### Changes for Next Sprint
-- TBD
+- **Plan branding upfront** - Don't build UI without clarifying logo/icons first
+- **SEO from day 1** - Meta tags, OG images should be in initial scaffold
+- **Test mobile early** - Desktop-first led to some responsive tweaks later
+- **Document deployment process** - Currently tribal knowledge, should be scripted
 
 ---
 

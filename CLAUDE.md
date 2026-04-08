@@ -71,7 +71,11 @@ open-reason/
 │   └── templates/                    # Document templates (basic/standard/full)
 ├── tests/                            # CLI/validator test suite
 ├── examples/
-│   └── danish_property_tax_reform.yaml # First ORP-Full worked example
+│   ├── danish_property_tax_reform.yaml # First ORP-Full example (policy domain)
+│   ├── imagenet_training_data.yaml     # Second ORP-Full example (AI domain)
+│   └── imagenet/
+│       ├── README.md                   # ImageNet example methodology and findings
+│       └── research_notes.md           # Source citations and background research
 ├── api/                              # REST API (PRODUCTION at api.publicreasonproject.org)
 │   ├── main.py                       # FastAPI application
 │   ├── routes.py                     # API route handlers
@@ -92,6 +96,20 @@ open-reason/
 ├── docs/
 │   ├── CONTRIBUTING.md               # How to contribute
 │   ├── ROADMAP.md                    # Development phases and priorities
+│   ├── academic/                     # Academic papers and theoretical foundations
+│   │   ├── README.md                # Overview of academic work
+│   │   ├── manifesto_openreason.md  # Public-facing manifesto
+│   │   ├── abstract_and_bibliography.md
+│   │   ├── section1_introduction.md
+│   │   ├── section2_constitutive_problem.md
+│   │   ├── section3_existing_frameworks.md
+│   │   ├── section4_REE_foundation.md
+│   │   ├── section5_ORP_operationalization.md
+│   │   └── section6_implications_limits.md
+│   ├── analysis/                     # Comparative analysis and positioning
+│   │   ├── ORP_vs_existing_standards.md  # How ORP complements GDPR, AI Act, PROV, etc.
+│   │   └── sources/
+│   │       └── SOURCES.md            # Primary source citations and research notes
 │   ├── specs/
 │   │   ├── ORP_SPEC.md              # Protocol specification v0.1
 │   │   └── REE_PHILOSOPHY.md        # Philosophical foundation
@@ -187,11 +205,16 @@ Sprint docs should be ORP-inspired but not ORP-compliant (too heavyweight for in
 | `README.md` | Project introduction for newcomers |
 | `docs/specs/ORP_SPEC.md` | Technical specification — the source of truth |
 | `docs/specs/REE_PHILOSOPHY.md` | Why the protocol exists and what principles guide it |
+| `docs/academic/` | Academic papers articulating theoretical foundations |
+| `docs/academic/manifesto_openreason.md` | Public-facing manifesto on epistemic accountability |
+| `docs/analysis/ORP_vs_existing_standards.md` | Comprehensive comparison showing how ORP complements GDPR, EU AI Act, PROV, ISO 19115, Model Cards, Datasheets, FAIR, and Open Data Charter |
 | `docs/ROADMAP.md` | What we're building and in what order |
 | `docs/CONTRIBUTING.md` | How to propose changes, critique, or fork |
 | `docs/governance/GOVERNANCE.md` | How decisions about the protocol are made |
 | `docs/governance/ORP_META.md` | The protocol's own provenance documented under ORP |
-| `examples/danish_property_tax_reform.md` | First complete ORP-Full example |
+| `examples/danish_property_tax_reform.yaml` | First ORP-Full example (policy domain - tax reform) |
+| `examples/imagenet_training_data.yaml` | Second ORP-Full example (AI domain - training data constitution) |
+| `examples/imagenet/README.md` | Methodology and findings for ImageNet analysis |
 
 ---
 
@@ -383,4 +406,4 @@ We'll know it's failing if:
 
 *This document should evolve as the project grows. If you find yourself repeatedly explaining the same thing to Claude, add it here.*
 
-*Last updated: 2026-02-26 (Phase 1 - Sprint 1.6 complete)*
+*Last updated: 2026-04-04 (Added academic papers directory)*

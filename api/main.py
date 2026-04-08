@@ -37,10 +37,11 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:*",
-        "http://127.0.0.1:*",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
         "https://publicreasonproject.org",
-        "https://*.publicreasonproject.org",
+        "https://docs.publicreasonproject.org",
+        "https://api.publicreasonproject.org",
     ],
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],

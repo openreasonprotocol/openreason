@@ -105,7 +105,32 @@ There are no tiers of contributor beyond Working Group membership and Council me
 
 ---
 
+## Operational Processes
+
+The governance model described above defines the high-level structure (Council, Working Groups, principles). The following documents provide operational procedures for day-to-day participation:
+
+### Contribution & Review Processes
+
+| Document | Purpose | Key Content |
+|----------|---------|-------------|
+| **[CONTRIBUTION_PROCESS.md](./CONTRIBUTION_PROCESS.md)** | How to propose changes | 5 contribution types (protocol, philosophy, governance, docs, examples)<br>Templates, timelines, decision pathways |
+| **[EXAMPLE_REVIEW.md](./EXAMPLE_REVIEW.md)** | How examples are reviewed | Three-tier system (Official, Community, External)<br>Quality criteria, submission process |
+| **[VERSIONING_POLICY.md](./VERSIONING_POLICY.md)** | When versions change | Semantic versioning for protocols (MAJOR.MINOR.PATCH)<br>Breaking vs. non-breaking changes<br>Path to v0.1 → v0.2 → v1.0 |
+| **[DECISION_LOG.md](./DECISION_LOG.md)** | Record of all decisions | ORP Layer 4 applied to governance<br>Transparent accountability ledger |
+
+**Current status (Phase 0):**
+- All operational processes documented and active (as of 2026-04-07)
+- Founder makes decisions using these processes
+- All decisions logged in DECISION_LOG.md
+- Processes are provisional — Council will review and revise post-handover
+
+**These documents are the "how" that implements the "what" defined in this governance model.**
+
+---
+
 ## Decision-making process
+
+*This section describes high-level decision pathways. For detailed operational procedures, see [CONTRIBUTION_PROCESS.md](./CONTRIBUTION_PROCESS.md).*
 
 ### For protocol changes (spec amendments)
 
@@ -137,6 +162,8 @@ If a security issue or other urgent matter requires a decision faster than the s
 
 ## Versioning and ratification
 
+*For comprehensive versioning policies, see [VERSIONING_POLICY.md](./VERSIONING_POLICY.md). This section provides a summary.*
+
 OpenReason follows semantic versioning adapted for a protocol:
 
 - **Major versions (1.0, 2.0)** — breaking changes to the core schema. Require Council ratification and a minimum 60-day community comment period.
@@ -144,6 +171,10 @@ OpenReason follows semantic versioning adapted for a protocol:
 - **Patches (0.1.1)** — corrections to errors or clarifications. Require Working Group approval, no minimum comment period.
 
 A version is not ratified until there is at least one working implementation that demonstrates the changes are implementable. This is the IETF principle of "rough consensus and running code" applied to ORP.
+
+**Current version:** 0.1.0 (draft, unstable)
+**Next version:** 0.2.0 (post-public comment, target: June 2026)
+**Stable version:** 1.0.0 (first ratified release, target: Q4 2026)
 
 ---
 
@@ -218,12 +249,22 @@ What is not acceptable is a governance document that cannot be changed by the co
 
 ## Accountability
 
-This governance document is itself an ORP document. Its provenance, assumptions, and known limitations are documented in ORP_META.md. Changes to this document are logged in its own L4 accountability ledger.
+This governance document is itself an ORP document. Its provenance, assumptions, and known limitations are documented in ORP_META.md.
+
+**All governance decisions are logged in [DECISION_LOG.md](./DECISION_LOG.md)** — ORP Layer 4 (Accountability Ledger) applied to governance itself. Every significant decision includes:
+- What was decided and why
+- Who made the decision
+- What alternatives were considered
+- When it takes effect
+- How to contest it
+
+Changes to this governance document are tracked in the DECISION_LOG with full reasoning.
 
 The governance of the protocol is subject to the same transparency standards the protocol demands of everything else.
 
 ---
 
 *OpenReason Governance Model v0.1 — February 2026*
+*Updated: April 2026 (operational processes added)*
 *Written by the founder. Intended to be amended by the community.*
 *Fork it.*

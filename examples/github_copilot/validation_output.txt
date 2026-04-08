@@ -1,0 +1,91 @@
+
+============================================================
+ORP Validation Report: github_copilot_training_data.yaml
+============================================================
+
+✗ Invalid
+
+Compliance Level: ORP-Full
+
+Layers Present:
+  ✓ l1_data_provenance
+  ✓ l2_consequence_simulation
+  ✓ l3_empathy_mapping
+  ✓ l4_accountability_ledger
+  ✓ l5_fork_registry
+
+Errors:
+  1. Field 'l1_data_provenance.0.date_range' has wrong type (expected string)
+  2. Validation error at 'l1_data_provenance.0.inclusion_criteria': Additional properties are not allowed ('criteria' was unexpected)
+  3. Validation error at 'l1_data_provenance.0.exclusion_criteria.0': Additional properties are not allowed ('affected_count' was unexpected)
+  4. Validation error at 'l1_data_provenance.0.exclusion_criteria.1': Additional properties are not allowed ('affected_count', 'method' were unexpected)
+  5. Validation error at 'l1_data_provenance.0.exclusion_criteria.2': Additional properties are not allowed ('affected_count', 'method' were unexpected)
+  6. Missing required field 'reason' at l1_data_provenance.0.cleaning_decisions.0
+  7. Missing required field 'alternatives_considered' at l1_data_provenance.0.cleaning_decisions.0
+  8. Validation error at 'l1_data_provenance.0.cleaning_decisions.0': Additional properties are not allowed ('data_removed', 'impact_on_inferences', 'method', 'rationale' were unexpected)
+  9. Missing required field 'reason' at l1_data_provenance.0.cleaning_decisions.1
+  10. Missing required field 'alternatives_considered' at l1_data_provenance.0.cleaning_decisions.1
+  11. Validation error at 'l1_data_provenance.0.cleaning_decisions.1': Additional properties are not allowed ('data_removed', 'impact_on_inferences', 'method', 'rationale' were unexpected)
+  12. Missing required field 'reason' at l1_data_provenance.0.cleaning_decisions.2
+  13. Missing required field 'alternatives_considered' at l1_data_provenance.0.cleaning_decisions.2
+  14. Validation error at 'l1_data_provenance.0.cleaning_decisions.2': Additional properties are not allowed ('data_removed', 'impact_on_inferences', 'method', 'rationale' were unexpected)
+  15. Field 'l1_data_provenance.0.known_limitations.0' has wrong type (expected string)
+  16. Field 'l1_data_provenance.0.known_limitations.1' has wrong type (expected string)
+  17. Field 'l1_data_provenance.0.known_limitations.2' has wrong type (expected string)
+  18. Field 'l1_data_provenance.0.known_limitations.3' has wrong type (expected string)
+  19. Field 'l1_data_provenance.0.known_limitations.4' has wrong type (expected string)
+  20. Validation error at 'l1_data_provenance.0.access': Additional properties are not allowed ('conditions' was unexpected)
+  21. Validation error at 'l1_data_provenance.0.attested_by.0': Additional properties are not allowed ('affiliation' was unexpected)
+  22. Validation error at 'l1_data_provenance.0': Additional properties are not allowed ('critical_undocumented_exclusions' was unexpected)
+  23. Missing required field 'primary_scenario' at l2_consequence_simulation
+  24. Validation error at 'l2_consequence_simulation.affected_population': Additional properties are not allowed ('geographic_distribution', 'size_confidence', 'temporal_scope' were unexpected)
+  25. Field 'l2_consequence_simulation.variables' has wrong type (expected object)
+  26. Missing required field 'basis' at l2_consequence_simulation.model.assumptions.0
+  27. Validation error at 'l2_consequence_simulation.model.assumptions.0': Additional properties are not allowed ('confidence', 'evidence', 'notes' were unexpected)
+  28. Missing required field 'basis' at l2_consequence_simulation.model.assumptions.1
+  29. Validation error at 'l2_consequence_simulation.model.assumptions.1': Additional properties are not allowed ('confidence', 'evidence' were unexpected)
+  30. Missing required field 'basis' at l2_consequence_simulation.model.assumptions.2
+  31. Validation error at 'l2_consequence_simulation.model.assumptions.2': Additional properties are not allowed ('confidence', 'evidence' were unexpected)
+  32. Missing required field 'basis' at l2_consequence_simulation.model.assumptions.3
+  33. Validation error at 'l2_consequence_simulation.model.assumptions.3': Additional properties are not allowed ('confidence', 'evidence' were unexpected)
+  34. Missing required field 'basis' at l2_consequence_simulation.model.assumptions.4
+  35. Validation error at 'l2_consequence_simulation.model.assumptions.4': Additional properties are not allowed ('confidence', 'evidence' were unexpected)
+  36. Validation error at 'l2_consequence_simulation.model': Additional properties are not allowed ('description' was unexpected)
+  37. Missing required field 'scenario_id' at l2_consequence_simulation.scenarios.0
+  38. Missing required field 'variable_values' at l2_consequence_simulation.scenarios.0
+  39. Field 'l2_consequence_simulation.scenarios.0.outcomes' has wrong type (expected object)
+  40. Validation error at 'l2_consequence_simulation.scenarios.0': Additional properties are not allowed ('comparison_to_baseline', 'id', 'outcome_variables' were unexpected)
+  41. Missing required field 'scenario_id' at l2_consequence_simulation.scenarios.1
+  42. Missing required field 'variable_values' at l2_consequence_simulation.scenarios.1
+  43. Field 'l2_consequence_simulation.scenarios.1.outcomes' has wrong type (expected object)
+  44. Validation error at 'l2_consequence_simulation.scenarios.1': Additional properties are not allowed ('comparison_to_actual', 'id', 'outcome_variables' were unexpected)
+  45. Missing required field 'scenario_id' at l2_consequence_simulation.scenarios.2
+  46. Missing required field 'variable_values' at l2_consequence_simulation.scenarios.2
+  47. Field 'l2_consequence_simulation.scenarios.2.outcomes' has wrong type (expected object)
+  48. Validation error at 'l2_consequence_simulation.scenarios.2': Additional properties are not allowed ('comparison_to_actual', 'id', 'outcome_variables' were unexpected)
+  49. Missing required field 'scenario_id' at l2_consequence_simulation.scenarios.3
+  50. Missing required field 'variable_values' at l2_consequence_simulation.scenarios.3
+  51. Field 'l2_consequence_simulation.scenarios.3.outcomes' has wrong type (expected object)
+  52. Validation error at 'l2_consequence_simulation.scenarios.3': Additional properties are not allowed ('comparison_to_actual', 'id', 'outcome_variables' were unexpected)
+  53. Validation error at 'l2_consequence_simulation': Additional properties are not allowed ('sensitivity_analysis' was unexpected)
+  54. Missing required field 'stakeholder_map' at l3_empathy_mapping
+  55. Missing required field 'unresolved_impacts' at l3_empathy_mapping
+  56. Missing required field 'groups_tested' at l3_empathy_mapping.minority_stress_test
+  57. Validation error at 'l3_empathy_mapping.minority_stress_test': Additional properties are not allowed ('highest_severity_harm', 'notes', 'result', 'vulnerable_populations_identified' were unexpected)
+  58. Missing required field 'methodology' at l3_empathy_mapping.net_welfare_assessment
+  59. Missing required field 'conclusion' at l3_empathy_mapping.net_welfare_assessment
+  60. Missing required field 'confidence' at l3_empathy_mapping.net_welfare_assessment
+  61. Missing required field 'confidence_basis' at l3_empathy_mapping.net_welfare_assessment
+  62. Validation error at 'l3_empathy_mapping.net_welfare_assessment': Additional properties are not allowed ('deontological_analysis', 'recommended_framework', 'utilitarian_analysis' were unexpected)
+  63. Validation error at 'l3_empathy_mapping': Additional properties are not allowed ('notes', 'stakeholder_groups' were unexpected)
+  64. Missing required field 'entries' at l4_accountability_ledger
+  65. Validation error at 'l4_accountability_ledger': Additional properties are not allowed ('constitutive_decisions', 'notes' were unexpected)
+  66. Missing required field 'this_document' at l5_fork_registry
+  67. Validation error at 'l5_fork_registry': Additional properties are not allowed ('notes', 'potential_forks' were unexpected)
+
+Summary:
+  Document has 67 validation error(s).
+  Fix the errors above to achieve ORP compliance.
+
+============================================================
+

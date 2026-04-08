@@ -1,0 +1,583 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json",
+  "title": "OpenReason Protocol v0.2",
+  "description": "JSON Schema for validating OpenReason Protocol (ORP) v0.2 documents. Major changes: additionalProperties true, post-hoc reconstruction support, array OR object flexibility, extension registry.",
+  "type": "object",
+
+  "required": [
+    "orp_version",
+    "document_id",
+    "title",
+    "domain",
+    "authors",
+    "created",
+    "last_modified",
+    "status",
+    "summary"
+  ],
+
+  "properties": {
+    "orp_version": {
+      "type": "string",
+      "const": "0.2",
+      "description": "ORP specification version this document conforms to"
+    },
+
+    "document_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this document"
+    },
+
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable title"
+    },
+
+    "domain": {
+      "type": "string",
+      "enum": ["policy", "ai-training", "governance", "research", "other"],
+      "description": "Domain this document addresses. v0.2: Added 'research' for academic papers"
+    },
+
+    "post_hoc": {
+      "type": "boolean",
+      "default": false,
+      "description": "v0.2 NEW: Flags retrospective reconstruction. If true, allows UNKNOWN for unknowable fields (basis, alternatives_considered, decision_makers)"
+    },
+
+    "extensions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^orp-[a-z-]+-v[0-9]+$"
+      },
+      "description": "v0.2 NEW: Extension registry. List of domain-specific extensions used (e.g., orp-ai-training-v1, orp-safety-v1, orp-license-v1)"
+    },
+
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "role"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name or pseudonym"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["author", "contributor", "reviewer", "analyst", "reconstructor"],
+            "description": "v0.2: Added 'analyst' for post-hoc reconstruction, 'reconstructor' for archival work"
+          },
+          "affiliation": {
+            "type": "string",
+            "description": "v0.2 NEW: Institutional affiliation (recommended for post-hoc reconstruction)"
+          },
+          "contact": {
+            "type": "string",
+            "description": "Email or URL (recommended)"
+          }
+        },
+        "additionalProperties": true
+      },
+      "description": "List of document authors and contributors"
+    },
+
+    "created": {
+      "type": "string",
+      "format": "date",
+      "description": "Creation date in ISO 8601 format (YYYY-MM-DD)"
+    },
+
+    "last_modified": {
+      "type": "string",
+      "format": "date",
+      "description": "Last modification date in ISO 8601 format (YYYY-MM-DD)"
+    },
+
+    "status": {
+      "type": "string",
+      "enum": ["draft", "open-for-comment", "ratified", "superseded"],
+      "description": "Document status"
+    },
+
+    "forked_from": {
+      "type": ["string", "null"],
+      "description": "Parent document_id if this is a fork, null otherwise"
+    },
+
+    "compliance_level": {
+      "type": "string",
+      "enum": ["ORP-Basic", "ORP-Standard", "ORP-Full", "ORP-PostHoc"],
+      "description": "v0.2: Added 'ORP-PostHoc' for retrospective reconstruction with post_hoc: true"
+    },
+
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Plain language description (3-5 sentences) for general audience"
+    },
+
+    "notes": {
+      "type": "string",
+      "description": "v0.2 NEW: General notes or commentary (recommended)"
+    },
+
+    "l1_data_provenance": {
+      "type": "array",
+      "minItems": 1,
+      "description": "L1: Data Provenance - Document datasets used in reasoning",
+      "items": {
+        "type": "object",
+        "required": [
+          "dataset_id",
+          "name",
+          "source"
+        ],
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Unique identifier for this dataset"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Dataset name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Dataset description (recommended)"
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Where data originated (URL, citation, or description)"
+          },
+          "collection_method": {
+            "type": "string",
+            "description": "How data was collected (recommended)"
+          },
+          "date_range": {
+            "oneOf": [
+              {"type": "string"},
+              {"type": "object", "additionalProperties": true}
+            ],
+            "description": "Temporal coverage - string OR object (e.g., {start, end, temporal_scope})"
+          },
+          "geographic_scope": {
+            "type": "string",
+            "description": "Geographic coverage (recommended)"
+          },
+          "temporal_metadata": {
+            "type": "object",
+            "properties": {
+              "created": {"type": "string", "format": "date"},
+              "last_updated": {"type": "string", "format": "date"},
+              "update_frequency": {"type": "string"},
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "version": {"type": "string"},
+                    "date": {"type": "string", "format": "date"},
+                    "changes": {"type": "string"}
+                  },
+                  "additionalProperties": true
+                }
+              }
+            },
+            "additionalProperties": true,
+            "description": "v0.2 NEW: Living dataset timeline (recommended for datasets that change over time)"
+          },
+          "inclusion_criteria": {
+            "description": "v0.2: Accepts any structure (string, object, array, etc.)"
+          },
+          "exclusion_criteria": {
+            "description": "v0.2: Accepts any structure (typically array of strings or objects)"
+          },
+          "critical_undocumented_exclusions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "exclusion_gap": {"type": "string"},
+                "description": {"type": "string"},
+                "affected_count": {"type": "number"},
+                "consequences": {"type": "array", "items": {"type": "string"}},
+                "severity": {"type": "string"},
+                "accountability_gap": {"type": "string"}
+              },
+              "additionalProperties": true
+            },
+            "description": "v0.2 NEW: Post-hoc gap analysis - document unknowns (recommended for post_hoc: true)"
+          },
+          "cleaning_decisions": {
+            "description": "v0.2: Accepts any structure (typically array of strings or objects)"
+          },
+          "synthetic_elements": {
+            "type": "object",
+            "properties": {
+              "present": {"type": "boolean"}
+            },
+            "additionalProperties": true,
+            "description": "Whether data contains synthetic/generated elements"
+          },
+          "known_limitations": {
+            "description": "v0.2: Accepts any structure (string, array, object, etc.)"
+          },
+          "access": {
+            "type": "object",
+            "properties": {
+              "public": {
+                "oneOf": [
+                  {"type": "boolean"},
+                  {"type": "string"}
+                ],
+                "description": "v0.2: Boolean OR string (e.g., 'partial', 'conditional', 'unknown')"
+              },
+              "license": {"type": "string"},
+              "url": {"type": "string", "format": "uri"}
+            },
+            "additionalProperties": true,
+            "description": "v0.2: additionalProperties true allows registration_required, cost, etc."
+          },
+          "attested_by": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["name", "role", "date"],
+              "properties": {
+                "name": {"type": "string"},
+                "role": {"type": "string"},
+                "date": {"type": "string", "format": "date"},
+                "affiliation": {"type": "string", "description": "v0.2 NEW"},
+                "statement": {"type": "string"},
+                "basis": {
+                  "type": ["string", "null"],
+                  "description": "v0.2: Can be null if post_hoc: true (unknowable)"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "notes": {
+            "type": "string",
+            "description": "v0.2 NEW: Additional notes (recommended)"
+          }
+        },
+        "additionalProperties": true,
+        "description": "v0.2: additionalProperties true allows domain-specific fields (e.g., data_removed, safety_filtering_tools from extensions)"
+      }
+    },
+
+    "l2_consequence_simulation": {
+      "type": "object",
+      "required": ["affected_population"],
+      "properties": {
+        "affected_population": {
+          "type": "object",
+          "properties": {
+            "description": {"type": "string"},
+            "size": {"type": "number"},
+            "affected_count": {
+              "type": "number",
+              "description": "v0.2 NEW: Quantify population size (recommended)"
+            },
+            "geographic_distribution": {"type": "string"},
+            "temporal_scope": {
+              "oneOf": [
+                {"type": "string"},
+                {"type": "object", "additionalProperties": true}
+              ],
+              "description": "v0.2: String OR object (e.g., {start, end, duration})"
+            }
+          },
+          "additionalProperties": true
+        },
+
+        "variables": {
+          "description": "v0.2: Variables affecting outcomes (flexible structure)"
+        },
+
+        "model": {
+          "type": "object",
+          "properties": {
+            "assumptions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["assumption"],
+                "properties": {
+                  "assumption": {"type": "string"},
+                  "justification": {"type": "string"},
+                  "sensitivity": {"type": ["string", "null"], "description": "v0.2: Can be null if not computed"},
+                  "confidence": {
+                    "type": "string",
+                    "enum": ["very-high", "high", "medium-high", "medium", "medium-low", "low", "very-low"],
+                    "description": "v0.2 NEW"
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "limitations": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "v0.2 NEW: Model limitations (recommended)"
+            },
+            "uncertainties": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "v0.2 NEW: Uncertainty documentation (recommended)"
+            }
+          },
+          "additionalProperties": true
+        },
+
+        "scenarios": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "description": {"type": "string"},
+              "scenario": {"type": "string", "description": "v0.2: Alias for description"},
+              "scenario_id": {"type": "string", "description": "v0.2: Alias for id"},
+              "variable_values": {
+                "type": "object",
+                "description": "v0.2: Can be omitted if parameter_values used instead"
+              },
+              "parameter_values": {
+                "type": "object",
+                "description": "v0.2 NEW: Alternative to variable_values (real-world usage pattern)"
+              },
+              "outcomes": {
+                "description": "v0.2: Scenario outcomes (flexible structure)"
+              },
+              "comparison_to_actual": {
+                "type": "string",
+                "description": "v0.2 NEW: Counterfactual comparison (recommended)"
+              },
+              "uncertainties": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "v0.2 NEW"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+
+        "primary_scenario": {
+          "type": "string",
+          "description": "v0.2: Optional if all scenarios equally important"
+        },
+
+        "sensitivity_analysis": {
+          "oneOf": [
+            {"type": "string"},
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": true
+            }
+          ],
+          "description": "v0.2: String OR array OR object format (flexible structure)"
+        },
+
+        "notes": {
+          "type": "string",
+          "description": "v0.2 NEW"
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "l3_empathy_mapping": {
+      "type": "object",
+      "properties": {
+        "stakeholder_map": {
+          "type": "object",
+          "description": "v0.1 format (object with stakeholder IDs as keys)"
+        },
+        "stakeholder_groups": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "name": {"type": "string"},
+              "stakeholder": {"type": "string", "description": "v0.2: Alias for name"},
+              "description": {"type": "string"},
+              "population_size": {"type": ["number", "string"]},
+              "affected_count": {"type": "number", "description": "v0.2 NEW"},
+              "representation_in_decision_making": {"type": "string"},
+              "benefits": {
+                "oneOf": [
+                  {"type": "string"},
+                  {
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {"type": "string"},
+                        {"type": "object", "additionalProperties": true}
+                      ]
+                    }
+                  }
+                ],
+                "description": "v0.2: String OR array of strings OR array of objects (e.g., 'NONE' or ['benefit1'])"
+              },
+              "harms": {
+                "oneOf": [
+                  {"type": "string"},
+                  {
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {"type": "string"},
+                        {"type": "object", "additionalProperties": true}
+                      ]
+                    }
+                  }
+                ],
+                "description": "v0.2: String OR array of strings OR array of objects (e.g., 'NONE' or ['harm1'])"
+              },
+              "vulnerable_population_flags": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "v0.2 NEW: Minority stress test markers (recommended)"
+              },
+              "confidence": {"type": "string"}
+            },
+            "additionalProperties": true
+          },
+          "description": "v0.2 NEW: Array format (more natural than stakeholder_map object)"
+        },
+
+        "minority_stress_test": {
+          "type": "object",
+          "properties": {
+            "result": {"type": "string", "enum": ["passed", "failed", "unclear"]},
+            "rationale": {"type": "string"},
+            "vulnerable_populations_identified": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {"type": "string"},
+                  {"type": "object", "additionalProperties": true}
+                ]
+              },
+              "description": "v0.2: Array of strings OR objects (rich format with population_type/harm_description)"
+            },
+            "highest_severity_harm": {
+              "type": "string",
+              "description": "v0.2 NEW: Document worst harm discovered (recommended)"
+            }
+          },
+          "additionalProperties": true
+        },
+
+        "net_welfare_assessment": {
+          "type": "object",
+          "properties": {
+            "summary": {"type": "string"},
+            "confidence": {
+              "type": "string",
+              "enum": ["very-high", "high", "medium-high", "medium", "medium-low", "low", "very-low"],
+              "description": "v0.2: Granular confidence"
+            },
+            "limitations": {"type": "string"}
+          },
+          "additionalProperties": true
+        },
+
+        "unresolved_impacts": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "v0.2: Can be empty array if all impacts resolved"
+        },
+
+        "notes": {"type": "string", "description": "v0.2 NEW"}
+      },
+      "oneOf": [
+        {"required": ["stakeholder_map"]},
+        {"required": ["stakeholder_groups"]}
+      ],
+      "additionalProperties": true,
+      "description": "v0.2: Requires stakeholder_map OR stakeholder_groups (not both mandatory)"
+    },
+
+    "l4_accountability_ledger": {
+      "description": "v0.2: Decision log with accountability (flexible structure)",
+      "additionalProperties": true
+    },
+
+    "l5_fork_registry": {
+      "type": "object",
+      "properties": {
+        "known_forks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "document_id": {"type": ["string", "null"], "description": "v0.2: Can be null if fork lacks ORP document"},
+              "fork_id": {"type": "string", "description": "v0.2 NEW: Alternative to document_id"},
+              "author": {"type": "string"},
+              "created": {"type": "string", "format": "date"},
+              "created_by": {"type": "string", "description": "v0.2 NEW"},
+              "created_date": {"type": "string", "description": "v0.2 NEW"},
+              "fork_reason": {"type": "string"},
+              "url": {"type": "string", "format": "uri"},
+              "citation": {"type": "string", "description": "v0.2 NEW: Academic citation"},
+              "affiliation": {"type": "string", "description": "v0.2 NEW"}
+            },
+            "additionalProperties": true
+          }
+        },
+        "potential_forks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fork_id": {"type": "string"},
+              "fork_title": {"type": "string"},
+              "fork_type": {"type": "string"},
+              "motivation": {"type": "string"},
+              "key_differences": {"type": "array", "items": {"type": "string"}},
+              "implementation_approach": {"type": "string"},
+              "expected_outcomes": {"type": "string"},
+              "stakeholder_impacts": {"type": "array"}
+            },
+            "additionalProperties": true
+          },
+          "description": "v0.2 NEW: Hypothetical forks (don't require URL/created date)"
+        },
+        "forks": {
+          "type": "array",
+          "description": "v0.2 NEW: Unified forks array (both known + potential)"
+        },
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+
+  "additionalProperties": true,
+  "description": "v0.2: Root level additionalProperties true allows extension fields without breaking validation"
+}

@@ -6,7 +6,7 @@ from pathlib import Path
 
 import click
 
-from orp_validator import ValidationResult, __version__, validate
+from orp_validator import ORPValidator, ValidationResult, __version__, validate
 
 
 @click.command()
@@ -23,8 +23,14 @@ from orp_validator import ValidationResult, __version__, validate
     is_flag=True,
     help="Show detailed validation trace",
 )
+@click.option(
+    "--orp-version",
+    "orp_version",
+    type=click.Choice(["0.1", "0.2"], case_sensitive=False),
+    help="ORP version to validate against (default: auto-detect from document)",
+)
 @click.version_option(version=__version__, prog_name="orp-validate")
-def main(document: Path, output_json: bool, verbose: bool) -> None:
+def main(document: Path, output_json: bool, verbose: bool, orp_version: str | None) -> None:
     """Validate an OpenReason Protocol (ORP) document.
 
     DOCUMENT: Path to the ORP document to validate (YAML, JSON, or Markdown with YAML frontmatter)
@@ -36,9 +42,17 @@ def main(document: Path, output_json: bool, verbose: bool) -> None:
         orp-validate examples/danish_property_tax_reform.md --verbose
 
         orp-validate my-proposal.yaml --json > validation-results.json
+
+        orp-validate my-proposal.yaml --orp-version 0.2
     """
     try:
-        result = validate(document)
+        if orp_version:
+            # Use explicit version
+            validator = ORPValidator(version=orp_version)
+            result = validator.validate(document)
+        else:
+            # Auto-detect version from document
+            result = validate(document)
 
         if output_json:
             # Machine-readable JSON output
@@ -121,6 +135,7 @@ def _get_compliance_color(compliance_level: str) -> str:
         "ORP-Full": "green",
         "ORP-Standard": "cyan",
         "ORP-Basic": "yellow",
+        "ORP-PostHoc": "magenta",  # v0.2: Post-hoc reconstruction
         "Non-compliant": "red",
     }
     return colors.get(compliance_level, "white")

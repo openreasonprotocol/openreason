@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/extensions/safety/v1",
+  "title": "ORP Safety Extension v1",
+  "description": "Domain-specific fields for safety-critical datasets (CSAM, NCII, medical privacy, etc.)",
+  "version": "1.0.0",
+
+  "definitions": {
+    "csam_detection": {
+      "type": "object",
+      "properties": {
+        "detection_method": {
+          "type": "string",
+          "enum": ["PhotoDNA", "hash-matching", "ML-classifier", "human-review", "none"],
+          "description": "Method used for CSAM detection"
+        },
+        "false_positive_rate": {"type": "number"},
+        "false_negative_rate": {"type": "number"},
+        "urls_flagged": {"type": "number"},
+        "urls_removed": {"type": "number"},
+        "victim_count": {
+          "type": "number",
+          "description": "Number of identified victims (if known)"
+        }
+      }
+    },
+
+    "vulnerable_population": {
+      "type": "object",
+      "properties": {
+        "population_type": {
+          "type": "string",
+          "enum": ["children", "medical-patients", "sexual-assault-victims", "deceased", "marginalized-groups", "other"]
+        },
+        "population_size": {"type": "number"},
+        "consent_obtained": {"type": "boolean"},
+        "harm_description": {"type": "string"}
+      }
+    }
+  },
+
+  "layer_extensions": {
+    "l1_data_provenance": {
+      "properties": {
+        "csam_detection": {
+          "$ref": "#/definitions/csam_detection",
+          "description": "CSAM detection methodology (critical for image datasets)"
+        },
+        "content_warnings": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Content warnings (violence, nudity, disturbing imagery, etc.)"
+        }
+      }
+    },
+
+    "l3_empathy_mapping": {
+      "properties": {
+        "vulnerable_populations": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/vulnerable_population"},
+          "description": "Vulnerable populations identified in dataset"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/extensions/license/v1",
+  "title": "ORP License Compliance Extension v1",
+  "description": "Domain-specific fields for software license compliance (GPL, MIT, Apache, etc.)",
+  "version": "1.0.0",
+
+  "definitions": {
+    "license_distribution": {
+      "type": "object",
+      "properties": {
+        "GPL": {"type": "number", "description": "Percentage GPL-licensed"},
+        "MIT": {"type": "number"},
+        "Apache": {"type": "number"},
+        "BSD": {"type": "number"},
+        "proprietary": {"type": "number"},
+        "unknown": {"type": "number"}
+      },
+      "description": "Distribution of licenses in dataset"
+    },
+
+    "gpl_compliance": {
+      "type": "object",
+      "properties": {
+        "copyleft_honored": {
+          "type": "boolean",
+          "description": "Whether GPL copyleft requirements honored (derivative works GPL-licensed)"
+        },
+        "attribution_preserved": {
+          "type": "boolean",
+          "description": "Whether copyright notices preserved (DMCA § 1202 compliance)"
+        },
+        "lawsuit_status": {
+          "type": "string",
+          "enum": ["none", "threatened", "filed", "ongoing", "settled", "lost", "won"]
+        },
+        "lawsuit_damages": {
+          "type": "number",
+          "description": "Damages claimed or awarded (USD)"
+        }
+      }
+    }
+  },
+
+  "layer_extensions": {
+    "l1_data_provenance": {
+      "properties": {
+        "license_distribution": {
+          "$ref": "#/definitions/license_distribution",
+          "description": "Distribution of licenses in code dataset"
+        },
+        "license_filtering_policy": {
+          "type": "string",
+          "enum": ["none", "permissive-only", "exclude-gpl", "license-aware"],
+          "description": "What license-based filtering applied"
+        },
+        "attribution_mechanism": {
+          "type": "string",
+          "enum": ["none", "preserve", "separate-layer"],
+          "description": "How original author attribution handled"
+        }
+      }
+    },
+
+    "l2_consequence_simulation": {
+      "properties": {
+        "license_compliance_scenarios": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "scenario_id": {"type": "string"},
+              "gpl_compliance": {"$ref": "#/definitions/gpl_compliance"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

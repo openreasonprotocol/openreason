@@ -1,0 +1,109 @@
+
+============================================================
+ORP Validation Report: imagenet_training_data.yaml
+============================================================
+
+✗ Invalid
+
+Compliance Level: ORP-Full
+
+Layers Present:
+  ✓ l1_data_provenance
+  ✓ l2_consequence_simulation
+  ✓ l3_empathy_mapping
+  ✓ l4_accountability_ledger
+  ✓ l5_fork_registry
+
+Errors:
+  1. Field 'domain' must be one of: ['policy', 'ai-training', 'governance', 'other']
+  2. Field 'authors.0.role' must be one of: ['author', 'contributor', 'reviewer']
+  3. Validation error at 'l1_data_provenance.0.access': Additional properties are not allowed ('registration_reason', 'registration_required' were unexpected)
+  4. Missing required field 'primary_scenario' at l2_consequence_simulation
+  5. Missing required field 'default_value' at l2_consequence_simulation.variables.independent.0
+  6. Field 'l2_consequence_simulation.variables.independent.0.range' has wrong type (expected string)
+  7. Validation error at 'l2_consequence_simulation.variables.independent.0': Additional properties are not allowed ('actual_value' was unexpected)
+  8. Missing required field 'default_value' at l2_consequence_simulation.variables.independent.1
+  9. Validation error at 'l2_consequence_simulation.variables.independent.1': Additional properties are not allowed ('actual_value' was unexpected)
+  10. Missing required field 'default_value' at l2_consequence_simulation.variables.independent.2
+  11. Field 'l2_consequence_simulation.variables.independent.2.range' has wrong type (expected string)
+  12. Validation error at 'l2_consequence_simulation.variables.independent.2': Additional properties are not allowed ('actual_value' was unexpected)
+  13. Missing required field 'default_value' at l2_consequence_simulation.variables.independent.3
+  14. Field 'l2_consequence_simulation.variables.independent.3.range' has wrong type (expected string)
+  15. Validation error at 'l2_consequence_simulation.variables.independent.3': Additional properties are not allowed ('actual_value' was unexpected)
+  16. Missing required field 'default_value' at l2_consequence_simulation.variables.independent.4
+  17. Field 'l2_consequence_simulation.variables.independent.4.range' has wrong type (expected string)
+  18. Validation error at 'l2_consequence_simulation.variables.independent.4': Additional properties are not allowed ('actual_value' was unexpected)
+  19. Validation error at 'l2_consequence_simulation.variables.dependent.0': Additional properties are not allowed ('observed_value' was unexpected)
+  20. Validation error at 'l2_consequence_simulation.variables.dependent.1': Additional properties are not allowed ('observed_value' was unexpected)
+  21. Validation error at 'l2_consequence_simulation.variables.dependent.2': Additional properties are not allowed ('observed_value' was unexpected)
+  22. Missing required field 'sensitivity' at l2_consequence_simulation.model.assumptions.0
+  23. Validation error at 'l2_consequence_simulation.model.assumptions.0': Additional properties are not allowed ('confidence' was unexpected)
+  24. Missing required field 'sensitivity' at l2_consequence_simulation.model.assumptions.1
+  25. Validation error at 'l2_consequence_simulation.model.assumptions.1': Additional properties are not allowed ('confidence' was unexpected)
+  26. Missing required field 'sensitivity' at l2_consequence_simulation.model.assumptions.2
+  27. Validation error at 'l2_consequence_simulation.model.assumptions.2': Additional properties are not allowed ('confidence' was unexpected)
+  28. Missing required field 'sensitivity' at l2_consequence_simulation.model.assumptions.3
+  29. Validation error at 'l2_consequence_simulation.model.assumptions.3': Additional properties are not allowed ('confidence' was unexpected)
+  30. Missing required field 'sensitivity' at l2_consequence_simulation.model.assumptions.4
+  31. Validation error at 'l2_consequence_simulation.model.assumptions.4': Additional properties are not allowed ('confidence' was unexpected)
+  32. Validation error at 'l2_consequence_simulation.model': Additional properties are not allowed ('limitations' was unexpected)
+  33. Missing required field 'variable_values' at l2_consequence_simulation.scenarios.0
+  34. Field 'l2_consequence_simulation.scenarios.0.outcomes' has wrong type (expected object)
+  35. Validation error at 'l2_consequence_simulation.scenarios.0': Additional properties are not allowed ('parameter_values', 'uncertainties' were unexpected)
+  36. Missing required field 'variable_values' at l2_consequence_simulation.scenarios.1
+  37. Field 'l2_consequence_simulation.scenarios.1.outcomes' has wrong type (expected object)
+  38. Validation error at 'l2_consequence_simulation.scenarios.1': Additional properties are not allowed ('parameter_values', 'uncertainties' were unexpected)
+  39. Missing required field 'variable_values' at l2_consequence_simulation.scenarios.2
+  40. Field 'l2_consequence_simulation.scenarios.2.outcomes' has wrong type (expected object)
+  41. Validation error at 'l2_consequence_simulation.scenarios.2': Additional properties are not allowed ('parameter_values', 'uncertainties' were unexpected)
+  42. Missing required field 'variable_values' at l2_consequence_simulation.scenarios.3
+  43. Field 'l2_consequence_simulation.scenarios.3.outcomes' has wrong type (expected object)
+  44. Validation error at 'l2_consequence_simulation.scenarios.3': Additional properties are not allowed ('parameter_values', 'uncertainties' were unexpected)
+  45. Missing required field 'stakeholder_map' at l3_empathy_mapping
+  46. Missing required field 'unresolved_impacts' at l3_empathy_mapping
+  47. Field 'l3_empathy_mapping.net_welfare_assessment.confidence' must be one of: ['high', 'medium', 'low']
+  48. Validation error at 'l3_empathy_mapping': Additional properties are not allowed ('stakeholder_groups' was unexpected)
+  49. Field 'l4_accountability_ledger.entries.0.decision_type' must be one of: ['data', 'methodology', 'assumption', 'exclusion', 'framing', 'other']
+  50. Validation error at 'l4_accountability_ledger.entries.0': Additional properties are not allowed ('consequences', 'source' were unexpected)
+  51. Field 'l4_accountability_ledger.entries.1.decision_type' must be one of: ['data', 'methodology', 'assumption', 'exclusion', 'framing', 'other']
+  52. Validation error at 'l4_accountability_ledger.entries.1': Additional properties are not allowed ('consequences', 'source' were unexpected)
+  53. Field 'l4_accountability_ledger.entries.2.decision_type' must be one of: ['data', 'methodology', 'assumption', 'exclusion', 'framing', 'other']
+  54. Validation error at 'l4_accountability_ledger.entries.2': Additional properties are not allowed ('consequences', 'source' were unexpected)
+  55. Field 'l4_accountability_ledger.entries.3.decision_type' must be one of: ['data', 'methodology', 'assumption', 'exclusion', 'framing', 'other']
+  56. Validation error at 'l4_accountability_ledger.entries.3': Additional properties are not allowed ('consequences', 'source' were unexpected)
+  57. Field 'l4_accountability_ledger.entries.4.decision_type' must be one of: ['data', 'methodology', 'assumption', 'exclusion', 'framing', 'other']
+  58. Validation error at 'l4_accountability_ledger.entries.4': Additional properties are not allowed ('consequences', 'source' were unexpected)
+  59. Field 'l4_accountability_ledger.entries.5.decision_type' must be one of: ['data', 'methodology', 'assumption', 'exclusion', 'framing', 'other']
+  60. Validation error at 'l4_accountability_ledger.entries.5': Additional properties are not allowed ('consequences', 'source' were unexpected)
+  61. Missing required field 'author' at l5_fork_registry.known_forks.0
+  62. Missing required field 'created' at l5_fork_registry.known_forks.0
+  63. Missing required field 'fork_reason' at l5_fork_registry.known_forks.0
+  64. Missing required field 'url' at l5_fork_registry.known_forks.0
+  65. Field 'l5_fork_registry.known_forks.0.document_id' has wrong type (expected string)
+  66. Validation error at 'l5_fork_registry.known_forks.0': Additional properties are not allowed ('citation', 'created_by', 'created_date', 'fork_id', 'fork_type', 'name', 'orp_documentation', 'outcomes', 'rationale', 'relationship' were unexpected)
+  67. Missing required field 'author' at l5_fork_registry.known_forks.1
+  68. Missing required field 'created' at l5_fork_registry.known_forks.1
+  69. Missing required field 'fork_reason' at l5_fork_registry.known_forks.1
+  70. Missing required field 'url' at l5_fork_registry.known_forks.1
+  71. Field 'l5_fork_registry.known_forks.1.document_id' has wrong type (expected string)
+  72. Validation error at 'l5_fork_registry.known_forks.1': Additional properties are not allowed ('citation', 'created_by', 'created_date', 'fork_id', 'fork_type', 'name', 'orp_documentation', 'outcomes', 'rationale', 'relationship' were unexpected)
+  73. Missing required field 'author' at l5_fork_registry.known_forks.2
+  74. Missing required field 'created' at l5_fork_registry.known_forks.2
+  75. Missing required field 'fork_reason' at l5_fork_registry.known_forks.2
+  76. Missing required field 'url' at l5_fork_registry.known_forks.2
+  77. Field 'l5_fork_registry.known_forks.2.document_id' has wrong type (expected string)
+  78. Validation error at 'l5_fork_registry.known_forks.2': Additional properties are not allowed ('citation', 'created_by', 'created_date', 'fork_id', 'fork_type', 'name', 'orp_documentation', 'outcomes', 'rationale', 'relationship' were unexpected)
+  79. Missing required field 'author' at l5_fork_registry.known_forks.3
+  80. Missing required field 'created' at l5_fork_registry.known_forks.3
+  81. Missing required field 'fork_reason' at l5_fork_registry.known_forks.3
+  82. Missing required field 'url' at l5_fork_registry.known_forks.3
+  83. Field 'l5_fork_registry.known_forks.3.document_id' has wrong type (expected string)
+  84. Validation error at 'l5_fork_registry.known_forks.3': Additional properties are not allowed ('citation', 'created_by', 'created_date', 'fork_id', 'fork_type', 'name', 'orp_documentation', 'outcomes', 'rationale', 'relationship' were unexpected)
+  85. Validation error at 'l5_fork_registry': Additional properties are not allowed ('potential_forks' was unexpected)
+
+Summary:
+  Document has 85 validation error(s).
+  Fix the errors above to achieve ORP compliance.
+
+============================================================
+

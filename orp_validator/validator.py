@@ -28,6 +28,7 @@ class ComplianceLevel(Enum):
     BASIC = "ORP-Basic"
     STANDARD = "ORP-Standard"
     FULL = "ORP-Full"
+    POSTHOC = "ORP-PostHoc"  # v0.2: Post-hoc reconstruction
     NONE = "Non-compliant"
 
 
@@ -63,23 +64,28 @@ class ValidationResult:
 class ORPValidator:
     """Validator for OpenReason Protocol documents."""
 
-    def __init__(self, schema_path: Optional[Path] = None) -> None:
+    def __init__(self, schema_path: Optional[Path] = None, version: str = "0.1") -> None:
         """Initialize validator with JSON Schema.
 
         Args:
             schema_path: Path to ORP JSON Schema file.
-                        If None, uses bundled schema for ORP v0.1.
+                        If None, uses bundled schema for specified version.
+            version: ORP version to validate against ("0.1" or "0.2"). Default "0.1".
         """
+        self.version = version
+        self.extensions_loaded: list[str] = []
+
         if schema_path is None:
             # Use bundled schema via importlib.resources
+            schema_filename = f"orp-v{version}.schema.json"
             if files is not None:
                 schema_content = (
-                    files("orp_validator.schemas").joinpath("orp-v0.1.schema.json").read_text()
+                    files("orp_validator.schemas").joinpath(schema_filename).read_text()
                 )
                 self.schema = json.loads(schema_content)
             else:
                 # Fallback for when importlib.resources is not available
-                schema_path = Path(__file__).parent / "schemas" / "orp-v0.1.schema.json"
+                schema_path = Path(__file__).parent / "schemas" / schema_filename
                 with open(schema_path, encoding="utf-8") as f:
                     self.schema = json.load(f)
         else:
@@ -87,6 +93,20 @@ class ORPValidator:
                 self.schema = json.load(f)
 
         self.validator = Draft7Validator(self.schema)
+
+    def _load_extensions(self, extension_names: list[str]) -> None:
+        """Load extension schemas and note which extensions are declared.
+
+        Args:
+            extension_names: List of extension names (e.g., ["orp-ai-training-v1"])
+
+        Note:
+            For v0.2, extensions are primarily documentation (additionalProperties: true allows them).
+            Future versions may enforce extension schema validation.
+        """
+        self.extensions_loaded = extension_names
+        # TODO: In future, merge extension schemas into validator for strict validation
+        # For now, just track which extensions are declared
 
     def validate(self, document: Union[str, Path, dict[str, Any]]) -> ValidationResult:
         """Validate an ORP document.
@@ -106,6 +126,27 @@ class ORPValidator:
             doc_data = self._load_document(Path(document))
         else:
             doc_data = document
+
+        # Auto-detect document version if not explicitly set during validator init
+        doc_version = doc_data.get("orp_version", "0.1")
+        if doc_version != self.version:
+            # Reload schema for correct version
+            schema_filename = f"orp-v{doc_version}.schema.json"
+            if files is not None:
+                schema_content = (
+                    files("orp_validator.schemas").joinpath(schema_filename).read_text()
+                )
+                self.schema = json.loads(schema_content)
+            else:
+                schema_path = Path(__file__).parent / "schemas" / schema_filename
+                with open(schema_path, encoding="utf-8") as f:
+                    self.schema = json.load(f)
+            self.validator = Draft7Validator(self.schema)
+            self.version = doc_version
+
+        # Load extensions if declared (v0.2+)
+        if "extensions" in doc_data:
+            self._load_extensions(doc_data["extensions"])
 
         # Detect which layers are present
         layers_present = self._detect_layers(doc_data)
@@ -197,6 +238,7 @@ class ORPValidator:
         ORP-Basic: Header + L1
         ORP-Standard: Header + L1 + L2 + L3
         ORP-Full: Header + L1 + L2 + L3 + L4 + L5
+        ORP-PostHoc (v0.2+): Post-hoc reconstruction (any compliance level with post_hoc flag)
         """
         # Check required header fields
         required_header_fields = [
@@ -215,6 +257,9 @@ class ORPValidator:
         if not has_header:
             return ComplianceLevel.NONE
 
+        # v0.2+: Check for post-hoc reconstruction flag
+        is_post_hoc = doc_data.get("post_hoc", False)
+
         # Check compliance levels from highest to lowest
         if all(
             [
@@ -225,7 +270,8 @@ class ORPValidator:
                 layers_present["l5_fork_registry"],
             ]
         ):
-            return ComplianceLevel.FULL
+            # v0.2+: If post-hoc flagged, return POSTHOC compliance level
+            return ComplianceLevel.POSTHOC if is_post_hoc else ComplianceLevel.FULL
 
         if all(
             [
@@ -234,10 +280,10 @@ class ORPValidator:
                 layers_present["l3_empathy_mapping"],
             ]
         ):
-            return ComplianceLevel.STANDARD
+            return ComplianceLevel.POSTHOC if is_post_hoc else ComplianceLevel.STANDARD
 
         if layers_present["l1_data_provenance"]:
-            return ComplianceLevel.BASIC
+            return ComplianceLevel.POSTHOC if is_post_hoc else ComplianceLevel.BASIC
 
         return ComplianceLevel.NONE
 
@@ -259,12 +305,37 @@ class ORPValidator:
                     f"detected level '{compliance_level.value}'"
                 )
 
-        # Warn about missing layers for higher compliance
-        if compliance_level == ComplianceLevel.BASIC:
+        # v0.2+: Warn if extensions declared but not used
+        if self.version >= "0.2" and self.extensions_loaded:
             warnings.append(
-                "Document is ORP-Basic. Add L2 (Consequence Simulation) and "
-                "L3 (Empathy Mapping) for ORP-Standard."
+                f"Extensions declared: {', '.join(self.extensions_loaded)}. "
+                "Note: Extension validation is informational only in current version."
             )
+
+        # v0.2+: Warn if post-hoc reconstruction lacks accountability_gap
+        is_post_hoc = doc_data.get("post_hoc", False)
+        if is_post_hoc and layers_present.get("l4_accountability_ledger"):
+            l4_data = doc_data.get("l4_accountability_ledger", [])
+            if isinstance(l4_data, list):
+                has_accountability_gap = any(
+                    "accountability_gap" in decision for decision in l4_data
+                )
+            else:
+                has_accountability_gap = "accountability_gap" in l4_data
+
+            if not has_accountability_gap:
+                warnings.append(
+                    "Post-hoc reconstruction should document 'accountability_gap' in L4 "
+                    "to explain what decision-making history is unknowable."
+                )
+
+        # Warn about missing layers for higher compliance
+        if compliance_level == ComplianceLevel.BASIC or compliance_level == ComplianceLevel.POSTHOC:
+            if compliance_level == ComplianceLevel.BASIC:
+                warnings.append(
+                    "Document is ORP-Basic. Add L2 (Consequence Simulation) and "
+                    "L3 (Empathy Mapping) for ORP-Standard."
+                )
         elif compliance_level == ComplianceLevel.STANDARD:
             warnings.append(
                 "Document is ORP-Standard. Add L4 (Accountability Ledger) and "

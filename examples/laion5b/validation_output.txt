@@ -1,0 +1,112 @@
+
+============================================================
+ORP Validation Report: laion5b_training_data.yaml
+============================================================
+
+✗ Invalid
+
+Compliance Level: ORP-Full
+
+Layers Present:
+  ✓ l1_data_provenance
+  ✓ l2_consequence_simulation
+  ✓ l3_empathy_mapping
+  ✓ l4_accountability_ledger
+  ✓ l5_fork_registry
+
+Errors:
+  1. Field 'domain' must be one of: ['policy', 'ai-training', 'governance', 'other']
+  2. Field 'authors.0.role' must be one of: ['author', 'contributor', 'reviewer']
+  3. Validation error at 'authors.0': Additional properties are not allowed ('affiliation' was unexpected)
+  4. Validation error at 'l1_data_provenance.0.inclusion_criteria': Additional properties are not allowed ('rationale' was unexpected)
+  5. Missing required field 'excluded' at l1_data_provenance.0.exclusion_criteria.0
+  6. Missing required field 'reason' at l1_data_provenance.0.exclusion_criteria.0
+  7. Missing required field 'potential_impact' at l1_data_provenance.0.exclusion_criteria.0
+  8. Validation error at 'l1_data_provenance.0.exclusion_criteria.0': Additional properties are not allowed ('affected_count', 'criterion', 'method', 'rationale' were unexpected)
+  9. Missing required field 'excluded' at l1_data_provenance.0.exclusion_criteria.1
+  10. Missing required field 'reason' at l1_data_provenance.0.exclusion_criteria.1
+  11. Missing required field 'potential_impact' at l1_data_provenance.0.exclusion_criteria.1
+  12. Validation error at 'l1_data_provenance.0.exclusion_criteria.1': Additional properties are not allowed ('affected_count', 'criterion', 'limitations', 'method', 'rationale' were unexpected)
+  13. Missing required field 'excluded' at l1_data_provenance.0.exclusion_criteria.2
+  14. Missing required field 'reason' at l1_data_provenance.0.exclusion_criteria.2
+  15. Missing required field 'potential_impact' at l1_data_provenance.0.exclusion_criteria.2
+  16. Validation error at 'l1_data_provenance.0.exclusion_criteria.2': Additional properties are not allowed ('affected_count', 'criterion', 'limitations', 'method', 'rationale' were unexpected)
+  17. Missing required field 'reason' at l1_data_provenance.0.cleaning_decisions.0
+  18. Missing required field 'alternatives_considered' at l1_data_provenance.0.cleaning_decisions.0
+  19. Validation error at 'l1_data_provenance.0.cleaning_decisions.0': Additional properties are not allowed ('affected_scale', 'limitations', 'method', 'rationale' were unexpected)
+  20. Missing required field 'reason' at l1_data_provenance.0.cleaning_decisions.1
+  21. Missing required field 'alternatives_considered' at l1_data_provenance.0.cleaning_decisions.1
+  22. Validation error at 'l1_data_provenance.0.cleaning_decisions.1': Additional properties are not allowed ('affected_scale', 'limitations', 'method', 'rationale' were unexpected)
+  23. Missing required field 'reason' at l1_data_provenance.0.cleaning_decisions.2
+  24. Missing required field 'alternatives_considered' at l1_data_provenance.0.cleaning_decisions.2
+  25. Validation error at 'l1_data_provenance.0.cleaning_decisions.2': Additional properties are not allowed ('affected_scale', 'limitations', 'method', 'rationale' were unexpected)
+  26. Field 'l1_data_provenance.0.known_limitations.0' has wrong type (expected string)
+  27. Field 'l1_data_provenance.0.known_limitations.1' has wrong type (expected string)
+  28. Field 'l1_data_provenance.0.known_limitations.2' has wrong type (expected string)
+  29. Field 'l1_data_provenance.0.known_limitations.3' has wrong type (expected string)
+  30. Field 'l1_data_provenance.0.access.public' has wrong type (expected boolean)
+  31. Validation error at 'l1_data_provenance.0.access': Additional properties are not allowed ('availability', 'restrictions' were unexpected)
+  32. Validation error at 'l1_data_provenance.0.attested_by.0': Additional properties are not allowed ('affiliation' was unexpected)
+  33. Validation error at 'l1_data_provenance.0': Additional properties are not allowed ('critical_undocumented_exclusions' was unexpected)
+  34. Missing required field 'model' at l2_consequence_simulation
+  35. Missing required field 'primary_scenario' at l2_consequence_simulation
+  36. Missing required field 'description' at l2_consequence_simulation.affected_population
+  37. Missing required field 'size_estimate' at l2_consequence_simulation.affected_population
+  38. Validation error at 'l2_consequence_simulation.affected_population': Additional properties are not allowed ('breakdown', 'total' were unexpected)
+  39. Field 'l2_consequence_simulation.variables' has wrong type (expected object)
+  40. Field 'l2_consequence_simulation.scenarios.0.outcomes' has wrong type (expected object)
+  41. Field 'l2_consequence_simulation.scenarios.1.outcomes' has wrong type (expected object)
+  42. Validation error at 'l2_consequence_simulation.scenarios.1': Additional properties are not allowed ('comparison_to_actual' was unexpected)
+  43. Field 'l2_consequence_simulation.scenarios.2.outcomes' has wrong type (expected object)
+  44. Validation error at 'l2_consequence_simulation.scenarios.2': Additional properties are not allowed ('comparison_to_actual' was unexpected)
+  45. Field 'l2_consequence_simulation.scenarios.3.outcomes' has wrong type (expected object)
+  46. Validation error at 'l2_consequence_simulation.scenarios.3': Additional properties are not allowed ('comparison_to_actual' was unexpected)
+  47. Validation error at 'l2_consequence_simulation': Additional properties are not allowed ('assumptions', 'limitations_and_unknowns', 'notes', 'sensitivity_analysis' were unexpected)
+  48. Missing required field 'stakeholder_map' at l3_empathy_mapping
+  49. Missing required field 'unresolved_impacts' at l3_empathy_mapping
+  50. Missing required field 'description' at l3_empathy_mapping.minority_stress_test
+  51. Missing required field 'groups_tested' at l3_empathy_mapping.minority_stress_test
+  52. Validation error at 'l3_empathy_mapping.minority_stress_test': Additional properties are not allowed ('comparative_analysis', 'minority_stress_test_conclusion', 'test_description', 'vulnerable_populations_identified' were unexpected)
+  53. Missing required field 'methodology' at l3_empathy_mapping.net_welfare_assessment
+  54. Missing required field 'conclusion' at l3_empathy_mapping.net_welfare_assessment
+  55. Missing required field 'confidence' at l3_empathy_mapping.net_welfare_assessment
+  56. Missing required field 'confidence_basis' at l3_empathy_mapping.net_welfare_assessment
+  57. Validation error at 'l3_empathy_mapping.net_welfare_assessment': Additional properties are not allowed ('benefits_summary', 'deontological_analysis', 'harm_prioritization', 'harms_summary', 'net_welfare_conclusion', 'overall_assessment', 'utilitarian_analysis' were unexpected)
+  58. Validation error at 'l3_empathy_mapping': Additional properties are not allowed ('affected_population', 'stakeholder_groups' were unexpected)
+  59. Field 'l4_accountability_ledger' has wrong type (expected object)
+  60. Missing required field 'forked_from' at l5_fork_registry.this_document
+  61. Missing required field 'fork_reason' at l5_fork_registry.this_document
+  62. Missing required field 'key_differences' at l5_fork_registry.this_document
+  63. Validation error at 'l5_fork_registry.this_document': Additional properties are not allowed ('created', 'note', 'status', 'version' were unexpected)
+  64. Missing required field 'document_id' at l5_fork_registry.known_forks.0
+  65. Missing required field 'author' at l5_fork_registry.known_forks.0
+  66. Missing required field 'created' at l5_fork_registry.known_forks.0
+  67. Missing required field 'key_differences' at l5_fork_registry.known_forks.0
+  68. Missing required field 'url' at l5_fork_registry.known_forks.0
+  69. Validation error at 'l5_fork_registry.known_forks.0': Additional properties are not allowed ('fork_date', 'fork_id', 'fork_name', 'fork_status', 'fork_url', 'forked_by', 'improvements_over_original', 'key_changes', 'limitations' were unexpected)
+  70. Missing required field 'document_id' at l5_fork_registry.known_forks.1
+  71. Missing required field 'author' at l5_fork_registry.known_forks.1
+  72. Missing required field 'created' at l5_fork_registry.known_forks.1
+  73. Missing required field 'key_differences' at l5_fork_registry.known_forks.1
+  74. Missing required field 'url' at l5_fork_registry.known_forks.1
+  75. Validation error at 'l5_fork_registry.known_forks.1': Additional properties are not allowed ('fork_date', 'fork_id', 'fork_name', 'fork_status', 'fork_url', 'forked_by', 'key_changes', 'relationship_to_laion5b' were unexpected)
+  76. Missing required field 'document_id' at l5_fork_registry.known_forks.2
+  77. Missing required field 'author' at l5_fork_registry.known_forks.2
+  78. Missing required field 'created' at l5_fork_registry.known_forks.2
+  79. Missing required field 'key_differences' at l5_fork_registry.known_forks.2
+  80. Missing required field 'url' at l5_fork_registry.known_forks.2
+  81. Validation error at 'l5_fork_registry.known_forks.2': Additional properties are not allowed ('consequences', 'fork_date', 'fork_id', 'fork_name', 'fork_status', 'fork_url', 'forked_by', 'key_changes' were unexpected)
+  82. Missing required field 'document_id' at l5_fork_registry.known_forks.3
+  83. Missing required field 'author' at l5_fork_registry.known_forks.3
+  84. Missing required field 'created' at l5_fork_registry.known_forks.3
+  85. Missing required field 'key_differences' at l5_fork_registry.known_forks.3
+  86. Missing required field 'url' at l5_fork_registry.known_forks.3
+  87. Validation error at 'l5_fork_registry.known_forks.3': Additional properties are not allowed ('consequences', 'fork_date', 'fork_id', 'fork_name', 'fork_status', 'fork_url', 'forked_by', 'key_changes' were unexpected)
+  88. Validation error at 'l5_fork_registry': Additional properties are not allowed ('fork_encouragement', 'notes', 'potential_forks' were unexpected)
+
+Summary:
+  Document has 88 validation error(s).
+  Fix the errors above to achieve ORP compliance.
+
+============================================================
+

@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/extensions/ai-training/v1",
+  "title": "ORP AI Training Dataset Extension v1",
+  "description": "Domain-specific fields for AI training dataset documentation. Extends ORP v0.2 with fields for safety, harm tiers, and training data specifics.",
+  "version": "1.0.0",
+
+  "definitions": {
+    "harm_tier": {
+      "type": "string",
+      "enum": [
+        "TIER 1 - EXISTENTIAL",
+        "TIER 2 - LEGAL",
+        "TIER 3 - ECONOMIC",
+        "TIER 4 - ECOSYSTEM",
+        "TIER 5 - SECURITY",
+        "TIER 6 - BIAS",
+        "TIER 7 - DIGNITY"
+      ],
+      "description": "Harm severity taxonomy for AI training datasets"
+    },
+
+    "affected_scale": {
+      "type": "object",
+      "properties": {
+        "population_size": {
+          "type": "number",
+          "description": "Number of people affected"
+        },
+        "geographic_scope": {
+          "type": "string",
+          "description": "Geographic distribution (e.g., global, US-only, Western-focused)"
+        },
+        "temporal_scope": {
+          "type": "string",
+          "description": "Time period affected (e.g., 2009-2024, ongoing, irreversible)"
+        }
+      }
+    },
+
+    "safety_filtering": {
+      "type": "object",
+      "properties": {
+        "tools_used": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Safety filtering tools applied (e.g., PhotoDNA, CSAM hash matching)"
+        },
+        "tools_not_used": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Safety tools NOT used (for post-hoc gap analysis)"
+        },
+        "effectiveness": {
+          "type": "string",
+          "description": "How effective was filtering (e.g., 99% CSAM blocked, 1% false negatives)"
+        }
+      }
+    }
+  },
+
+  "layer_extensions": {
+    "l1_data_provenance": {
+      "description": "Extensions for AI training data provenance",
+      "properties": {
+        "safety_filtering_tools": {
+          "$ref": "#/definitions/safety_filtering",
+          "description": "What safety filtering was applied (recommended)"
+        },
+        "data_removed_post_hoc": {
+          "type": "object",
+          "properties": {
+            "date_removed": {"type": "string", "format": "date"},
+            "reason": {"type": "string"},
+            "count": {"type": "number"},
+            "percentage": {"type": "number"},
+            "description": {"type": "string"}
+          },
+          "description": "Data removed after initial release (e.g., LAION-5B CSAM removal)"
+        },
+        "training_corpus_size": {
+          "type": "object",
+          "properties": {
+            "total_items": {"type": "number"},
+            "total_size_gb": {"type": "number"},
+            "file_count": {"type": "number"}
+          },
+          "description": "Training dataset size metrics"
+        }
+      }
+    },
+
+    "l2_consequence_simulation": {
+      "description": "Extensions for AI training consequences",
+      "properties": {
+        "model_performance": {
+          "type": "object",
+          "properties": {
+            "benchmark": {"type": "string"},
+            "accuracy": {"type": "number"},
+            "bias_metrics": {
+              "type": "object",
+              "additionalProperties": {"type": "number"}
+            }
+          },
+          "description": "Model performance metrics"
+        }
+      }
+    },
+
+    "l3_empathy_mapping": {
+      "description": "Extensions for AI training stakeholder analysis",
+      "properties": {
+        "highest_severity_harm": {
+          "$ref": "#/definitions/harm_tier",
+          "description": "Worst harm tier discovered (recommended)"
+        },
+        "affected_scale": {
+          "$ref": "#/definitions/affected_scale",
+          "description": "Scale of impact (recommended)"
+        },
+        "absent_nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stakeholder_group": {"type": "string"},
+              "reason_excluded": {"type": "string"},
+              "harm_tier": {"$ref": "#/definitions/harm_tier"}
+            }
+          },
+          "description": "Stakeholders excluded from decision-making (recommended for post-hoc)"
+        }
+      }
+    }
+  },
+
+  "examples": [
+    {
+      "extensions": ["orp-ai-training-v1"],
+      "l1_data_provenance": [{
+        "dataset_id": "imagenet-ilsvrc-2012",
+        "safety_filtering_tools": {
+          "tools_used": [],
+          "tools_not_used": ["Content moderation", "Consent verification"],
+          "effectiveness": "None - no safety filtering applied"
+        },
+        "training_corpus_size": {
+          "total_items": 14197122,
+          "total_size_gb": 150,
+          "file_count": 14197122
+        }
+      }],
+      "l3_empathy_mapping": {
+        "highest_severity_harm": "TIER 6 - BIAS",
+        "affected_scale": {
+          "population_size": 100000000,
+          "geographic_scope": "Global (but 80%+ Western bias in training data)",
+          "temporal_scope": "2009-present (irreversible - trained models cannot be fixed)"
+        }
+      }
+    }
+  ]
+}

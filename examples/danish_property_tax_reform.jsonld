@@ -1,5 +1,5 @@
 {
-  "@context": "https://openreason.org/context/v0.1",
+  "@context": "../orp_validator/schemas/orp-context.jsonld",
   "@type": "Document",
   "document_id": "orp-dk-property-tax-001",
   "title": "Danish Property Tax Reform: LVT + Smoothed Profit Tax",

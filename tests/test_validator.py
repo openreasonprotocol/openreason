@@ -328,7 +328,7 @@ Some markdown content here.
 
 
 def test_markdown_without_frontmatter(tmp_path):
-    """Test markdown file without YAML frontmatter fails gracefully."""
+    """Test markdown file without YAML frontmatter raises appropriate error."""
     md_content = """# Just Markdown
 
 No YAML frontmatter here.
@@ -337,10 +337,9 @@ No YAML frontmatter here.
     md_path = tmp_path / "test.md"
     md_path.write_text(md_content)
 
-    result = validate(md_path)
-
-    # Should fail validation since there's no ORP content
-    assert result.valid is False
+    # Should raise YAMLError since there's no YAML frontmatter
+    with pytest.raises(yaml.YAMLError, match="Markdown files must contain YAML frontmatter"):
+        validate(md_path)
 
 
 def test_file_not_found():

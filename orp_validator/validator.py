@@ -191,7 +191,16 @@ class ORPValidator:
 
         # Try YAML first (superset of JSON)
         try:
-            return yaml.safe_load(content)  # type: ignore[no-any-return]
+            data = yaml.safe_load(content)
+
+            # Ensure the loaded data is a dict (not a string, list, etc.)
+            if not isinstance(data, dict):
+                raise yaml.YAMLError(
+                    f"Document must be a YAML/JSON object (dict), got {type(data).__name__}. "
+                    "Markdown files must contain YAML frontmatter."
+                )
+
+            return data  # type: ignore[no-any-return]
         except yaml.YAMLError as e:
             raise yaml.YAMLError(f"Failed to parse document: {e}") from e
 

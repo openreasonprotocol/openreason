@@ -200,7 +200,7 @@ class ORPValidator:
                     "Markdown files must contain YAML frontmatter."
                 )
 
-            return data  # type: ignore[no-any-return]
+            return data
         except yaml.YAMLError as e:
             raise yaml.YAMLError(f"Failed to parse document: {e}") from e
 

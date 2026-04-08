@@ -8,19 +8,33 @@ HTTP API for validating ORP documents.
 https://api.publicreasonproject.org
 ```
 
+**Supported versions**: ORP v0.1 and v0.2 (auto-detection)
+**API version**: v0.4.0
+
 ## Endpoints
 
 ### POST /api/v1/validate
 
-Full schema validation.
+Full schema validation with detailed errors and warnings.
+
+**Supports**: ORP v0.1 and v0.2 documents (auto-detected from `orp_version` field)
 
 ### POST /api/v1/check
 
-Quick compliance check.
+Quick compliance check without full validation.
+
+**Returns**: Compliance level (ORP-Basic, ORP-Standard, ORP-Full, or **ORP-PostHoc**)
 
 ### POST /api/v1/diff
 
-Compare two documents.
+Compare two documents and detect fork relationships.
+
+## Features
+
+- **Auto-detection**: Automatically detects document version (v0.1 or v0.2)
+- **ORP-PostHoc support**: Recognizes post-hoc reconstruction documents
+- **Extension warnings**: Notifies about declared extensions (orp-ai-training-v1, etc.)
+- **Backward compatible**: All v0.1 documents validate correctly
 
 ## Rate Limits
 
@@ -29,3 +43,5 @@ Compare two documents.
 ## Interactive Documentation
 
 https://api.publicreasonproject.org/docs
+
+**Try it now**: Interactive Swagger UI with example requests for both v0.1 and v0.2 documents.

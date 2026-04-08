@@ -48,35 +48,52 @@ The goal: Produce documents coherent enough to invite rigorous challenge before 
 
 ## Phase 1 — Core Tooling
 
-**Status:** <Loader size={16} className="orp-status-icon" style={{ color: '#0066cc', display: 'inline' }} /> In Progress (Sprints 1.1-1.6)
-**Target:** v0.5.0
+**Status:** <CheckCircle size={16} className="orp-status-icon" style={{ color: '#10b981', display: 'inline' }} /> Complete (v0.6.0)
+**Completed:** April 2026
 
 The minimum viable toolkit that makes ORP documents easy to produce, validate, and compare.
 
-### Completed (Sprint 1.1-1.5)
+### Completed (Sprints 1.1-1.7)
 
+**Core Infrastructure (Sprint 1.1-1.5)**:
 - ORP CLI (`orp`) — Commands: new, validate, check, diff
-- ORP Validator (Python package) — pip install orp-validator
-- ORP Schema (JSON Schema for ORP v0.1)
+- ORP Validator (Python package) — pip install orp-validator v0.4.0
+- ORP Schema (JSON Schema for v0.1 and v0.2)
 - Reference implementation (Danish Property Tax Reform)
-- REST API — api.publicreasonproject.org
+- REST API — api.publicreasonproject.org (v0.4.0)
+- 43 automated tests with 96.5% coverage
 
-### In Progress (Sprint 1.6)
-
+**Documentation Site (Sprint 1.6)**:
 - Documentation website — docs.publicreasonproject.org
   - Getting Started guides
   - Protocol specification (web-friendly)
-  - Tool documentation
+  - Tool documentation (CLI, Python API, REST API)
   - Examples showcase
   - Community pages
 
-### Next (Sprint 1.7+)
+**ORP v0.2 Implementation (Sprint 1.7.3)**:
+- ORP v0.2 specification (post-hoc reconstruction, extensions, flexible schema)
+- 4 comprehensive AI training dataset examples (ImageNet, LAION-5B, Common Crawl, GitHub Copilot)
+- 8,328 lines of ORP documentation showcasing v0.2 capabilities
+- PyPI release v0.4.0 with v0.2 support
+- REST API updated to support both v0.1 and v0.2 (auto-detection)
+- Docs site updated with v0.2 examples and comparative analysis
 
-- Interactive validator widget (browser-based YAML validation)
-- JavaScript/Node validator package
-- Additional worked examples
+**Status**: Production-ready ecosystem with comprehensive tooling, documentation, and real-world examples.
 
-**Target completion:** March 2026
+### Phase 1 Retrospective
+
+**What worked well**:
+- Test-driven development (96.5% coverage)
+- Sprint-based planning enabled rapid iteration
+- Real-world examples (AI training datasets) demonstrated practical value
+- Backward compatibility maintained throughout v0.2 development
+
+**What we learned**:
+- Post-hoc reconstruction fills critical transparency gap
+- Extension system enables domain-specific fields without breaking core protocol
+- Automated testing essential for production API
+- Documentation site dramatically improves accessibility
 
 ---
 

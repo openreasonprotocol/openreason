@@ -1,12 +1,13 @@
 # Compliance Levels
 
-OpenReason Protocol defines three compliance levels, each building on the previous one. Choose based on your resource constraints, stakes, and audience.
+OpenReason Protocol defines four compliance levels: three prospective levels (Basic, Standard, Full) for real-time decision-making, and one retrospective level (PostHoc) for analyzing past decisions. Choose based on your resource constraints, stakes, and audience.
 
 ## Overview
 
 | Level | Layers | Use Case | Typical Time Investment |
 |-------|--------|----------|------------------------|
 | **ORP-Basic** | Layer 1 only | Initial documentation, low-stakes decisions | 2–4 hours |
+| **ORP-PostHoc** | Layer 1 only (post-hoc) | Retrospective analysis of past decisions/datasets | 1–3 days |
 | **ORP-Standard** | Layers 1–3 | Policy proposals, contested decisions | 1–2 days |
 | **ORP-Full** | Layers 1–5 | High-stakes, long-term, or highly contested | 3–5 days |
 
@@ -51,6 +52,91 @@ The tool will prompt you for:
 - Data provenance details (source, methodology, limitations)
 
 **Time investment:** 2-4 hours, mostly spent documenting datasets accurately.
+
+## ORP-PostHoc (Layer 1, Post-Hoc Reconstruction)
+
+**What it requires:**
+- Header metadata (with `post_hoc: true` flag)
+- Data provenance for datasets (Layer 1)
+- Analyst/reconstructor role (not original decision-maker)
+- Accountability gap documentation
+
+**What it provides:**
+- Retrospective transparency for past decisions
+- Documentation of what is unknown/unknowable
+- Foundation for understanding historical choices
+- Accountability gap identification
+
+**Best for:**
+- Analyzing AI training datasets created without ORP
+- Reconstructing past policy decisions
+- Academic analysis of historical choices
+- Post-hoc transparency when original documentation is absent
+
+**Not sufficient for:**
+- Real-time decision-making (use ORP-Basic/Standard/Full instead)
+- Prospective governance (requires full accountability)
+
+### When to Use ORP-PostHoc
+
+Use ORP-PostHoc when:
+1. **Decision already made** — You're analyzing past choices, not making new ones
+2. **Original documentation absent** — Creators didn't document using ORP
+3. **Accountability gaps exist** — You cannot know what original decision-makers considered
+4. **Transparency value remains** — Even partial documentation better than none
+
+### Example Use Cases
+
+- AI training dataset analysis (ImageNet, LAION-5B, Common Crawl, GitHub Copilot)
+- Historical policy decision reconstruction
+- Academic research on past governance choices
+- Transparency audits of existing systems
+- Post-mortem analysis of controversial decisions
+
+### Creating an ORP-PostHoc Document
+
+```bash
+# ORP-PostHoc documents typically created manually
+# (post_hoc flag must be set explicitly in YAML)
+```
+
+Example structure:
+```yaml
+orp_version: '0.2'
+post_hoc: true
+authors:
+  - name: Analyst Name
+    role: analyst  # or reconstructor
+    affiliation: Organization
+# ... rest of document
+```
+
+**Key fields:**
+- `post_hoc: true` — Marks as retrospective analysis
+- `role: analyst` or `role: reconstructor` — Not original decision-maker
+- `accountability_gap` — Documents what's unknowable
+
+**Time investment:** 1-3 days, depending on available source material and research depth.
+
+### Differences from ORP-Basic
+
+| Aspect | ORP-Basic | ORP-PostHoc |
+|--------|-----------|-------------|
+| **Timing** | Prospective (before decision) | Retrospective (after decision) |
+| **Author role** | Decision-maker or steward | Analyst or reconstructor |
+| **Accountability** | Real-time documentation | Accountability gap documentation |
+| **Purpose** | Govern ongoing decisions | Understand past decisions |
+| **Extensions** | Optional | Often needed (orp-ai-training-v1, etc.) |
+
+### Real Examples
+
+See our [AI training datasets analysis](/examples/ai-training-analysis) for four comprehensive ORP-PostHoc reconstructions:
+- ImageNet (1.28M images)
+- LAION-5B (5.85B pairs)
+- Common Crawl (250TB)
+- GitHub Copilot (100M+ repos)
+
+**Time investment:** 1-3 days of research and documentation per dataset.
 
 ## ORP-Standard (Layers 1-3)
 

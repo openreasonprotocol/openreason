@@ -4,7 +4,7 @@ uvicorn[standard]>=0.27.0
 python-multipart>=0.0.6
 
 # ORP Validator (from PyPI)
-orp-validator>=0.3.0
+orp-validator==0.4.0
 
 # Data validation
 pydantic>=2.5.0

@@ -21,7 +21,15 @@ app = FastAPI(
     description=(
         "REST API for validating OpenReason Protocol (ORP) documents.\n\n"
         "The OpenReason Protocol is a public standard for transparent, "
-        "simulatable reasoning in policy, AI, and democratic decision-making."
+        "simulatable reasoning in policy, AI, and democratic decision-making.\n\n"
+        "**Supported Versions:**\n"
+        "- ORP v0.1 (backward compatible)\n"
+        "- ORP v0.2 (post-hoc reconstruction, extensions, flexible schema)\n\n"
+        "**Features:**\n"
+        "- Auto-detection of document version\n"
+        "- Full schema validation with detailed errors\n"
+        "- Quick compliance level checking (ORP-Basic, ORP-Standard, ORP-Full, ORP-PostHoc)\n"
+        "- Document comparison (diff)"
     ),
     version="0.4.0",
     docs_url="/docs",
@@ -67,7 +75,7 @@ async def root():
     return {
         "name": "OpenReason Protocol Validator API",
         "version": "0.4.0",
-        "orp_version": "0.1",
+        "orp_versions_supported": ["0.1", "0.2"],
         "validator_version": orp_validator.__version__,
         "endpoints": {
             "health": "/health",

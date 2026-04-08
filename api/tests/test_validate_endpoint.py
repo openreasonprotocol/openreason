@@ -184,3 +184,46 @@ l1_data_provenance:
         data = response.json()
         # Should parse JSON as YAML (YAML is superset of JSON)
         assert "compliance_level" in data
+
+    def test_validate_orp_v02_basic_success(self, client, valid_orp_v02_basic):
+        """Test validation of ORP v0.2 Basic document."""
+        response = client.post(
+            "/api/v1/validate",
+            json={"document": valid_orp_v02_basic}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["valid"] is True
+        assert data["compliance_level"] == "ORP-Basic"
+        assert data["layers_present"]["l1_data_provenance"] is True
+        # Check metadata includes v0.2
+        if data["metadata"]:
+            assert data["metadata"]["orp_version"] == "0.2"
+
+    def test_validate_orp_v02_posthoc(self, client, valid_orp_v02_posthoc):
+        """Test validation of ORP v0.2 post-hoc document."""
+        response = client.post(
+            "/api/v1/validate",
+            json={"document": valid_orp_v02_posthoc}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["valid"] is True
+        assert data["compliance_level"] == "ORP-PostHoc"
+        assert data["layers_present"]["l1_data_provenance"] is True
+        # Check for extension warning
+        assert any("orp-ai-training-v1" in w for w in data.get("warnings", []))
+
+    def test_validate_backward_compatibility(self, client, valid_orp_basic):
+        """Test v0.1 documents still validate correctly (backward compatibility)."""
+        response = client.post(
+            "/api/v1/validate",
+            json={"document": valid_orp_basic}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["compliance_level"] == "ORP-Basic"
+        # v0.1 document should validate without issues
+        assert "compliance_level" in data
+        if data["metadata"]:
+            assert data["metadata"]["orp_version"] == "0.1"

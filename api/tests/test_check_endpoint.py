@@ -188,3 +188,15 @@ l3_empathy_mapping:
         assert data["layers_present"]["l4_accountability_ledger"] is False
         assert data["layers_present"]["l5_fork_registry"] is False
         assert "ORP-Full" in data["next_steps"]
+
+    def test_check_orp_v02_posthoc(self, client, valid_orp_v02_posthoc):
+        """Test quick check of ORP v0.2 post-hoc document."""
+        response = client.post(
+            "/api/v1/check",
+            json={"document": valid_orp_v02_posthoc}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["compliance_level"] == "ORP-PostHoc"
+        assert data["layers_present"]["l1_data_provenance"] is True
+        assert "Post-hoc reconstruction" in data["next_steps"]

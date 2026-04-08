@@ -202,6 +202,11 @@ def _determine_compliance(doc_data: Dict, layers_present: Dict[str, bool]) -> st
     if not has_header:
         return "Non-compliant"
 
+    # Check for post-hoc reconstruction (ORP v0.2)
+    is_post_hoc = doc_data.get("post_hoc", False)
+    if is_post_hoc and layers_present["l1_data_provenance"]:
+        return "ORP-PostHoc"
+
     # Check compliance levels
     if all(
         [
@@ -231,7 +236,9 @@ def _determine_compliance(doc_data: Dict, layers_present: Dict[str, bool]) -> st
 
 def _get_next_steps(compliance_level: str) -> str:
     """Get guidance for achieving higher compliance."""
-    if compliance_level == "ORP-Basic":
+    if compliance_level == "ORP-PostHoc":
+        return "Post-hoc reconstruction document. Consider adding L2-L5 for comprehensive analysis."
+    elif compliance_level == "ORP-Basic":
         return "To reach ORP-Standard, add L2 (Consequence Simulation) and L3 (Empathy Mapping)"
     elif compliance_level == "ORP-Standard":
         return "To reach ORP-Full, add L4 (Accountability Ledger) and L5 (Fork Registry)"

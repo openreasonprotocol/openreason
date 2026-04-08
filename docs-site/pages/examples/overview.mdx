@@ -21,7 +21,9 @@ A strong ORP example document:
 
 ## Available Examples
 
-### Danish Property Tax Reform (ORP-Full)
+### ORP v0.1: Policy Analysis
+
+#### Danish Property Tax Reform (ORP-Full)
 
 <div className="orp-card">
   <div className="orp-card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -40,6 +42,122 @@ A strong ORP example document:
   <div style={{ marginTop: '1rem' }}>
     <a href="/examples/danish-property-tax" style={{ color: 'var(--orp-blue-600)', textDecoration: 'none', fontWeight: 500 }}>
       Read the full walkthrough →
+    </a>
+  </div>
+</div>
+
+### ORP v0.2: AI Training Datasets (Post-Hoc Reconstruction)
+
+The following examples demonstrate **post-hoc reconstruction** of major AI training datasets using ORP v0.2. These show how ORP can be applied retrospectively to document datasets that lack adequate transparency documentation.
+
+**Key features demonstrated:**
+- Post-hoc reconstruction (`post_hoc: true` flag)
+- Extension system (orp-ai-training-v1, orp-license-v1)
+- Accountability gap documentation
+- Vulnerable population assessment
+- Multi-modal data handling
+
+#### Comparative Analysis
+
+<div className="orp-card" style={{ marginBottom: '1rem' }}>
+  <div className="orp-card-title">
+    <span>AI Training Datasets: Comparative Analysis</span>
+  </div>
+  <div className="orp-card-desc" style={{ marginTop: '0.5rem' }}>
+    Comprehensive analysis across all four AI training dataset reconstructions, revealing patterns of constitutive opacity, systemic harm, and accountability gaps across the AI ecosystem. Shows what ORP enables for prospective governance.
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <strong>Datasets analyzed:</strong> ImageNet, LAION-5B, Common Crawl, GitHub Copilot<br />
+    <strong>Total documentation:</strong> 8,328 lines of ORP YAML<br />
+    <strong>Status:</strong> Post-hoc reconstruction
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <a href="/examples/ai-training-analysis" style={{ color: 'var(--orp-blue-600)', textDecoration: 'none', fontWeight: 500 }}>
+      Read the comparative analysis →
+    </a>
+  </div>
+</div>
+
+#### ImageNet ILSVRC-2012 Training Data
+
+<div className="orp-card" style={{ marginBottom: '1rem' }}>
+  <div className="orp-card-title">
+    <span>ImageNet Training Data Reconstruction</span>
+  </div>
+  <div className="orp-card-desc" style={{ marginTop: '0.5rem' }}>
+    The most influential training dataset in AI history (1.28M images). Post-hoc reconstruction revealing how constitutive decisions from 2009 (WordNet taxonomy, web scraping) shaped computer vision AI for over a decade.
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <strong>Compliance:</strong> ORP-PostHoc<br />
+    <strong>Key findings:</strong> 80%+ North American/European images, 54% person categories later found offensive<br />
+    <strong>Domain:</strong> AI Training — Computer Vision
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <a href="/examples/imagenet-training" style={{ color: 'var(--orp-blue-600)', textDecoration: 'none', fontWeight: 500 }}>
+      View reconstruction →
+    </a>
+  </div>
+</div>
+
+#### LAION-5B Training Data
+
+<div className="orp-card" style={{ marginBottom: '1rem' }}>
+  <div className="orp-card-title">
+    <span>LAION-5B Training Data Reconstruction</span>
+  </div>
+  <div className="orp-card-desc" style={{ marginTop: '0.5rem' }}>
+    Web-scale image-text dataset (5.85B pairs) used to train Stable Diffusion. Post-hoc reconstruction revealing how absence of prospective safety filtering led to 3,226 CSAM URLs distributed for 21 months.
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <strong>Compliance:</strong> ORP-PostHoc<br />
+    <strong>Key findings:</strong> 3,226 CSAM URLs, medical privacy violations, no hash-matching<br />
+    <strong>Domain:</strong> AI Training — Multi-modal (image-text)
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <a href="/examples/laion5b-training" style={{ color: 'var(--orp-blue-600)', textDecoration: 'none', fontWeight: 500 }}>
+      View reconstruction →
+    </a>
+  </div>
+</div>
+
+#### Common Crawl Training Data
+
+<div className="orp-card" style={{ marginBottom: '1rem' }}>
+  <div className="orp-card-title">
+    <span>Common Crawl Training Data Reconstruction</span>
+  </div>
+  <div className="orp-card-desc" style={{ marginTop: '0.5rem' }}>
+    The largest open web crawl dataset (250TB, 250B pages) training GPT-3, GPT-4, LLaMA, Claude, Gemini. Post-hoc reconstruction revealing how constitutive decisions from 2008 resulted in 90%+ English hegemony and linguistic extinction.
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <strong>Compliance:</strong> ORP-PostHoc<br />
+    <strong>Key findings:</strong> 90%+ English content, 4-5B people affected by linguistic exclusion<br />
+    <strong>Domain:</strong> AI Training — NLP (text)
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <a href="/examples/common-crawl-training" style={{ color: 'var(--orp-blue-600)', textDecoration: 'none', fontWeight: 500 }}>
+      View reconstruction →
+    </a>
+  </div>
+</div>
+
+#### GitHub Copilot Training Data
+
+<div className="orp-card" style={{ marginBottom: '1rem' }}>
+  <div className="orp-card-title">
+    <span>GitHub Copilot Training Data Reconstruction</span>
+  </div>
+  <div className="orp-card-desc" style={{ marginTop: '0.5rem' }}>
+    Code training dataset (100M+ repositories) powering AI pair programming tool with $100M+ revenue. Post-hoc reconstruction revealing GPL violations, license attribution stripping, and open source labor exploitation.
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <strong>Compliance:</strong> ORP-PostHoc<br />
+    <strong>Key findings:</strong> $1-10B lawsuit pending, 10M+ OSS maintainers receive $0 compensation<br />
+    <strong>Domain:</strong> AI Training — Code
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <a href="/examples/github-copilot-training" style={{ color: 'var(--orp-blue-600)', textDecoration: 'none', fontWeight: 500 }}>
+      View reconstruction →
     </a>
   </div>
 </div>

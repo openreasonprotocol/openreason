@@ -1,0 +1,171 @@
+# LAION-5B Training Dataset Reconstruction
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+This is a **post-hoc reconstruction** using ORP v0.2. The original dataset creators did not produce this documentation. This demonstrates what ORP would capture if applied prospectively to dataset creation.
+</Callout>
+
+## Overview
+
+LAION-5B (Large-scale Artificial Intelligence Open Network) is a massive dataset of **5.85 billion image-text pairs** released in March 2022. It was created as an open-source alternative to proprietary datasets and used to train major generative AI models including Stable Diffusion.
+
+The dataset was **taken offline in December 2023** after the Stanford Internet Observatory discovered it contained 3,226 CSAM (Child Sexual Abuse Material) URLs, along with medical privacy violations and non-consensual intimate imagery. It was re-released in August 2024 with problematic URLs removed.
+
+This ORP document reconstructs the dataset's constitution to demonstrate how **prospective Layer 3 empathy mapping could have prevented systematic safety failures**.
+
+## Key Metadata
+
+- **Dataset Size**: 5.85 billion image-text pairs
+- **Data Types**: Image URLs + alt-text/captions (federated, not hosted)
+- **Collection Period**: September 2021 - March 2022
+- **Source Data**: Common Crawl (December 2020 - March 2021 snapshots)
+- **Filtering Method**: OpenAI's CLIP model (similarity threshold > 0.28)
+- **Compliance Level**: **ORP-PostHoc** (post-hoc reconstruction)
+- **ORP Version**: 0.2
+- **Extensions Used**: orp-ai-training-v1
+
+## Data Provenance Highlights
+
+### Sources
+
+**Primary**: Common Crawl web archives (December 2020 - March 2021, 4 monthly snapshots)
+**Secondary**: OpenAI's CLIP ViT-B/32 and ViT-L/14 models for filtering
+**Tertiary**: LAION-400M (predecessor dataset, September 2021) methodology
+
+### Collection Methods
+
+**Six-phase pipeline**:
+
+1. Download Common Crawl WAT files (Web Archive Transformation format, metadata only)
+2. Extract all `<img>` tags with alt text, captions, or surrounding text
+3. Download image URLs (sample for CLIP processing, not full retrieval)
+4. Filter image-text pairs using CLIP similarity threshold (cosine similarity > 0.28 for ViT-B/32)
+5. De-duplicate using URL matching
+6. Distribute as parquet files containing (URL, text, metadata) tuples
+
+**Key technical details**:
+- **Processing**: Scraped 50+ billion candidate pairs, filtered to 5.85B using CLIP
+- **Compute**: Estimated 10,000-20,000 GPU hours (A100 equivalents)
+- **Storage**: ~250 TB for URLs + metadata (parquet format), 0 TB for images (federated)
+- **NSFW filtering**: Minimal (only extremely explicit content filtered using CLIP-based classifier)
+
+### Language and Geographic Distribution
+
+<Callout type="warning">
+**Heavily Western-skewed**:
+- **English-language pairs**: 2.32B (39.7% of total)
+- **Western European languages** (German, French, Spanish): ~1.5B (25%)
+- **Asian languages** (Chinese, Japanese, Korean): ~500M (8.5%)
+- **All other languages**: ~1.5B (25%)
+
+Geographic bias inherited from Common Crawl (English-language web over-represented) and CLIP (trained on English captions, reducing similarity scores for non-English text).
+</Callout>
+
+### Critical Safety Failures
+
+<Callout type="error">
+**December 2023 Discovery** (Stanford Internet Observatory):
+
+**CSAM (Child Sexual Abuse Material)**:
+- 3,226 URLs identified containing known CSAM
+- All URLs matched NCMEC (National Center for Missing & Exploited Children) PhotoDNA hashes
+- Distribution constituted federal crime (18 U.S.C. § 2252)
+- Exposed for 21 months before discovery
+
+**Other Harmful Content**:
+- Medical privacy violations (patient photos from hospital systems)
+- Non-consensual intimate imagery (revenge porn)
+- Hate speech imagery
+- Graphic violence
+
+**Root Cause**: No safety filtering at design time. CLIP similarity threshold (0.28) prioritized dataset size over safety.
+</Callout>
+
+### Known Limitations
+
+1. **Federated Structure Risks**: Dataset contains URLs, not images. If source websites go offline, training data becomes unavailable. No version control for images (URLs may point to different content over time).
+
+2. **CLIP Filtering Bias**: CLIP model trained primarily on English captions. Non-English pairs systematically under-selected due to lower similarity scores.
+
+3. **Minimal Content Moderation**: Only "hardcore pornography" filtered (5% of candidates). No CSAM detection, no medical privacy checks, no consent verification.
+
+4. **No Copyright Vetting**: No systematic analysis of copyright status for 5.85B images. Relied on "web scraping is legal" assumption.
+
+5. **Label Quality**: Alt-text quality varies drastically. Many alt-texts are SEO spam, generic ("image"), or completely wrong. No systematic quality audit.
+
+### Accountability Gaps
+
+<Callout type="error">
+**Critical gaps documented in this reconstruction**:
+
+1. **No Vulnerable Population Assessment**: Dataset creators did not assess risks to vulnerable populations (CSAM victims, medical patients, individuals in non-consensual imagery). Layer 3 empathy mapping would have identified these groups.
+
+2. **No Safety-By-Design**: Safety filtering was post-hoc (NSFW classifier only). No hash-matching against known CSAM databases (NCMEC PhotoDNA), despite hash-matching being standard practice for user-generated content platforms.
+
+3. **Cost-Benefit Never Documented**: Hash-matching would have cost $50-100K and 2-3 months delay. This was never weighed against Tier 1 harm (child exploitation). ORP Layer 2 would have forced this simulation.
+
+4. **No Takedown Process**: No governance mechanism for removing problematic content after release. Stanford's discovery in December 2023 triggered ad-hoc takedown, but no clear process existed.
+
+5. **Downstream Use Tracking**: No mechanism to track which models trained on LAION-5B. Stable Diffusion, DALL-E 2 reproductions, and other models inherit dataset biases and safety gaps. No audit trail.
+
+6. **Re-release Governance**: August 2024 re-release (Re-LAION-5B) removed 2,236 URLs but governance process undocumented. No public explanation for which URLs removed or why count differs from 3,226 originally reported.
+</Callout>
+
+## Key Findings
+
+This post-hoc reconstruction reveals:
+
+1. **Safety filtering was post-hoc, not prospective** - CLIP threshold prioritized scale over safety
+
+2. **3,226 CSAM URLs distributed for 21 months** - Constituted federal crime (18 U.S.C. § 2252)
+
+3. **Layer 3 empathy mapping would have identified victims** - CSAM victims, medical patients, non-consenting individuals
+
+4. **Hash-matching remediation was feasible** - Cost: $50-100K, delay: 2-3 months, would have prevented Tier 1 harm
+
+5. **Federated structure created governance vacuum** - No clear accountability for downstream safety failures
+
+## Why This Matters
+
+LAION-5B demonstrates that **absence of prospective governance creates systemic harm**:
+
+- **Scale prioritized over safety**: 5.85B pairs > safety filtering
+- **Downstream propagation**: Stable Diffusion and other models trained on LAION inherit safety gaps
+- **Governance gaps only discovered post-hoc**: 21 months after release
+- **Standard academic documentation insufficient**: LAION papers did not document safety decisions
+
+**ORP enables**: Prospective safety analysis (Layer 3 empathy mapping) and consequence simulation (Layer 2) before dataset release.
+
+## Timeline
+
+- **September 2021**: LAION-400M released (predecessor)
+- **March 2022**: LAION-5B released (5.85B pairs)
+- **August 2022**: Stable Diffusion v1.0 released (trained on LAION subset)
+- **December 2023**: Stanford Internet Observatory discovers 3,226 CSAM URLs
+- **December 2023**: LAION-5B taken offline
+- **August 2024**: Re-LAION-5B released (2,236 URLs removed)
+
+## Related Research
+
+- **Original paper**: Schuhmann et al. (2022) "LAION-5B: An open large-scale dataset for training next generation image-text models"
+- **Safety failures**: Thiel et al. (2023, Stanford Internet Observatory) "Identifying and Eliminating CSAM in the LAION Datasets"
+- **Bias analysis**: Birhane et al. (2021) "Multimodal datasets: misogyny, pornography, and malignant stereotypes"
+
+## Download
+
+- [View Full ORP Document (YAML)](https://gitlab.com/publicreason/orp/-/raw/main/examples/laion5b_training_data.yaml) - 2,162 lines, 123KB
+- [Validate Online](/tools/validator) - Check compliance and structure
+
+## Related Examples
+
+- [ImageNet Training Data](/examples/imagenet-training) - Foundation computer vision dataset (1.28M images)
+- [Common Crawl Training Data](/examples/common-crawl-training) - Web text corpus (250TB)
+- [GitHub Copilot Training Data](/examples/github-copilot-training) - Code training dataset
+- [AI Training Datasets Analysis](/examples/ai-training-analysis) - Comparative analysis across all four datasets
+
+---
+
+<Callout>
+**Note**: This reconstruction is based on published papers, technical reports, Stanford Internet Observatory research, and public documentation. It represents an external analyst's best effort to document the dataset's constitution and safety failures using available information. Original LAION creators were not involved in producing this ORP document.
+</Callout>

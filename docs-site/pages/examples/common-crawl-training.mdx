@@ -1,0 +1,187 @@
+# Common Crawl Training Data Reconstruction
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+This is a **post-hoc reconstruction** using ORP v0.2. The original dataset creators did not produce this documentation. This demonstrates what ORP would capture if applied prospectively to dataset creation.
+</Callout>
+
+## Overview
+
+Common Crawl is the largest open web crawl dataset, providing monthly snapshots of billions of web pages since 2008. As of 2024, it contains **250+ billion web pages** totaling **3+ petabytes** of compressed data across 180+ monthly snapshots.
+
+Common Crawl is the **primary training data source** for virtually all large language models (LLMs) developed 2018-2024:
+- GPT-3 (2020): 410 billion tokens (60% of training data)
+- LLaMA (Meta 2023): 1.4 trillion tokens (67% of training data)
+- Claude, Gemini, PaLM, BLOOM, and 100+ other LLMs
+
+This ORP document reconstructs the dataset's constitution to demonstrate how **constitutive decisions made in 2008 resulted in systematic linguistic exclusion affecting 4-5 billion people**.
+
+## Key Metadata
+
+- **Dataset Size**: 250+ billion web pages, 3+ petabytes
+- **Data Types**: HTML, text, images, metadata
+- **Collection Period**: September 2008 - Present (monthly snapshots)
+- **Snapshots**: 180+ monthly crawls
+- **Coverage**: Universal web crawl (no geographic or linguistic targeting)
+- **Compliance Level**: **ORP-PostHoc** (post-hoc reconstruction)
+- **ORP Version**: 0.2
+- **Extensions Used**: orp-ai-training-v1
+
+## Data Provenance Highlights
+
+### Sources
+
+**Primary**: World Wide Web (universal crawl, no geographic or linguistic targeting)
+**Seed URLs**: 2008-2021: Alexa Top 1M websites (75%+ English), 2021-present: Internal URL database
+
+### Collection Methods
+
+**Monthly crawling process**:
+
+1. Start with seed URLs (historically Alexa Top 1M, now internal database)
+2. Crawl seed URLs and extract all links
+3. Follow links recursively (breadth-first traversal)
+4. Store raw HTML, text, metadata in WARC format
+5. Deduplicate within snapshot
+6. Publish monthly snapshots publicly
+
+**Key technical details**:
+- **Processing**: Crawls billions of pages per month
+- **Storage**: 3+ petabytes compressed, 10+ petabytes uncompressed
+- **Coverage**: 180+ countries, but heavily English-dominated
+- **Filtering**: Minimal (adult content only, no CSAM detection)
+
+### Linguistic Distribution
+
+<Callout type="error">
+**Extreme linguistic hegemony**:
+- **English**: 90%+ of content (estimated)
+- **WEIRD languages** (English, French, German, Spanish): 95%+ combined
+- **Low-resource languages** (6,900+ languages): \<0.1% each, many completely absent
+- **4-5 billion people** whose languages have minimal or zero representation
+
+**Root cause**: Universal crawl without linguistic diversity targets. Encoded existing web linguistic hegemony (90%+ English Alexa Top 1M) into dataset.
+</Callout>
+
+### Critical Harm: Digital Linguistic Extinction
+
+<Callout type="error">
+**Tier 1 Existential Harm**:
+
+**Language Extinction Crisis**:
+- 50-90% of world's 7,000 languages may be extinct by 2100
+- AI trained on Common Crawl learns a world where these languages never existed
+- Once last fluent speaker dies, language cannot be reconstructed
+- Unlike LAION-5B CSAM (post-hoc remediation possible), **extinction is irreversible**
+
+**Affected Populations**:
+- 4-5 billion people whose languages have \<0.1% representation each
+- Indigenous communities with oral traditions (not well-represented on web)
+- Minority language speakers in multilingual countries
+- Diaspora communities maintaining heritage languages
+
+**Downstream Impact**:
+- LLMs trained on Common Crawl perform poorly on low-resource languages
+- Translation systems fail for minority languages
+- Cultural knowledge encoded in language becomes inaccessible to AI
+- Reinforces English linguistic hegemony in AI era
+</Callout>
+
+### Known Limitations
+
+1. **Linguistic Hegemony**: 90%+ English/WEIRD content. No linguistic diversity targets despite 15 years of evolution (2008-2024).
+
+2. **Temporal Bias**: Crawls capture web as it exists at snapshot time. Historical content over-represented (older websites crawled repeatedly), new content under-represented until discovered.
+
+3. **Geographic Bias**: Seed URLs (Alexa Top 1M) were English-dominated. Internal URL database (2021+) maintains similar distribution.
+
+4. **Quality Variance**: No systematic quality filtering. Includes spam, SEO content, scraped text, machine-generated content.
+
+5. **Copyright and Consent**: No systematic analysis of copyright status or consent for AI training. Relies on "web scraping is legal" assumption.
+
+### Accountability Gaps
+
+<Callout type="error">
+**Critical gaps documented in this reconstruction**:
+
+1. **No Linguistic Diversity Analysis (2008-2024)**: Common Crawl never published linguistic distribution analysis. First external analysis in 2019 (Kreutzer et al.) revealed 90%+ English hegemony. Creators did not document this decision or its rationale.
+
+2. **Alternatives Never Evaluated**: Targeted linguistic diversity could cost $1-5M/year (20-50% budget increase) to preserve 100+ major languages, or $10-50M/year for 1,000+ languages. These alternatives were never publicly evaluated or documented.
+
+3. **AI Training Use Case Not Anticipated**: Common Crawl created for web research (2008), became primary LLM training data (2018+). No governance mechanism to reassess constitutive decisions when use case changed.
+
+4. **No Vulnerable Population Assessment**: Layer 3 empathy mapping would have identified low-resource language communities as vulnerable population bearing Tier 1 irreversible harm. This analysis was never conducted.
+
+5. **Consent Mechanism Absent**: No mechanism for website owners to opt-out of AI training use (distinct from web crawling). robots.txt blocks crawling, not downstream use.
+
+6. **Methodology Changes Undocumented**: 15 years of evolution (deduplication 2013, adult filtering 2018, internal URLs 2021), but decisions and trade-offs not publicly documented.
+</Callout>
+
+## Key Findings
+
+This post-hoc reconstruction reveals:
+
+1. **Constitutive decision in 2008 (universal crawl, no linguistic targets) never revisited** - Despite AI training becoming primary use case by 2018
+
+2. **90%+ English hegemony baked into foundational AI infrastructure** - GPT-3, GPT-4, LLaMA, Claude, Gemini all trained on Common Crawl
+
+3. **4-5 billion people affected by linguistic exclusion** - Low-resource languages \<0.1% representation each
+
+4. **Tier 1 irreversible harm (language extinction)** - Unlike CSAM (remediable), extinction cannot be undone
+
+5. **Alternatives feasible but never evaluated** - $1-50M/year for linguistic diversity (20-50% budget increase)
+
+## Why This Matters
+
+Common Crawl demonstrates that **constitutive opacity creates systemic harm at civilizational scale**:
+
+- **15 years of linguistic hegemony**: 2008-2024, no course correction
+- **Systemic bias across entire AI ecosystem**: Not just one model, but GPT-3, GPT-4, LLaMA, Claude, Gemini, and 100+ LLMs
+- **Irreversible harm**: Language extinction cannot be remediated post-hoc
+- **Governance gaps**: No mechanism to reassess constitutive decisions when use case changed (web research → AI training)
+
+**ORP enables**: Prospective linguistic diversity analysis (Layer 1), consequence simulation (Layer 2), and empathy mapping (Layer 3) before 15 years of English-dominant data creation.
+
+## Timeline
+
+- **September 2008**: Common Crawl begins monthly web crawls
+- **2013**: Deduplication added
+- **2018**: Adult content filtering added, AI training becomes primary use case
+- **2019**: First external linguistic distribution analysis (Kreutzer et al.)
+- **2021**: Switched from Alexa Top 1M to internal URL database
+- **2024**: No linguistic diversity targets implemented
+
+## Linguistic Distribution Analysis
+
+| Language Category | % of Content | Speakers Affected |
+|-------------------|--------------|-------------------|
+| English | ~60% | 1.5 billion |
+| WEIRD languages (French, German, Spanish, etc.) | ~35% | 1.5 billion |
+| Major non-WEIRD (Chinese, Arabic, Hindi) | ~4% | 2.5 billion |
+| Low-resource languages (6,900+ languages) | \<1% | 2+ billion |
+
+## Related Research
+
+- **Original documentation**: Common Crawl Foundation (2008-2024) monthly releases
+- **Linguistic bias**: Kreutzer et al. (2019) "Quality at a Glance: An Audit of Web-Crawled Multilingual Datasets"
+- **LLM training**: Brown et al. (2020) "Language Models are Few-Shot Learners" (GPT-3 paper)
+- **Language extinction**: Krauss (1992) "The world's languages in crisis"
+
+## Download
+
+- [View Full ORP Document (YAML)](https://gitlab.com/publicreason/orp/-/raw/main/examples/common_crawl_training_data.yaml) - 2,232 lines, 123KB
+- [Validate Online](/tools/validator) - Check compliance and structure
+
+## Related Examples
+
+- [ImageNet Training Data](/examples/imagenet-training) - Foundation computer vision dataset (1.28M images)
+- [LAION-5B Training Data](/examples/laion5b-training) - Web-scale image-text dataset (5.85B pairs)
+- [GitHub Copilot Training Data](/examples/github-copilot-training) - Code training dataset
+- [AI Training Datasets Analysis](/examples/ai-training-analysis) - Comparative analysis across all four datasets
+
+---
+
+<Callout>
+**Note**: This reconstruction is based on Common Crawl documentation, published research, and external analyses. It represents an external analyst's best effort to document the dataset's constitution and linguistic impact using available information. Common Crawl Foundation was not involved in producing this ORP document.
+</Callout>

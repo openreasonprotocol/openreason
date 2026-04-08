@@ -1,0 +1,202 @@
+# AI Training Datasets: Comparative Analysis
+
+import { Callout } from 'nextra/components'
+
+<Callout>
+This analysis examines four major AI training datasets using ORP v0.2 post-hoc reconstruction to reveal patterns of constitutive opacity, systemic harm, and accountability gaps across the AI ecosystem.
+</Callout>
+
+## Overview
+
+We reconstructed four foundational AI training datasets using the OpenReason Protocol v0.2:
+
+1. **[ImageNet ILSVRC-2012](/examples/imagenet-training)** - Computer vision dataset (1.28M images)
+2. **[LAION-5B](/examples/laion5b-training)** - Web-scale image-text pairs (5.85B)
+3. **[Common Crawl](/examples/common-crawl-training)** - Web text corpus (250TB, 250B pages)
+4. **[GitHub Copilot](/examples/github-copilot-training)** - Code training dataset (100M+ repositories)
+
+**Total documentation**: 8,328 lines of ORP YAML capturing constitutive decisions, accountability gaps, and systemic harms.
+
+## Why These Four Datasets?
+
+These datasets represent the **foundational infrastructure of modern AI**:
+
+- **ImageNet** enabled the deep learning revolution (AlexNet 2012 → ResNet 2015 → Vision Transformers 2020)
+- **LAION-5B** powers generative AI (Stable Diffusion, DALL-E reproductions)
+- **Common Crawl** trains virtually all large language models (GPT-3, GPT-4, LLaMA, Claude, Gemini)
+- **GitHub Copilot** represents code AI (1M+ users, $100M+ revenue)
+
+Together, they demonstrate how **constitutive decisions made 2008-2022 shape AI systems deployed in 2024**.
+
+## Comparative Table
+
+| Dataset | Size | Domain | Key Harm | Tier | Affected Population | Remediation |
+|---------|------|--------|----------|------|---------------------|-------------|
+| **ImageNet** | 1.28M images | Computer vision | Taxonomic bias, offensive person categories | 3-4 | Billions (downstream model bias) | Possible (categories deprecated 2021) |
+| **LAION-5B** | 5.85B pairs | Multi-modal | 3,226 CSAM URLs, medical privacy violations | 1 | CSAM victims, medical patients | Possible (URLs removed Aug 2024) |
+| **Common Crawl** | 250TB, 250B pages | NLP | 90%+ English hegemony, linguistic extinction | 1 | 4-5B people (low-resource languages) | Impossible (extinction irreversible) |
+| **GitHub Copilot** | 100M+ repos | Code | GPL violations, OSS labor exploitation | 2-3 | 10M+ OSS maintainers | Impossible (baked into model weights) |
+
+**Harm Tiers**:
+- **Tier 1**: Existential (CSAM, language extinction)
+- **Tier 2**: Legal ($1-10B lawsuits)
+- **Tier 3**: Economic (labor exploitation, bias)
+- **Tier 4**: Ecosystem (sustainability crises)
+
+## Common Patterns Across All Four
+
+### 1. Constitutive Opacity
+
+<Callout type="error">
+**None of the four datasets documented constitutive decisions prospectively.**
+
+- **ImageNet (2009)**: WordNet taxonomy selection rationale not documented
+- **LAION-5B (2022)**: No safety filtering justification documented
+- **Common Crawl (2008)**: Universal crawl decision (no linguistic targets) not documented
+- **GitHub Copilot (2021)**: License non-compliance rationale not documented
+
+All four relied on academic papers (Deng et al. 2009, Schuhmann et al. 2022, Chen et al. 2021) that **did not capture constitutive-layer decisions**.
+</Callout>
+
+### 2. Absent Nodes (Layer 3)
+
+All four datasets had **absent nodes** - stakeholders with zero representation in decision-making:
+
+| Dataset | Absent Node | Impact |
+|---------|-------------|---------|
+| **ImageNet** | 49,000 Amazon Mechanical Turk workers | Shaped annotations but had no governance voice |
+| **LAION-5B** | CSAM victims, medical patients | 3,226 CSAM URLs, medical privacy violations |
+| **Common Crawl** | 4-5B low-resource language speakers | 90%+ English hegemony, linguistic extinction |
+| **GitHub Copilot** | 10M+ open source maintainers | $0 compensation despite $100M+ revenue |
+
+**Pattern**: Vulnerable populations systematically excluded from governance, then disproportionately harmed.
+
+### 3. Accountability Gaps (Layer 4)
+
+<Callout type="warning">
+**All four datasets have critical accountability gaps:**
+
+1. **Alternatives never evaluated**: License-compliant training, linguistic diversity targets, safety filtering, worker compensation
+2. **Cost-benefit never documented**: Hash-matching ($50-100K), revenue sharing ($10M/year), linguistic diversity ($1-50M/year)
+3. **Governance mechanisms absent**: No process to address harms discovered years later
+4. **Downstream use untracked**: No audit trail for models trained on these datasets
+</Callout>
+
+### 4. Systemic Harm Propagation
+
+**Downstream cascade**: Dataset biases propagate to models, then to deployed systems, affecting billions of people.
+
+**Example cascade**:
+1. ImageNet (2009): 80% North American/European images
+2. → AlexNet/ResNet/Vision Transformers trained on ImageNet
+3. → Facial recognition systems deployed globally
+4. → 40% higher error rates on non-Western faces (Buolamwini & Gebru 2018)
+5. → Millions misidentified, some wrongfully arrested
+
+Similar cascades for LAION-5B → Stable Diffusion, Common Crawl → GPT-4, GitHub Copilot → 1M+ developers.
+
+## Unique Insights by Dataset
+
+### ImageNet: Taxonomic Decisions Have Decade-Long Impact
+
+**Key insight**: WordNet taxonomy selection (2007-2009) embedded English-language Western categorization that persisted for 12 years (2009-2021). **54% of person categories later found offensive**, but taxonomy decisions were never documented or governable.
+
+**What ORP reveals**: Layer 1 data provenance would have documented taxonomy selection rationale. Layer 3 empathy mapping would have identified affected communities (people in offensive categories). Layer 4 accountability ledger would have enabled governance for deprecation decisions.
+
+### LAION-5B: Safety-By-Design vs Post-Hoc Filtering
+
+**Key insight**: CLIP threshold (0.28) prioritized dataset size over safety. **No hash-matching against NCMEC PhotoDNA** despite being standard practice for user-generated content platforms. Result: **3,226 CSAM URLs distributed for 21 months** (federal crime, 18 U.S.C. § 2252).
+
+**What ORP reveals**: Layer 2 consequence simulation would have forced cost-benefit analysis: hash-matching ($50-100K, 2-3 months delay) vs Tier 1 harm (child exploitation). Layer 3 empathy mapping would have identified CSAM victims as vulnerable population requiring absolute protection.
+
+### Common Crawl: Irreversible Harm at Civilizational Scale
+
+**Key insight**: Constitutive decision in 2008 (universal crawl, no linguistic targets) **never revisited despite AI training becoming primary use case by 2018**. Result: **90%+ English hegemony baked into GPT-3, GPT-4, LLaMA, Claude, Gemini, and 100+ LLMs**.
+
+**What ORP reveals**: Layer 3 empathy mapping would have identified 4-5B low-resource language speakers as vulnerable population bearing **Tier 1 irreversible harm** (language extinction). Unlike LAION-5B (post-hoc remediation possible), **extinction cannot be undone**.
+
+### GitHub Copilot: Legal Violations Baked Into Model Weights
+
+**Key insight**: GPL copyleft potentially violated, MIT/Apache attribution stripped, **DMCA § 1202 violations** (removing copyright management information). Result: **$1-10B lawsuit pending**, 10M+ OSS maintainers receive $0 compensation despite $100M+ revenue.
+
+**What ORP reveals**: Layer 1 data provenance would have documented license distribution. Layer 3 empathy mapping would have identified OSS maintainers as **absent node bearing disproportionate harm** (labor exploitation, license violations). Layer 2 consequence simulation would have evaluated alternatives (license-compliant training, revenue sharing).
+
+## What ORP Enables: Prospective Governance
+
+<Callout type="info">
+**Key finding**: All four datasets demonstrate that **constitutive opacity creates systemic harm**.
+
+**ORP enables prospective governance**:
+1. **Layer 1 (Data Provenance)**: Document constitutive decisions transparently
+2. **Layer 2 (Consequence Simulation)**: Simulate harms before dataset release
+3. **Layer 3 (Empathy Mapping)**: Identify vulnerable populations and absent nodes
+4. **Layer 4 (Accountability Ledger)**: Create governance mechanisms for course correction
+5. **Layer 5 (Fork Registry)**: Enable alternative datasets when harm discovered
+</Callout>
+
+## Implications
+
+### For AI Developers
+
+**Current practice**: Maximize training data size for best model performance, address harms post-hoc (if discovered).
+
+**ORP recommendation**: Conduct prospective governance analysis before training. Layer 2 consequence simulation and Layer 3 empathy mapping would have prevented:
+- LAION-5B: 3,226 CSAM URLs (Tier 1 harm)
+- GitHub Copilot: $1-10B lawsuit (Tier 2 harm)
+- Common Crawl: Linguistic extinction acceleration (Tier 1 harm)
+
+**Cost**: $50K-50M depending on dataset scale (hash-matching, linguistic diversity, license compliance).
+**Benefit**: Prevent Tier 1-2 harms, avoid lawsuits, improve ecosystem sustainability.
+
+### For Policymakers
+
+**Current regulation**: GDPR, EU AI Act focus on downstream use (deployed models). **Do not address constitutive layer** (dataset creation).
+
+**ORP recommendation**: Require prospective ORP documentation for AI training datasets:
+- Layer 1: Data provenance and constitutive decisions
+- Layer 3: Vulnerable population assessment
+- Layer 4: Accountability mechanisms
+
+**Precedent**: GDPR Article 35 (Data Protection Impact Assessment) for high-risk processing. ORP extends to **constitutive-layer impact assessment**.
+
+### For Researchers
+
+**Current academic documentation**: Papers focus on technical methods (CLIP filtering, WordNet taxonomy). **Do not capture constitutive decisions** (why these choices? what alternatives considered?).
+
+**ORP recommendation**: Publish ORP documents alongside academic papers. Example: Schuhmann et al. (2022) LAION-5B paper + ORP document would have documented safety filtering decisions, enabling community governance.
+
+### For the Public
+
+**Current transparency**: Academic papers (technical), terms of service (legal), model cards (limited). **No unified framework for constitutive-layer transparency**.
+
+**ORP enables**: Cross-dataset analysis (like this page), identifying systemic patterns, holding creators accountable for constitutive decisions.
+
+## Next Steps
+
+### Immediate Actions
+
+1. **Validate these examples**: Use the [online validator](/tools/validator) to check ORP compliance
+2. **Fork and improve**: All four examples are open for community improvement via [GitLab forks](https://gitlab.com/publicreason/orp)
+3. **Contribute more examples**: We need ORP reconstructions of more AI training datasets
+
+### Long-term Goals
+
+1. **Prospective ORP adoption**: Next AI training dataset documented using ORP *before* release
+2. **Regulatory integration**: ORP becomes standard for AI training data impact assessment
+3. **Community governance**: ORP documents enable stakeholder participation in dataset governance
+4. **Ecosystem sustainability**: Revenue sharing, attribution, consent mechanisms become standard practice
+
+## Download All Examples
+
+- [ImageNet (YAML)](https://gitlab.com/publicreason/orp/-/raw/main/examples/imagenet_training_data.yaml) - 1,513 lines, 88KB
+- [LAION-5B (YAML)](https://gitlab.com/publicreason/orp/-/raw/main/examples/laion5b_training_data.yaml) - 2,162 lines, 123KB
+- [Common Crawl (YAML)](https://gitlab.com/publicreason/orp/-/raw/main/examples/common_crawl_training_data.yaml) - 2,232 lines, 123KB
+- [GitHub Copilot (YAML)](https://gitlab.com/publicreason/orp/-/raw/main/examples/github_copilot_training_data.yaml) - 2,421 lines, 132KB
+
+---
+
+<Callout>
+**Methodology note**: These four post-hoc reconstructions are based on published papers, technical reports, legal filings, and external research. They represent external analysts' best efforts to document constitutive decisions using available information. Original dataset creators were not involved in producing these ORP documents.
+
+**Validation**: All four examples validate successfully as **ORP-PostHoc** (ORP v0.2 compliance level).
+</Callout>

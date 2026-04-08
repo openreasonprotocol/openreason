@@ -1,0 +1,136 @@
+# ImageNet ILSVRC-2012 Training Data Reconstruction
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+This is a **post-hoc reconstruction** using ORP v0.2. The original dataset creators did not produce this documentation. This demonstrates what ORP would capture if applied prospectively to dataset creation.
+</Callout>
+
+## Overview
+
+ImageNet ILSVRC-2012 (ImageNet-1K) is the most influential training dataset in AI history, enabling the deep learning revolution following AlexNet's 2012 breakthrough. Created 2009-2012 at Princeton and Stanford under Fei-Fei Li's leadership, the dataset contains **~1.2 million training images** across **1,000 object categories**, annotated by 49,000 Amazon Mechanical Turk workers from 167 countries.
+
+This ORP document applies the five-layer framework to document ImageNet's constitution—not to critique the creators (who made principled decisions within 2009 constraints) but to demonstrate how constitutive-layer decisions shape AI systems for a decade.
+
+## Key Metadata
+
+- **Dataset Size**: 1,281,167 training images
+- **Categories**: 1,000 object classes from WordNet
+- **Data Types**: JPEG images (photographs only)
+- **Collection Period**: 2009-2012
+- **Annotators**: 49,000 Amazon Mechanical Turk workers (167 countries)
+- **Compliance Level**: **ORP-PostHoc** (post-hoc reconstruction)
+- **ORP Version**: 0.2
+- **Extensions Used**: orp-ai-training-v1
+
+## Data Provenance Highlights
+
+### Sources
+
+**Primary**: Web image scraping from Google Images, Flickr, and other search engines using WordNet synset terms as query keywords (2009-2012). Images scraped from public web, predominantly English-language platforms.
+
+**Secondary**: WordNet 3.0 noun hierarchy (Princeton University) provided category taxonomy. Created by linguists as an English-language semantic network, not specifically for computer vision.
+
+### Collection Methods
+
+**Three-phase pipeline**:
+
+1. **Category Selection (2007-2009)**: Selected 1,000 synsets from WordNet's 80,000+ noun synsets based on "visual recognizability" criterion. Chose concrete, photographable objects over abstract concepts.
+
+2. **Candidate Image Collection (2009-2012)**: For each synset, queried multiple search engines using synset terms and synonyms. Collected 500-1,000+ candidate images per category. Over 160 million candidate images gathered.
+
+3. **Annotation via Amazon Mechanical Turk (July 2008 - April 2010)**: 49,000 workers from 167 countries performed "Contains" task. Multiple workers per image; only images receiving "convincing majority" vote included. Explicit instruction: "photos only, no paintings, no drawings."
+
+### Geographic and Demographic Biases
+
+<Callout type="warning">
+**Documented biases**:
+- **80%+ of images from North America and Europe** (documented in subsequent bias research)
+- English-language queries on Western-dominated platforms (Google, Flickr 2009-2012)
+- Non-Western geographies systematically under-represented
+- Result: Dataset reflects visual culture of English-speaking web, late 2000s/early 2010s
+</Callout>
+
+**Person categories particularly problematic**:
+- 54% of 2,832 person-related categories later found offensive or problematic
+- Categories encoded race, gender, age, occupation stereotypes
+- Reflected 2009 social attitudes embedded in WordNet taxonomy
+- Many categories deprecated in ImageNet-21K v2 (2021)
+
+### Known Limitations
+
+1. **Taxonomic Bias**: WordNet created by English-language linguists, not for computer vision. Categories reflect Western cultural concepts.
+
+2. **Annotation Quality**: AMT workers had varying expertise. No systematic quality control for all 1,000 categories. Workers received $0.01-0.10 per annotation, creating economic pressure.
+
+3. **Platform Bias**: Scraped from 2009-2012 web platforms (Google Images, Flickr). Images that were highly-ranked, English-tagged, and publicly accessible. Not representative of global visual diversity.
+
+4. **Label Errors**: Subsequent audits found 5.4% label error rate in ImageNet validation set (Northcutt et al. 2021). Training set errors likely higher but not comprehensively audited.
+
+5. **Problematic Content**: Dataset included offensive person categories, questionable image permissions, and stereotypical representations.
+
+### Accountability Gaps
+
+<Callout type="error">
+**Critical gaps documented in this reconstruction**:
+
+1. **Mechanical Turk Worker Governance**: 49,000 workers shaped dataset but had zero governance voice. No worker representation in decision-making. Economic incentives ($0.01-0.10 per annotation) created potential quality/ethical pressures.
+
+2. **Image Copyright and Consent**: Images scraped from web without explicit permission from photographers or depicted subjects. Relied on "fair use" interpretation for academic research. Many images likely used without photographer knowledge.
+
+3. **Demographic Representation**: No systematic analysis of demographic representation until 2019-2020 external audits. Creators did not document or test for bias.
+
+4. **Category Deprecation Process**: 546+ categories deprecated in 2021, but no clear governance process for deprecation decisions. No consultation with affected communities.
+
+5. **Downstream Use Tracking**: No mechanism to track how ImageNet-trained models were deployed. Models trained on ImageNet used in surveillance, facial recognition, hiring decisions without dataset creator oversight.
+</Callout>
+
+## Key Findings
+
+This post-hoc reconstruction reveals:
+
+1. **WordNet taxonomy selection embedded English-language Western categorization** - Categories like "butcher shop" reflect Western commercial structures
+
+2. **Web scraping produced 80%+ North American/European images** - Global dataset in theory, Western in practice
+
+3. **AMT workers had no governance voice despite shaping annotations** - 49,000 workers excluded from decision-making
+
+4. **54% of person categories later found offensive** - 2009 social attitudes embedded in taxonomy
+
+5. **Downstream model biases trace to dataset constitution** - Not just training algorithms, but dataset creation decisions
+
+## Why This Matters
+
+ImageNet demonstrates that **constitutive-layer decisions shape AI systems for years**:
+
+- **AlexNet (2012)** → ResNet (2015) → Vision Transformers (2020) all trained on ImageNet
+- Biases in 2009 dataset creation persist in models deployed in 2024
+- No governance mechanism to address problems discovered years later
+- Standard academic documentation (Deng et al. 2009 paper) did not capture constitutive decisions
+
+**ORP enables**: Prospective documentation of dataset creation decisions, making them visible and governable from the start.
+
+## Related Research
+
+- **Original paper**: Deng et al. (2009) "ImageNet: A Large-Scale Hierarchical Image Database"
+- **Bias research**: Torralba & Efros (2011) "Unbiased look at dataset bias"
+- **Person categories critique**: Yang et al. (2020) "Towards Fairer Datasets: Filtering and Balancing"
+- **Label errors**: Northcutt et al. (2021) "Pervasive Label Errors in Test Sets"
+
+## Download
+
+- [View Full ORP Document (YAML)](https://gitlab.com/publicreason/orp/-/raw/main/examples/imagenet_training_data.yaml) - 1,513 lines, 88KB
+- [Validate Online](/tools/validator) - Check compliance and structure
+
+## Related Examples
+
+- [LAION-5B Training Data](/examples/laion5b-training) - Web-scale image-text dataset (5.85B pairs)
+- [Common Crawl Training Data](/examples/common-crawl-training) - Web text corpus (250TB)
+- [GitHub Copilot Training Data](/examples/github-copilot-training) - Code training dataset
+- [AI Training Datasets Analysis](/examples/ai-training-analysis) - Comparative analysis across all four datasets
+
+---
+
+<Callout>
+**Note**: This reconstruction is based on published papers, technical reports, and subsequent research on ImageNet. It represents an external analyst's best effort to document the dataset's constitution using available information. Original creators were not involved in producing this ORP document.
+</Callout>

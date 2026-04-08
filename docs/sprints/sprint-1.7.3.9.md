@@ -1,8 +1,9 @@
 # Sprint 1.7.3.9: Update REST API for ORP v0.2 Support
 
 **Sprint Duration**: 2-3 hours
-**Status**: Not Started
+**Status**: ✅ COMPLETE
 **Prerequisites**: Sprint 1.7.3.8 complete (orp-validator v0.4.0 on PyPI)
+**Completed**: 2026-04-08
 
 ---
 
@@ -11,12 +12,12 @@
 Update the production REST API (api.publicreasonproject.org) to support ORP v0.2 documents while maintaining full backward compatibility with v0.1.
 
 **Deliverables**:
-1. ⏳ API updated to use orp-validator v0.4.0
-2. ⏳ All endpoints support v0.2 documents
-3. ⏳ Backward compatibility verified (v0.1 documents still work)
-4. ⏳ Tests updated for v0.2 examples
-5. ⏳ Deployed to production
-6. ⏳ API documentation updated
+1. ✅ API updated to use orp-validator v0.4.0
+2. ✅ All endpoints support v0.2 documents
+3. ✅ Backward compatibility verified (v0.1 documents still work)
+4. ✅ Tests updated for v0.2 examples (43 tests, 96.5% coverage)
+5. ✅ Deployed to production (container orp-api:v0.4.0 running)
+6. ✅ API documentation updated (OpenAPI docs reflect v0.2 support)
 
 ---
 
@@ -567,19 +568,19 @@ extensions:
 ## Success Criteria
 
 ### Must Have
-- [ ] API updated to orp-validator v0.4.0
-- [ ] All 39 existing tests pass
-- [ ] New v0.2 tests added and passing
-- [ ] Backward compatibility verified (v0.1 documents validate)
-- [ ] Deployed to production (api.publicreasonproject.org)
-- [ ] Production smoke tests pass
-- [ ] API documentation updated
+- [x] API updated to orp-validator v0.4.0
+- [x] All 39 existing tests pass (now 43 total)
+- [x] New v0.2 tests added and passing (4 new tests)
+- [x] Backward compatibility verified (v0.1 documents validate)
+- [x] Deployed to production (api.publicreasonproject.org)
+- [x] Production smoke tests pass
+- [x] API documentation updated
 
 ### Nice to Have
-- [ ] Performance benchmarks (v0.1 vs v0.2 validation speed)
-- [ ] Example v0.2 documents in docs
-- [ ] Monitoring/alerting configured
-- [ ] Load testing performed
+- [ ] Performance benchmarks (v0.1 vs v0.2 validation speed) - Skipped (not critical)
+- [ ] Example v0.2 documents in docs - Skipped (handled in separate docs sprint)
+- [ ] Monitoring/alerting configured - Already in place
+- [ ] Load testing performed - Skipped (not critical for this sprint)
 
 ---
 
@@ -719,22 +720,85 @@ curl https://api.publicreasonproject.org/api/v1/health
 
 ## Retrospective (Post-Sprint)
 
-*To be filled after sprint completion*
+**Completed**: 2026-04-08
+**Actual Duration**: ~2 hours (within estimate)
 
 ### What Went Well
--
+
+1. **Auto-detection worked perfectly**: orp-validator v0.4.0's auto-detection feature meant minimal code changes in the API. No explicit version selection logic needed.
+
+2. **Comprehensive test coverage**: Added 4 new tests covering v0.2 validation, post-hoc documents, and backward compatibility. All 43 tests pass with 96.5% coverage.
+
+3. **Zero downtime deployment**: Container swap was seamless. Old container stopped, new one started, no API interruption.
+
+4. **Backward compatibility verified**: v0.1 documents continue to validate correctly through production API.
+
+5. **Clear ORP-PostHoc detection**: New compliance level correctly identified by both `/check` and `/validate` endpoints.
 
 ### What Didn't Go Well
--
+
+1. **Docker daemon not running locally**: Had to switch from local Docker build to tarball deployment. This added ~10 minutes but wasn't a blocker.
+
+2. **Documentation updates light**: Only updated sprint docs and OpenAPI description. Didn't update separate API README or docs site (can be done later if needed).
 
 ### Lessons Learned
--
+
+1. **Auto-detection is powerful**: Version detection in the validator library means API code stays clean and simple. Good architectural decision from Sprint 1.7.3.
+
+2. **Test fixtures essential**: Having v0.2 fixtures in conftest.py made it easy to add comprehensive tests quickly.
+
+3. **Tarball deployment works well**: When Docker isn't available locally, building on the server works fine. Good fallback strategy.
+
+4. **Check endpoint is valuable**: Quick compliance checking without full validation makes testing easier and faster.
 
 ### Metrics
-- Deployment time:
-- Tests added:
-- Backward compatibility issues:
-- Performance impact:
+
+- **Deployment time**: ~2 hours (within 2-3 hour estimate)
+- **Tests added**: 4 new tests (v0.2 validation, v0.2 post-hoc, backward compat, check endpoint)
+- **Total test count**: 39 → 43 tests
+- **Test coverage**: 96.5% (maintained high coverage)
+- **Backward compatibility issues**: 0 (all v0.1 documents validate correctly)
+- **Performance impact**: Not measured (not critical for this sprint)
+- **Production issues**: 0 (container logs clean, no errors)
+
+### Production Verification Results
+
+**Tested successfully**:
+- ✅ Health endpoint: Returns v0.4.0
+- ✅ Root endpoint: Shows `orp_versions_supported: ["0.1", "0.2"]`
+- ✅ v0.1 document validation: Correctly identified as ORP-Basic
+- ✅ v0.2 document validation: Valid, ORP-Basic, metadata shows orp_version: "0.2"
+- ✅ Post-hoc document: Valid, ORP-PostHoc compliance level, extension warning present
+- ✅ OpenAPI docs: Accessible and updated
+- ✅ Container logs: Clean, no errors or warnings
+
+### Files Modified
+
+**Code changes**:
+- `api/requirements.txt`: Updated orp-validator 0.3.0 → 0.4.0
+- `api/main.py`: Updated description, version, and orp_versions_supported
+- `api/routes.py`: Added ORP-PostHoc detection in `_determine_compliance()` and `_get_next_steps()`
+
+**Test changes**:
+- `api/tests/conftest.py`: Added `valid_orp_v02_basic` and `valid_orp_v02_posthoc` fixtures
+- `api/tests/test_validate_endpoint.py`: Added 3 new tests
+- `api/tests/test_check_endpoint.py`: Added 1 new test
+
+**Documentation**:
+- `docs/sprints/sprint-1.7.3.9.md`: Updated with completion notes
+
+**Deployment**:
+- Docker image: `orp-api:v0.4.0` (deployed and running on 134.209.250.174)
+
+### Next Steps
+
+**Immediate**:
+- ✅ Sprint 1.7.3.9 complete
+
+**Future sprints**:
+- Sprint 1.7.4+: Potential enhancements (if planned)
+- Consider adding v0.2 examples to docs site validator page
+- Monitor API logs for 24 hours post-deployment (standard practice)
 
 ---
 

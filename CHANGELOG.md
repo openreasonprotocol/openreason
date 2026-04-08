@@ -9,17 +9,205 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned (Phase 1 Completion)
-- **Sprint 1.5.0** (v0.4.0): REST API validator service at api.publicreasonproject.org
-- **Sprint 1.6.0** (v0.5.0): Documentation website at publicreasonproject.org with interactive validator
-
-See `docs/sprints/PHASE1_PLAN.md` for complete sequencing rationale and sprint details.
-
-### Deferred to Phase 2
-- JavaScript/TypeScript validator (REST API provides browser validation)
+### Planned (Phase 2)
 - GitLab CI/CD integration examples
 - VS Code extension
-- ORP Registry
+- ORP Registry (public searchable document index)
+
+See `docs/sprints/PHASE1_PLAN.md` for complete Phase 1 details.
+
+---
+
+## [0.6.0] - 2026-04-08
+
+### Added
+
+**ORP v0.2 Protocol Support** - orp-validator v0.4.0 released to PyPI
+
+**Core Features**:
+- **Post-hoc reconstruction support**: `post_hoc` flag and `analyst`/`reconstructor` author roles
+- **Domain-specific extensions**: orp-ai-training-v1, orp-safety-v1, orp-license-v1
+- **Flexible schema validation**: `additionalProperties: true` throughout for natural document evolution
+- **Granular confidence levels**: 7-point scale (very-high to very-low) for uncertainty quantification
+- **Accountability gap documentation**: Explicit WHO/WHY/WHAT unknowns in Layer 4
+- **Auto-detection**: Validator automatically detects document version (v0.1 vs v0.2)
+
+**Enhanced Fields**:
+- New author roles: `analyst`, `reconstructor` for post-hoc analysis
+- `critical_undocumented_exclusions` (L1): Document post-hoc discovered gaps
+- `comparison_to_actual` (L2): Counterfactual analysis capabilities
+- `highest_severity_harm` (L3): Harm tier classification (Tier 0-3)
+- Rich object formats: benefits/harms can be simple strings or detailed objects with severity/affected_groups
+
+**New Compliance Level**:
+- **ORP-PostHoc**: For retrospective analysis when decision-making history unavailable
+- Recognized alongside ORP-Basic, ORP-Standard, ORP-Full
+
+**Examples** - 4 comprehensive AI training dataset analyses (8,328 lines total):
+- **ImageNet Training Data** (1,513 lines): ILSVRC-2012 post-hoc reconstruction
+- **LAION-5B Training Data** (2,162 lines): 5.85B image-text pairs analysis
+- **Common Crawl Training Data** (2,232 lines): 250B+ page web corpus analysis
+- **GitHub Copilot Training Data** (2,421 lines): Code training data with license compliance
+
+**Documentation**:
+- ORP v0.2 Specification (`docs/specs/ORP_V0.2_SPEC.md`) - 16 comprehensive sections
+- Migration Guide (`docs/specs/MIGRATION_V0.1_TO_V0.2.md`) - Automated migration script included
+- Updated README with v0.2 release notes and 5 examples
+- Design rationale document (`docs/specs/ORP_V0.2_DESIGN.md`)
+
+### Changed
+
+**Validator**:
+- Schema location: Added `orp_validator/schemas/orp-v0.2.schema.json` (714 lines + 311 lines extensions)
+- Validator loads schema based on `orp_version` field in document
+- CLI `--orp-version` parameter for explicit version selection (optional)
+- Package version: 0.3.0 → 0.4.0
+
+**Extension System**:
+- Three domain-specific extensions defined:
+  - `orp-ai-training-v1`: AI training dataset fields (training_run, model_details, etc.)
+  - `orp-safety-v1`: Safety validation fields (red_teaming, deployment_gates)
+  - `orp-license-v1`: License compliance tracking (license_analysis, compliance_status)
+
+### Fixed
+
+**Empirical Validation Results**:
+- **311 validation errors** discovered when validating real-world AI dataset examples against v0.1 schema
+- **0 errors** with v0.2 flexible schema → **100% validation success rate**
+- All 5 examples (Danish Property Tax + 4 AI datasets) validate successfully
+- Backward compatibility: All v0.1 documents still validate correctly
+
+### Backward Compatibility
+
+✅ **Fully backward compatible**: All ORP v0.1 documents validate successfully with orp-validator v0.4.0
+
+**No Breaking Changes**:
+- v0.1 core required fields unchanged
+- v0.1 structure fully supported
+- Minimal migration path: Update `orp_version: "0.2"` and `last_modified` date
+- Enhanced migration paths available for leveraging new v0.2 features
+
+**Migration Time**:
+- Minimal (version bump only): 2 minutes per document
+- Enhanced (add extensions): 15-30 minutes per document
+- Full (post-hoc conversion): 2-8 hours for complex datasets
+
+### Technical Details
+
+**Schema Statistics**:
+- JSON Schema v0.2: 714 lines (core) + 311 lines (extensions) = 1,025 lines total
+- 9 flexibility patterns applied throughout
+- Extension registry tracking (informational, non-blocking)
+- oneOf patterns for gradual enrichment (string → object evolution)
+
+**Validation Coverage**:
+- 5 examples validated: 8,328 lines of ORP documentation
+- Compliance levels tested: ORP-Basic, ORP-Standard, ORP-Full, ORP-PostHoc
+- Cross-domain validation: policy, AI training, AI safety, license compliance
+
+**Installation**:
+```bash
+pip install orp-validator==0.4.0
+# or
+pip install --upgrade orp-validator
+```
+
+**Verify Version**:
+```bash
+orp --version
+# Expected: orp-validator 0.4.0 (ORP v0.2 support)
+```
+
+**Sprint**: sprint-1.7.3 (Phases 0-7 complete)
+**Protocol Version**: ORP v0.2.0
+**Package Version**: orp-validator v0.4.0
+**PyPI**: https://pypi.org/project/orp-validator/0.4.0/
+
+---
+
+## [0.5.0] - 2026-02-27
+
+### Added
+- **Documentation Website** - Live at https://docs.publicreasonproject.org
+  - Complete documentation for ORP v0.1 specification
+  - Interactive validator widget (uses REST API)
+  - Getting Started guides (installation, quickstart, first document)
+  - Protocol documentation (specification, philosophy, compliance levels)
+  - Tool references (CLI, Python API, REST API)
+  - Examples showcase (Danish Property Tax Reform)
+  - Community section (contributing, governance, roadmap)
+
+- **Interactive Validator Widget**
+  - Browser-based YAML validator
+  - Calls REST API at api.publicreasonproject.org
+  - Shows compliance level, layers present, errors, warnings
+  - Load example button, clear functionality
+  - Mobile-responsive design
+
+- **SEO & Social Media Optimization**
+  - Open Graph meta tags for social sharing
+  - Twitter Card support
+  - Custom social media image (1200x630)
+  - Keywords, canonical URLs, robots.txt
+  - Sitemap auto-generated by Next.js
+
+- **Branding**
+  - Custom fork icon (represents ORP's branching/forking philosophy)
+  - Favicon (SVG + PNG versions)
+  - Apple touch icon
+  - Two-tier logo: Public Reason Project / OpenReason Protocol
+
+### Technical Details
+- Built with Next.js 14 + Nextra (docs framework)
+- Static site generation for fast loading
+- Light theme only (as requested)
+- Search functionality built-in
+- Deployed to DigitalOcean at docs.publicreasonproject.org
+- SSL via nginx + Let's Encrypt
+
+### Phase 1 Status
+**COMPLETE** - All core tooling deliverables achieved:
+- ✅ JSON Schema + Python Validator (v0.1.0)
+- ✅ CLI Commands (v0.2.0)
+- ✅ Reference Implementation (v0.2.1)
+- ✅ PyPI Publication (v0.3.0)
+- ✅ REST API (v0.4.0)
+- ✅ Documentation Website (v0.5.0)
+
+OpenReason Protocol is now ready for external use and community contributions.
+
+---
+
+## [0.4.0] - 2026-02-26
+
+### Added
+- **REST API Validator Service** - Live at https://api.publicreasonproject.org
+  - `POST /api/v1/validate` - Full schema validation
+  - `POST /api/v1/check` - Quick compliance check
+  - `POST /api/v1/diff` - Document comparison and fork detection
+  - OpenAPI/Swagger documentation at /docs
+  - CORS enabled for browser access
+
+- **Comprehensive Test Suite** - 39 automated tests, 96% coverage
+  - test_validate_endpoint.py - 12 tests
+  - test_check_endpoint.py - 7 tests
+  - test_diff_endpoint.py - 11 tests
+  - test_security.py - 12 tests (CORS, headers, rate limiting)
+  - All tests run in CI/CD pipeline
+
+- **Production Infrastructure**
+  - Docker containerization
+  - Deployed to DigitalOcean (134.209.250.174)
+  - nginx reverse proxy
+  - SSL via Let's Encrypt
+  - Rate limiting (60 requests/minute per IP)
+  - Security headers (X-Content-Type-Options, X-Frame-Options, CSP)
+
+### Technical Details
+- Built with FastAPI
+- Uses orp-validator PyPI package
+- Health check endpoint at /health
+- Root endpoint (/) shows API info and available endpoints
 
 ---
 

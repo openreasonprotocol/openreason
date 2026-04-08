@@ -1,17 +1,30 @@
 # OpenReason Protocol Specification
-## ORP v0.1
+## ORP v0.2
 
 The OpenReason Protocol (ORP) is a standardized schema for documenting, sharing, and challenging the reasoning behind consequential decisions in policy, AI, and democratic governance.
 
+**Current Version**: v0.2 (Released 2026-04-08)
+**Previous Versions**: [v0.1](/protocol/specification-v01)
+
 An ORP-compliant document is not a static report. It is a **simulatable object**: a structured representation of reasoning that any party can inspect, fork, and re-run with different assumptions to produce comparable outputs.
+
+## What's New in v0.2
+
+- **Post-hoc reconstruction support** — Retrospectively document decisions without original decision-making records
+- **Domain-specific extensions** — ai-training, governance, policy extensions for specialized fields
+- **Flexible schema validation** — Accepts real-world structural variation while maintaining required field rigor
+- **Enhanced confidence levels** — 7-point scale for nuanced uncertainty communication
+- **JSON-LD support** — Semantic web integration for cross-document querying (see [JSON-LD Format](/tools/jsonld))
+
+**Backward Compatibility**: All v0.1 documents remain valid in v0.2
 
 ## Design Principles
 
 - **Layered** — Each layer is independently useful and auditable
-- **Machine-readable** — Structured for both human reading and automated processing  
+- **Machine-readable** — Structured for both human reading and automated processing
 - **Forkable** — Any compliant document can be forked, modified, and published as a derivative
 - **Diff-able** — Differences between original and fork are explicit and locatable
-- **Incomplete by design** — v0.1 defines the core schema; extensions expected through community contribution
+- **Extensible** — Core schema + domain-specific extensions for specialized needs
 
 ## Document Structure
 
@@ -32,29 +45,38 @@ ORP Document
 Every ORP document begins with structured metadata:
 
 ```yaml
-orp_version: "0.1"
+orp_version: "0.2"
 document_id: "unique-identifier-001"
 title: "Human-Readable Policy Title"
-domain: "policy"  # or: research, business
+domain: "policy"  # or: ai-training, governance, research, other
 authors:
   - name: "Author Name"
-    role: "author"  # or: contributor, reviewer
+    role: "author"  # or: contributor, reviewer, analyst, reconstructor
+    affiliation: "Organization Name"  # optional
 created: "2026-01-01"
 last_modified: "2026-01-01"
-status: "draft"  # or: review, final
-compliance_level: "ORP-Full"  # or: ORP-Standard, ORP-Basic
+status: "draft"  # or: open-for-comment, ratified, superseded
+compliance_level: "ORP-Full"  # or: ORP-Standard, ORP-Basic, ORP-PostHoc
 summary: |
   Plain language description of what this document proposes,
   in 3-5 sentences. Written for a general audience.
 ```
 
-### Optional Header Fields
+### Optional Header Fields (v0.2)
 
 ```yaml
+post_hoc: true  # NEW: Flags retrospective reconstruction
+extensions:  # NEW: Domain-specific extensions
+  - "orp-ai-training-v1"
+  - "orp-safety-v1"
 forked_from: "parent-document-id"  # If this is a fork
 license: "CC-BY-4.0"  # Licensing terms
 contact: "email@example.com"  # Contact information
 ```
+
+**post_hoc flag**: Set to `true` when reconstructing decisions from published sources where original decision-making records are unavailable.
+
+**extensions**: Declares domain-specific extensions used (e.g., `orp-ai-training-v1` for AI training dataset documentation).
 
 ## Layer 1: Data Provenance
 
@@ -263,7 +285,6 @@ Minimum viable transparency. Requires only data provenance. Useful for:
 Adds consequence simulation and empathy mapping. Required for:
 - Policy proposals affecting >1000 people
 - Decisions with distributional impacts
-- AI training dataset documentation
 
 ### ORP-Full (All 5 layers)
 Complete protocol with accountability and forking. Recommended for:
@@ -271,11 +292,24 @@ Complete protocol with accountability and forking. Recommended for:
 - Contested proposals with multiple alternatives
 - Long-term decisions affecting future generations
 
+### ORP-PostHoc (v0.2)
+Retrospective reconstruction when original records unavailable. Requires:
+- `post_hoc: true` flag in header
+- Author role `analyst` or `reconstructor`
+- L1 with accountability gaps documented
+- L4 entries marked as reconstructed
+
+**Use for**: AI training datasets, historical policy analysis, published research reconstruction
+
+See [AI Training Examples](/examples/overview) for ORP-PostHoc demonstrations.
+
 ## Validation
 
-All ORP documents must validate against the JSON Schema at `schemas/orp-v0.1.schema.json`.
+All ORP documents must validate against the JSON Schema:
+- **v0.2 documents**: `schemas/orp-v0.2.schema.json`
+- **v0.1 documents**: `schemas/orp-v0.1.schema.json` (still supported)
 
-Validate using:
+Validate using CLI:
 ```bash
 orp validate your-document.yaml
 ```
@@ -284,8 +318,10 @@ Or via REST API:
 ```bash
 curl -X POST https://api.publicreasonproject.org/api/v1/validate \
   -H "Content-Type: application/json" \
-  -d '{"document": "orp_version: 0.1\n..."}'
+  -d '{"document": "orp_version: 0.2\n..."}'
 ```
+
+The validator automatically detects version from `orp_version` field.
 
 ## Next Steps
 
@@ -294,7 +330,9 @@ curl -X POST https://api.publicreasonproject.org/api/v1/validate \
 - **[Choose compliance level](/protocol/compliance-levels)** - Which level is right for you?
 - **[Get started](/getting-started/installation)** - Install the validator
 
-## Full Specification
+## Full Specifications
 
-The complete, authoritative specification is maintained at:  
-[docs/specs/ORP_SPEC.md](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/ORP_SPEC.md)
+The complete, authoritative specifications are maintained at:
+- **[ORP v0.2 Specification](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/ORP_V0.2_SPEC.md)** (Current)
+- **[ORP v0.1 Specification](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/ORP_SPEC.md)** (Legacy)
+- **[Migration Guide v0.1 → v0.2](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/MIGRATION_V0.1_TO_V0.2.md)**

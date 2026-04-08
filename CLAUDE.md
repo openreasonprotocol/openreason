@@ -55,6 +55,39 @@ See `docs/specs/ORP_SPEC.md` for full technical specification.
 
 ---
 
+## Machine-Readable Formats
+
+ORP documents can be represented in multiple formats:
+
+### YAML/JSON (Primary Format)
+- Human-readable, widely supported
+- Validated against JSON Schema (`orp-schema-v0.1.json`)
+- All examples currently in YAML format
+
+### JSON-LD (Semantic Web Format)
+- **NEW in Sprint 1.7.4**: Full JSON-LD/RDF support
+- Enables semantic web integration and knowledge graph capabilities
+- Maps ORP documents to RDF triples for cross-document querying
+
+**Key Components**:
+- **JSON-LD Context** (`orp-context.jsonld`): Maps YAML fields to RDF URIs
+- **Custom Vocabulary** (`orp-vocabulary.md`): 31 ORP-specific properties (e.g., `orp:complianceLevel`, `orp:stakeholder`)
+- **Ontology Reuse** (47%): Leverages PROV-O, DCAT, Dublin Core, Schema.org
+- **SPARQL Queries** (`sparql_examples.md`): 15+ examples for cross-document analysis
+
+**Use Cases**:
+- Store ORP documents in triple stores (Apache Jena Fuseki, GraphDB)
+- Query stakeholders with no representation across all documents
+- Track decision genealogy via fork registry
+- Federated SPARQL across distributed ORP repositories
+- Interoperability with any RDF-aware tool
+
+**Documentation**: See `orp_validator/schemas/JSON_LD_GUIDE.md` for developer guide
+
+**Example**: `examples/danish_property_tax_reform.jsonld` demonstrates all 5 layers in JSON-LD format
+
+---
+
 ## Repository Structure
 
 ```
@@ -67,11 +100,19 @@ open-reason/
 │   ├── cli.py                        # Main CLI entry point
 │   ├── validator.py                  # Core validation logic
 │   ├── commands/                     # CLI command implementations
-│   ├── schemas/                      # JSON Schema for ORP v0.1
+│   ├── schemas/                      # JSON Schema for ORP v0.1 + JSON-LD/RDF schema
+│   │   ├── orp-schema-v0.1.json     # JSON Schema validation rules
+│   │   ├── orp-context.jsonld        # JSON-LD @context (YAML → RDF mapping)
+│   │   ├── orp-vocabulary.md         # Custom ORP RDF vocabulary (31 properties)
+│   │   ├── ontology_mapping.md       # Mapping to PROV-O, DCAT, Dublin Core, Schema.org
+│   │   ├── sparql_examples.md        # SPARQL queries for cross-document analysis
+│   │   ├── JSON_LD_GUIDE.md          # Developer guide for JSON-LD integration
+│   │   └── VALIDATION_REPORT.md      # JSON-LD validation status
 │   └── templates/                    # Document templates (basic/standard/full)
 ├── tests/                            # CLI/validator test suite
 ├── examples/
-│   ├── danish_property_tax_reform.yaml # First ORP-Full example (policy domain)
+│   ├── danish_property_tax_reform.yaml # First ORP-Full example (YAML format, policy domain)
+│   ├── danish_property_tax_reform.jsonld # Same example in JSON-LD format (RDF-ready)
 │   ├── imagenet_training_data.yaml     # Second ORP-Full example (AI domain)
 │   └── imagenet/
 │       ├── README.md                   # ImageNet example methodology and findings

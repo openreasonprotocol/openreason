@@ -66,6 +66,25 @@ ORP is structured in five layers. See [docs/specs/ORP_V0.2_SPEC.md](docs/specs/O
 
 ---
 
+## Formats
+
+ORP documents can be represented in multiple machine-readable formats:
+
+### YAML/JSON (Primary)
+Human-readable format validated against JSON Schema. All CLI tools and examples use YAML by default.
+
+### JSON-LD (Semantic Web)
+**NEW**: ORP documents can be represented as JSON-LD for semantic web integration:
+- Maps to W3C standards (PROV-O, DCAT, Dublin Core, Schema.org)
+- Enables knowledge graph integration and cross-document SPARQL querying
+- Store in triple stores (Apache Jena Fuseki, GraphDB)
+- Query stakeholders, datasets, and decisions across all ORP documents
+
+**Example**: `examples/danish_property_tax_reform.jsonld`
+**Guide**: `orp_validator/schemas/JSON_LD_GUIDE.md`
+
+---
+
 ## Quick Start
 
 ### Installation

@@ -1,0 +1,310 @@
+{
+  "@context": "https://openreason.org/context/v0.1",
+  "@type": "Document",
+  "document_id": "orp-dk-property-tax-001",
+  "title": "Danish Property Tax Reform: LVT + Smoothed Profit Tax",
+  "summary": "Denmark's current property tax system combines an annual property value tax (ejendomsværdiskat) with a land tax (grundskyld), producing a complex framework that exempts primary residence capital gains at sale entirely. This proposal replaces it with a permanent Land Value Tax (LVT) at 1% of land value combined with a 10% profit tax on gains at sale, smoothed over 5–10 years in equal annual installments.",
+  "authors": [
+    {
+      "@type": "schema:Person",
+      "name": "Asbjørn",
+      "role": "author"
+    }
+  ],
+  "created": "2026-02-25",
+  "last_updated": "2026-02-25",
+  "status": "open-for-comment",
+  "domain": "policy",
+  "compliance_level": "full",
+  "orp_version": "0.1",
+
+  "l1_data_provenance": [
+    {
+      "@type": "Dataset",
+      "dataset_id": "dk-skat-rates-2024",
+      "name": "Danish Property Tax Rates and Rules 2024",
+      "description": "Official current tax rates for ejendomsværdiskat and grundskyld as reformed under the 2024 Danish property tax overhaul. Used to establish the current system baseline for comparison.",
+      "source_url": "https://skat.dk/en-us/individuals/property/introduction-to-property-in-denmark",
+      "temporal_coverage": {
+        "start": "2024-01-01",
+        "end": "2024-12-31"
+      },
+      "spatial_coverage": {
+        "region": "Denmark",
+        "resolution": "National"
+      },
+      "steward": {
+        "@type": "schema:Organization",
+        "name": "SKAT (Danish Tax Authority)",
+        "contact": "info@skat.dk"
+      },
+      "funding_sources": [
+        {
+          "@type": "schema:Organization",
+          "name": "Danish Government",
+          "type": "government"
+        }
+      ],
+      "collection_methodology": "Official published rates from skat.dk and legal summaries",
+      "known_limitations": [
+        "Effective rates vary significantly by municipality",
+        "20% prudence discount on assessed values means statutory rates overstate effective rates",
+        "2024 transition discount scheme means many existing owners pay less than statutory rate"
+      ],
+      "exclusions": [
+        {
+          "criterion": "Commercial property tax rates (dækningsafgift)",
+          "rationale": "Proposal scoped to residential owner-occupied property",
+          "affected_records": "All commercial properties"
+        },
+        {
+          "criterion": "Holiday home (sommerhus) tax rules",
+          "rationale": "Different legal and usage regime; separate reform warranted",
+          "affected_records": "~220,000 holiday homes"
+        }
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "dataset_id": "dk-property-prices-illustrative",
+      "name": "Illustrative Danish Property Price Scenarios",
+      "description": "Property purchase and sale prices used in four illustrative calculation scenarios. Drawn from general knowledge of the Danish property market rather than a specific statistical dataset.",
+      "source_url": null,
+      "steward": {
+        "@type": "schema:Person",
+        "name": "Asbjørn"
+      },
+      "collection_methodology": "Illustrative scenarios constructed to represent typical cases across property types and holding periods",
+      "known_limitations": [
+        "Scenarios are illustrative, not based on statistical sampling",
+        "Land value percentages (35% provincial, 50% Copenhagen) are approximations"
+      ],
+      "exclusions": [
+        {
+          "criterion": "Luxury property (>DKK 15M)",
+          "rationale": "Edge case unlikely to be politically central; different rate threshold applies"
+        },
+        {
+          "criterion": "Rental investment property",
+          "rationale": "Different tax regime; proposal scoped to primary residence"
+        }
+      ],
+      "synthetic_elements": {
+        "type": "constructed_scenarios",
+        "description": "Four property scenarios constructed to represent typical Danish homeowner experiences",
+        "methodology": "Author-constructed based on market knowledge and illustrative parameters"
+      }
+    }
+  ],
+
+  "l2_consequence_simulation": {
+    "affected_population": {
+      "description": "Danish homeowners (primary residence owner-occupiers)",
+      "size": 2500000,
+      "temporal_scope": "2024–2040 (projected 15-year horizon)"
+    },
+    "independent_variables": [
+      {
+        "name": "lvt_rate",
+        "description": "Land Value Tax rate (% of land value)",
+        "data_type": "continuous",
+        "source": "Policy parameter"
+      },
+      {
+        "name": "profit_tax_rate",
+        "description": "Profit tax rate at sale (% of capital gain)",
+        "data_type": "continuous",
+        "source": "Policy parameter"
+      },
+      {
+        "name": "smoothing_period",
+        "description": "Number of years over which profit tax is smoothed",
+        "data_type": "discrete",
+        "source": "Policy parameter"
+      }
+    ],
+    "dependent_variables": [
+      {
+        "name": "total_tax_paid",
+        "description": "Total tax paid over holding period (LVT + profit tax)",
+        "data_type": "continuous"
+      },
+      {
+        "name": "annual_tax_burden",
+        "description": "Average annual tax payment",
+        "data_type": "continuous"
+      },
+      {
+        "name": "tax_differential",
+        "description": "Difference vs current system",
+        "data_type": "continuous"
+      }
+    ],
+    "model": {
+      "type": "deterministic_spreadsheet",
+      "description": "Four illustrative scenarios comparing current system vs proposed LVT+profit tax",
+      "assumptions": [
+        "Land values grow at average 2.5%/year (historical Danish average)",
+        "Property values grow at average 3%/year",
+        "Current system: 0.7% combined annual rate (ejendomsværdiskat + grundskyld)",
+        "Proposed system: 1% LVT + 10% profit tax (smoothed)",
+        "LVT credits fully offset profit tax base"
+      ]
+    },
+    "scenarios": [
+      {
+        "name": "Provincial House (15 years)",
+        "description": "DKK 2M purchase, DKK 3.2M sale, 15-year hold",
+        "parameters": {
+          "purchase_price": 2000000,
+          "sale_price": 3200000,
+          "land_percentage": 35,
+          "holding_period": 15
+        },
+        "outcome": {
+          "metric": "Total tax paid (current system)",
+          "value": 224000,
+          "unit": "DKK"
+        }
+      },
+      {
+        "name": "Provincial House (15 years) - Proposed",
+        "description": "Same property under proposed LVT + profit tax system",
+        "parameters": {
+          "purchase_price": 2000000,
+          "sale_price": 3200000,
+          "land_percentage": 35,
+          "holding_period": 15
+        },
+        "outcome": {
+          "metric": "Total tax paid (proposed system)",
+          "value": 197000,
+          "unit": "DKK"
+        }
+      }
+    ]
+  },
+
+  "l3_empathy_mapping": {
+    "stakeholders": [
+      {
+        "@type": "Stakeholder",
+        "stakeholder_id": "dk-homeowners-provincial",
+        "name": "Provincial homeowners (outside Copenhagen)",
+        "description": "Owner-occupiers in Jutland, Funen, and provincial Zealand",
+        "representation": "High",
+        "impact_type": "direct",
+        "estimated_population": 1800000,
+        "net_welfare_impact": {
+          "direction": "positive",
+          "magnitude": "minor",
+          "confidence": "medium",
+          "time_horizon": "15-year hold",
+          "rationale": "Provincial properties have lower land-to-total-value ratios (~35%), so LVT burden is lower. Most provincial homeowners pay less under the proposal if they hold for >10 years."
+        }
+      },
+      {
+        "@type": "Stakeholder",
+        "stakeholder_id": "dk-homeowners-copenhagen",
+        "name": "Copenhagen homeowners",
+        "description": "Owner-occupiers in Greater Copenhagen area",
+        "representation": "High",
+        "impact_type": "direct",
+        "estimated_population": 700000,
+        "net_welfare_impact": {
+          "direction": "mixed",
+          "magnitude": "moderate",
+          "confidence": "medium",
+          "time_horizon": "Variable by holding period",
+          "rationale": "Copenhagen properties have higher land values (~50% of total). Short-term holders (<5 years) may pay more; long-term holders (>10 years) pay less due to profit tax smoothing and accumulated LVT credits."
+        }
+      },
+      {
+        "@type": "Stakeholder",
+        "stakeholder_id": "dk-renters",
+        "name": "Renters (non-homeowners)",
+        "description": "Danish residents who rent and do not own property",
+        "representation": "None",
+        "impact_type": "indirect",
+        "estimated_population": 1000000,
+        "net_welfare_impact": {
+          "direction": "neutral",
+          "magnitude": "negligible",
+          "confidence": "low",
+          "time_horizon": "N/A",
+          "rationale": "Proposal scoped to owner-occupied residential property. Renters are not directly affected. Indirect effects (e.g., rental price changes) are not modelled."
+        }
+      }
+    ],
+    "minority_stress_testing": [
+      {
+        "group": "Low-income elderly homeowners (pension-dependent)",
+        "vulnerabilities": [
+          "Fixed income limits ability to pay annual LVT",
+          "May be forced to sell if LVT exceeds pension income",
+          "Concentrated in rural areas with limited access to reverse mortgages"
+        ],
+        "differential_impact": "High risk. LVT is cash-flow-based (annual payment) unlike profit tax (deferred until sale). Elderly homeowners on fixed incomes may face liquidity stress. Mitigation: Deferral mechanism allowing LVT to accumulate as lien against property until sale or death."
+      },
+      {
+        "group": "Recent buyers with high leverage",
+        "vulnerabilities": [
+          "High mortgage debt limits ability to absorb additional annual tax",
+          "Concentrated in Copenhagen where housing prices are highest"
+        ],
+        "differential_impact": "Moderate risk. Recent buyers (post-2020) have paid high prices and may have high loan-to-value ratios. LVT adds to annual carrying costs. Mitigated by: (1) LVT is lower than current system for most buyers, (2) profit tax is smoothed over 5-10 years."
+      }
+    ],
+    "overall_assessment": {
+      "net_welfare_change": "Positive for ~70% of homeowners (long-term holders, provincial properties). Mixed for ~25% (Copenhagen short-term holders). Negative for ~5% (elderly low-income, recent high-leverage buyers).",
+      "distributional_effects": "Progressive: Higher land values (Copenhagen, wealthy neighbourhoods) pay more LVT. Profit tax only applies to gains, so no burden on loss-making sales. But: liquidity risk for pension-dependent elderly.",
+      "confidence": "Medium. Illustrative scenarios not statistically validated. Land value % assumptions (35% provincial, 50% Copenhagen) are approximations. Minority stress testing identifies real risks requiring mitigation."
+    }
+  },
+
+  "l4_accountability_ledger": [
+    {
+      "@type": "Decision",
+      "decision_id": "decision-001",
+      "timestamp": "2026-02-25T14:30:00Z",
+      "decision_maker": {
+        "@type": "schema:Person",
+        "name": "Asbjørn",
+        "role": "author"
+      },
+      "decision": "Excluded commercial property and holiday homes from analysis",
+      "rationale": "Proposal scoped to primary residence owner-occupied property. Commercial property and holiday homes have different tax regimes and stakeholder dynamics. Including them would add complexity without improving the core argument for residential reform.",
+      "affected_sections": [
+        "l1_data_provenance",
+        "l2_consequence_simulation",
+        "l3_empathy_mapping"
+      ],
+      "constitutive_logic": "If commercial property or holiday homes were included, the proposal would need separate rate structures and stakeholder analysis. The core argument (LVT+profit tax is fairer than current system for primary residences) would still hold, but the scope would expand significantly."
+    },
+    {
+      "@type": "Decision",
+      "decision_id": "decision-002",
+      "timestamp": "2026-02-25T15:00:00Z",
+      "decision_maker": {
+        "@type": "schema:Person",
+        "name": "Asbjørn",
+        "role": "author"
+      },
+      "decision": "Used illustrative scenarios rather than statistical sampling",
+      "rationale": "No public dataset exists with property-level data linking purchase price, sale price, holding period, and land value % across Danish homeowners. Illustrative scenarios allow transparent comparison of tax systems without requiring unavailable data.",
+      "affected_sections": [
+        "l1_data_provenance",
+        "l2_consequence_simulation"
+      ],
+      "constitutive_logic": "If a comprehensive statistical dataset became available (e.g., from SKAT), the illustrative scenarios should be replaced with empirical analysis of actual Danish property transactions. This would increase confidence but unlikely to change the directional conclusion (LVT+profit tax benefits long-term holders).",
+      "datasets_used": [
+        "dk-property-prices-illustrative"
+      ]
+    }
+  ],
+
+  "l5_fork_registry": {
+    "forks": [],
+    "related_documents": []
+  }
+}

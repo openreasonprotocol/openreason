@@ -1,0 +1,359 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "https://openreason.org/vocab/",
+
+    "orp": "https://openreason.org/vocab/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dc": "http://purl.org/dc/terms/",
+    "schema": "http://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+
+    "Document": "orp:Document",
+    "Dataset": "orp:Dataset",
+    "Stakeholder": "orp:Stakeholder",
+    "Decision": "orp:Decision",
+    "Fork": "orp:Fork",
+
+    "document_id": {
+      "@id": "@id",
+      "@type": "@id"
+    },
+    "title": {
+      "@id": "dc:title"
+    },
+    "summary": {
+      "@id": "dc:description"
+    },
+    "authors": {
+      "@id": "dc:creator",
+      "@container": "@set",
+      "@context": {
+        "name": "schema:name",
+        "role": "orp:role",
+        "affiliation": "schema:affiliation",
+        "email": "schema:email",
+        "orcid": "orp:orcid"
+      }
+    },
+    "created": {
+      "@id": "dc:created",
+      "@type": "xsd:date"
+    },
+    "last_updated": {
+      "@id": "dc:modified",
+      "@type": "xsd:date"
+    },
+    "status": {
+      "@id": "orp:status"
+    },
+    "domain": {
+      "@id": "dc:subject"
+    },
+    "license": {
+      "@id": "dc:rights",
+      "@type": "@id"
+    },
+    "compliance_level": {
+      "@id": "orp:complianceLevel"
+    },
+    "orp_version": {
+      "@id": "orp:orpVersion"
+    },
+    "post_hoc": {
+      "@id": "orp:postHoc",
+      "@type": "xsd:boolean"
+    },
+    "extensions": {
+      "@id": "orp:extension",
+      "@container": "@set"
+    },
+
+    "l1_data_provenance": {
+      "@id": "orp:hasLayer1",
+      "@type": "@id",
+      "@container": "@set",
+      "@context": {
+        "dataset_id": {
+          "@id": "@id",
+          "@type": "@id"
+        },
+        "name": "dc:title",
+        "description": "dc:description",
+        "source_url": {
+          "@id": "dcat:landingPage",
+          "@type": "@id"
+        },
+        "access_url": {
+          "@id": "dcat:accessURL",
+          "@type": "@id"
+        },
+        "format": "dcat:mediaType",
+        "temporal_coverage": {
+          "@id": "dcat:temporalCoverage",
+          "@context": {
+            "start": {
+              "@id": "dcat:startDate",
+              "@type": "xsd:date"
+            },
+            "end": {
+              "@id": "dcat:endDate",
+              "@type": "xsd:date"
+            }
+          }
+        },
+        "spatial_coverage": {
+          "@id": "dcat:spatialCoverage",
+          "@context": {
+            "region": "dc:spatial",
+            "resolution": "orp:spatialResolution"
+          }
+        },
+        "collection_date": {
+          "@id": "prov:generatedAtTime",
+          "@type": "xsd:dateTime"
+        },
+        "steward": {
+          "@id": "prov:wasAttributedTo",
+          "@type": "@id",
+          "@context": {
+            "name": "schema:name",
+            "contact": "schema:email"
+          }
+        },
+        "funding_sources": {
+          "@id": "orp:fundingSource",
+          "@container": "@set",
+          "@context": {
+            "name": "schema:name",
+            "type": "@type",
+            "amount": "orp:fundingAmount",
+            "currency": "orp:currency"
+          }
+        },
+        "collection_methodology": "orp:collectionMethodology",
+        "known_limitations": {
+          "@id": "orp:knownLimitation",
+          "@container": "@set"
+        },
+        "exclusions": {
+          "@id": "orp:exclusionCriterion",
+          "@container": "@set",
+          "@context": {
+            "criterion": "orp:excludedCategory",
+            "rationale": "orp:rationale",
+            "affected_records": "orp:affectedRecords"
+          }
+        },
+        "synthetic_elements": {
+          "@id": "orp:syntheticElements",
+          "@context": {
+            "type": "orp:syntheticType",
+            "description": "dc:description",
+            "methodology": "orp:syntheticMethodology"
+          }
+        }
+      }
+    },
+
+    "l2_consequence_simulation": {
+      "@id": "orp:hasLayer2",
+      "@type": "@id",
+      "@context": {
+        "affected_population": {
+          "@id": "orp:affectedPopulation",
+          "@context": {
+            "description": "dc:description",
+            "size": "orp:populationSize",
+            "temporal_scope": "orp:temporalScope"
+          }
+        },
+        "independent_variables": {
+          "@id": "orp:independentVariable",
+          "@container": "@set",
+          "@context": {
+            "name": "orp:variableName",
+            "description": "dc:description",
+            "data_type": "orp:dataType",
+            "source": "orp:variableSource"
+          }
+        },
+        "dependent_variables": {
+          "@id": "orp:dependentVariable",
+          "@container": "@set",
+          "@context": {
+            "name": "orp:variableName",
+            "description": "dc:description",
+            "data_type": "orp:dataType"
+          }
+        },
+        "model": {
+          "@id": "orp:model",
+          "@context": {
+            "type": "orp:modelType",
+            "description": "dc:description",
+            "assumptions": {
+              "@id": "orp:assumption",
+              "@container": "@set"
+            }
+          }
+        },
+        "scenarios": {
+          "@id": "orp:scenario",
+          "@container": "@set",
+          "@context": {
+            "name": "orp:scenarioName",
+            "description": "dc:description",
+            "parameters": "orp:scenarioParameters",
+            "outcome": {
+              "@id": "orp:outcome",
+              "@context": {
+                "metric": "orp:metricName",
+                "value": "orp:metricValue",
+                "unit": "orp:unit"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "l3_empathy_mapping": {
+      "@id": "orp:hasLayer3",
+      "@type": "@id",
+      "@context": {
+        "stakeholders": {
+          "@id": "orp:stakeholder",
+          "@container": "@set",
+          "@context": {
+            "stakeholder_id": {
+              "@id": "@id",
+              "@type": "@id"
+            },
+            "name": "schema:name",
+            "description": "dc:description",
+            "representation": "orp:representation",
+            "impact_type": "orp:impactType",
+            "estimated_population": {
+              "@id": "orp:estimatedPopulation",
+              "@type": "xsd:integer"
+            },
+            "net_welfare_impact": {
+              "@id": "orp:netWelfareImpact",
+              "@context": {
+                "direction": "orp:direction",
+                "magnitude": "orp:magnitude",
+                "confidence": "orp:confidence",
+                "time_horizon": "orp:timeHorizon",
+                "rationale": "orp:rationale"
+              }
+            }
+          }
+        },
+        "minority_stress_testing": {
+          "@id": "orp:minorityStressTesting",
+          "@container": "@set",
+          "@context": {
+            "group": "orp:minorityGroup",
+            "vulnerabilities": {
+              "@id": "orp:vulnerability",
+              "@container": "@set"
+            },
+            "differential_impact": "orp:differentialImpact"
+          }
+        },
+        "overall_assessment": {
+          "@id": "orp:overallAssessment",
+          "@context": {
+            "net_welfare_change": "orp:netWelfareChange",
+            "distributional_effects": "orp:distributionalEffects",
+            "confidence": "orp:confidence"
+          }
+        }
+      }
+    },
+
+    "l4_accountability_ledger": {
+      "@id": "orp:hasLayer4",
+      "@type": "@id",
+      "@container": "@set",
+      "@context": {
+        "decision_id": {
+          "@id": "@id",
+          "@type": "@id"
+        },
+        "timestamp": {
+          "@id": "prov:atTime",
+          "@type": "xsd:dateTime"
+        },
+        "decision_maker": {
+          "@id": "prov:wasAssociatedWith",
+          "@type": "@id",
+          "@context": {
+            "name": "schema:name",
+            "role": "orp:role"
+          }
+        },
+        "decision": "dc:description",
+        "rationale": "orp:rationale",
+        "affected_sections": {
+          "@id": "orp:affectedSections",
+          "@container": "@set"
+        },
+        "constitutive_logic": "orp:constitutiveLogic",
+        "datasets_used": {
+          "@id": "prov:used",
+          "@type": "@id",
+          "@container": "@set"
+        },
+        "accountability_gap": "orp:accountabilityGap"
+      }
+    },
+
+    "l5_fork_registry": {
+      "@id": "orp:hasLayer5",
+      "@type": "@id",
+      "@context": {
+        "forks": {
+          "@id": "orp:fork",
+          "@container": "@set",
+          "@context": {
+            "fork_id": {
+              "@id": "@id",
+              "@type": "@id"
+            },
+            "parent_document": {
+              "@id": "prov:wasDerivedFrom",
+              "@type": "@id"
+            },
+            "fork_type": "orp:forkType",
+            "author": {
+              "@id": "dc:creator",
+              "@context": {
+                "name": "schema:name",
+                "affiliation": "schema:affiliation"
+              }
+            },
+            "created": {
+              "@id": "dc:created",
+              "@type": "xsd:date"
+            },
+            "summary": "dc:description",
+            "key_differences": "orp:keyDifferences",
+            "responds_to": {
+              "@id": "orp:respondsTo",
+              "@type": "@id"
+            }
+          }
+        },
+        "related_documents": {
+          "@id": "dc:relation",
+          "@type": "@id",
+          "@container": "@set"
+        }
+      }
+    }
+  }
+}

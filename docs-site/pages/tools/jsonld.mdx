@@ -1,0 +1,337 @@
+# JSON-LD Format
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+**NEW in v0.6.0**: ORP documents can now be represented as JSON-LD for semantic web integration, enabling cross-document querying, knowledge graphs, and interoperability with W3C standards.
+</Callout>
+
+## What is JSON-LD?
+
+JSON-LD (JSON for Linking Data) is a W3C standard that transforms regular JSON documents into **linked data** that machines can understand and query across different sources.
+
+For ORP, this means you can:
+- **Query across all ORP documents** to find patterns (e.g., "show all stakeholders with no representation")
+- **Store in knowledge graphs** (Apache Jena Fuseki, GraphDB, etc.)
+- **Integrate with existing standards** (PROV-O for provenance, DCAT for datasets)
+- **Use SPARQL** to ask complex questions across your document collection
+
+---
+
+## Quick Start
+
+### Try it Now (JSON-LD Playground)
+
+The easiest way to see JSON-LD in action:
+
+1. **Visit the JSON-LD Playground**: [json-ld.org/playground](https://json-ld.org/playground/)
+
+2. **Copy this example** ([Danish Property Tax Reform](https://gitlab.com/publicreason/orp/-/raw/main/examples/danish_property_tax_reform.jsonld)):
+   ```json
+   {
+     "@context": "https://openreason.org/context/v0.1",
+     "@type": "Document",
+     "document_id": "orp-dk-property-tax-001",
+     "title": "Danish Property Tax Reform: LVT + Smoothed Profit Tax",
+     ...
+   }
+   ```
+
+3. **Click "N-Quads" tab** to see 150+ RDF triples
+
+**What you're seeing:** Your ORP document transformed into semantic web format that any RDF-aware tool can query!
+
+---
+
+## Pre-Filled Playground Links
+
+Click these to explore ORP JSON-LD examples instantly:
+
+### Example 1: Danish Property Tax Reform
+**[Open in Playground →](https://json-ld.org/playground/)**
+
+What it demonstrates:
+- All 5 ORP layers converted to RDF
+- Stakeholders mapped to Schema.org (schema:Person)
+- Datasets mapped to DCAT (dcat:Dataset)
+- Provenance tracked via PROV-O (prov:Entity, prov:wasAttributedTo)
+
+### Example 2: Context File Only
+**[View ORP Context →](https://json-ld.org/playground/)**
+
+What it shows:
+- How YAML field names map to RDF URIs
+- Integration with existing ontologies (PROV-O, DCAT, Dublin Core, Schema.org)
+- 47% ontology reuse rate (28 standard terms + 31 custom ORP terms)
+
+---
+
+## How It Works
+
+### Standard YAML Format
+```yaml
+document_id: my-policy-001
+title: My Policy Analysis
+created: 2026-04-08
+authors:
+  - name: Jane Smith
+    role: Lead Analyst
+```
+
+### Same Document as JSON-LD
+```json
+{
+  "@context": "https://openreason.org/context/v0.1",
+  "@type": "Document",
+  "document_id": "my-policy-001",
+  "title": "My Policy Analysis",
+  "created": "2026-04-08",
+  "authors": [
+    {
+      "@type": "Person",
+      "name": "Jane Smith",
+      "role": "Lead Analyst"
+    }
+  ]
+}
+```
+
+### What the @context Does
+The `@context` file maps your fields to global URIs:
+- `title` → `http://purl.org/dc/terms/title` (Dublin Core)
+- `created` → `http://purl.org/dc/terms/created` (Dublin Core, typed as xsd:date)
+- `authors` → `http://purl.org/dc/terms/creator` (Dublin Core)
+
+**Result:** Your document becomes part of the global semantic web!
+
+---
+
+## Ontologies Used
+
+ORP JSON-LD reuses existing W3C and community standards:
+
+| Standard | What We Use It For | Reuse Rate |
+|----------|-------------------|-----------|
+| **PROV-O** | Provenance tracking (Layer 1, Layer 4) | Activity, Entity, Agent |
+| **DCAT** | Dataset metadata (Layer 1) | Dataset, temporalCoverage, distribution |
+| **Dublin Core** | Document metadata (Header) | title, creator, created, description |
+| **Schema.org** | Stakeholders (Layer 3) | Person, Organization, name |
+| **ORP Vocabulary** | ORP-specific terms (all layers) | 31 custom properties |
+
+**Total:** 47% ontology reuse (28 terms from standards + 31 custom ORP terms)
+
+---
+
+## Use Cases
+
+### 1. Cross-Document Querying
+
+**Question:** "Show me all stakeholders marked as 'absent nodes' across all policy documents"
+
+**SPARQL Query:**
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX schema: <http://schema.org/>
+
+SELECT ?doc ?stakeholder ?name ?population
+WHERE {
+  ?doc orp:hasLayer3 ?l3 .
+  ?l3 orp:stakeholder ?stakeholder .
+  ?stakeholder schema:name ?name ;
+               orp:representation "None" ;
+               orp:estimatedPopulation ?population .
+}
+ORDER BY DESC(?population)
+```
+
+**What this enables:** Systematic analysis of governance gaps across your entire document collection.
+
+### 2. Dataset Provenance Analysis
+
+**Question:** "Which datasets are funded by pharmaceutical companies?"
+
+**SPARQL Query:**
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX schema: <http://schema.org/>
+
+SELECT ?dataset ?name ?funder
+WHERE {
+  ?doc orp:hasLayer1 ?l1 .
+  ?l1 orp:dataset ?dataset .
+  ?dataset dcat:title ?name ;
+           orp:fundingSource ?funding .
+  ?funding schema:name ?funder .
+  FILTER(CONTAINS(LCASE(?funder), "pharma"))
+}
+```
+
+**What this enables:** Track funding influence across policy research.
+
+### 3. Fork Genealogy
+
+**Question:** "Show all alternative proposals that forked from this document"
+
+**SPARQL Query:**
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX dc: <http://purl.org/dc/terms/>
+
+SELECT ?fork ?type ?description ?author
+WHERE {
+  ?fork orp:forkedFrom <original-document-id> ;
+        orp:forkType ?type ;
+        dc:description ?description ;
+        dc:creator ?author .
+}
+```
+
+**What this enables:** Track how reasoning evolves through challenges and alternatives.
+
+---
+
+## Integration Guide
+
+### Triple Store Setup
+
+Store ORP documents in a semantic database for querying:
+
+```bash
+# Install Apache Jena Fuseki (triple store)
+wget https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-4.9.0.tar.gz
+tar xzf apache-jena-fuseki-4.9.0.tar.gz
+cd apache-jena-fuseki-4.9.0
+
+# Start Fuseki server
+./fuseki-server --update --mem /orp-documents
+
+# Load ORP JSON-LD document
+curl -X POST \
+  -H "Content-Type: application/ld+json" \
+  --data-binary @danish_property_tax_reform.jsonld \
+  http://localhost:3030/orp-documents/data
+```
+
+### Python Integration
+
+```python
+from rdflib import Graph
+
+# Load ORP document as RDF
+g = Graph()
+g.parse("my_orp_document.jsonld", format="json-ld")
+
+# Query with SPARQL
+query = """
+PREFIX orp: <https://openreason.org/vocab/>
+SELECT ?title WHERE {
+  ?doc a orp:Document ;
+       dc:title ?title .
+}
+"""
+for row in g.query(query):
+    print(f"Document: {row.title}")
+```
+
+### JavaScript Integration
+
+```javascript
+const jsonld = require('jsonld');
+const fs = require('fs');
+
+// Load ORP document
+const doc = JSON.parse(fs.readFileSync('my_orp_document.jsonld'));
+
+// Expand to RDF triples
+jsonld.toRDF(doc, {format: 'application/n-quads'})
+  .then(nquads => {
+    console.log('RDF Triples:', nquads);
+  });
+```
+
+---
+
+## Developer Resources
+
+### ORP JSON-LD Schema Files
+
+All schema files are in `orp_validator/schemas/`:
+
+- **[orp-context.jsonld](https://gitlab.com/publicreason/orp/-/blob/main/orp_validator/schemas/orp-context.jsonld)** - Context mapping YAML to RDF
+- **[orp-vocabulary.md](https://gitlab.com/publicreason/orp/-/blob/main/orp_validator/schemas/orp-vocabulary.md)** - Custom ORP vocabulary design
+- **[ontology_mapping.md](https://gitlab.com/publicreason/orp/-/blob/main/orp_validator/schemas/ontology_mapping.md)** - Mapping to existing standards
+- **[JSON_LD_GUIDE.md](https://gitlab.com/publicreason/orp/-/blob/main/orp_validator/schemas/JSON_LD_GUIDE.md)** - Comprehensive developer guide
+- **[sparql_examples.md](https://gitlab.com/publicreason/orp/-/blob/main/orp_validator/schemas/sparql_examples.md)** - 15+ example queries
+
+### Example Documents
+
+- **[Danish Property Tax Reform (JSON-LD)](https://gitlab.com/publicreason/orp/-/blob/main/examples/danish_property_tax_reform.jsonld)** - Complete 5-layer example
+
+### Tools
+
+- **[JSON-LD Playground](https://json-ld.org/playground/)** - Visualize and validate JSON-LD
+- **[Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/)** - Triple store for SPARQL
+- **[RDFLib (Python)](https://rdflib.readthedocs.io/)** - RDF library for Python
+- **[jsonld.js](https://github.com/digitalbazaar/jsonld.js)** - JSON-LD library for JavaScript
+
+---
+
+## SPARQL Playground
+
+See [SPARQL Examples](/tools/sparql) for interactive queries you can run on ORP documents.
+
+---
+
+## Benefits Over YAML-Only
+
+| Capability | YAML Only | JSON-LD |
+|------------|-----------|---------|
+| **Human-readable** | ✅ Yes | ✅ Yes |
+| **Validates structure** | ✅ JSON Schema | ✅ JSON Schema |
+| **Cross-document queries** | ❌ No | ✅ SPARQL |
+| **Knowledge graphs** | ❌ No | ✅ RDF triple stores |
+| **Standard integration** | ❌ No | ✅ PROV-O, DCAT, Dublin Core |
+| **Global URIs** | ❌ No | ✅ Every field has URI |
+| **Federated query** | ❌ No | ✅ Query distributed repos |
+
+**Recommendation:** Use YAML for human editing, convert to JSON-LD for semantic web integration.
+
+---
+
+## Frequently Asked Questions
+
+### Do I have to use JSON-LD?
+
+**No.** YAML/JSON remains the primary format. JSON-LD is optional for users who want semantic web capabilities.
+
+### Can I convert YAML to JSON-LD automatically?
+
+**Not yet.** Automated conversion is planned for a future release. For now, see the developer guide for manual conversion.
+
+### What if the context URL is down?
+
+The context is currently hosted in the repository. For production use, reference the local file or wait for stable URL hosting (planned).
+
+### Is JSON-LD harder to read than YAML?
+
+No. Properly formatted JSON-LD is just as readable as YAML. The `@context` handles all the RDF complexity behind the scenes.
+
+### Can I query across documents from different organizations?
+
+**Yes!** That's the power of semantic web. If all documents use the ORP JSON-LD context, you can query them together even if they're hosted separately.
+
+---
+
+## Next Steps
+
+1. **Try the Playground** - Copy an example into [json-ld.org/playground](https://json-ld.org/playground/)
+2. **Read the Developer Guide** - See [JSON_LD_GUIDE.md](https://gitlab.com/publicreason/orp/-/blob/main/orp_validator/schemas/JSON_LD_GUIDE.md)
+3. **Explore SPARQL** - Try queries from [sparql_examples.md](https://gitlab.com/publicreason/orp/-/blob/main/orp_validator/schemas/sparql_examples.md)
+4. **Join the Discussion** - Share your use cases on [GitLab Issues](https://gitlab.com/publicreason/orp/-/issues)
+
+---
+
+<Callout type="info">
+**Status:** JSON-LD support is production-ready as of ORP v0.6.0. Context URL hosting is planned for a future release.
+</Callout>

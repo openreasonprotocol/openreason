@@ -1,0 +1,505 @@
+# SPARQL Query Examples
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+Use these SPARQL queries to analyze ORP documents as linked data. All queries work on ORP JSON-LD documents loaded into a triple store.
+</Callout>
+
+## What is SPARQL?
+
+SPARQL is the query language for RDF data (like SQL for semantic web). When you convert ORP documents to JSON-LD and load them into a triple store, you can ask complex questions across all your documents.
+
+**Try it yourself:**
+1. Load ORP JSON-LD documents into [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/)
+2. Copy queries from this page
+3. Paste into Fuseki's query interface
+4. See results instantly
+
+---
+
+## Basic Queries
+
+### Query 1: List All Documents
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX dc: <http://purl.org/dc/terms/>
+
+SELECT ?doc ?title ?created
+WHERE {
+  ?doc a orp:Document ;
+       dc:title ?title ;
+       dc:created ?created .
+}
+ORDER BY DESC(?created)
+```
+
+**What it finds:** All ORP documents with their titles and creation dates, sorted by newest first.
+
+**Use case:** Document discovery and inventory.
+
+---
+
+### Query 2: Find Document Authors
+
+```sparql
+PREFIX dc: <http://purl.org/dc/terms/>
+PREFIX schema: <http://schema.org/>
+
+SELECT ?doc ?title ?authorName ?role
+WHERE {
+  ?doc dc:title ?title ;
+       dc:creator ?author .
+  ?author schema:name ?authorName .
+  OPTIONAL { ?author orp:role ?role }
+}
+```
+
+**What it finds:** All documents with their authors and roles.
+
+**Use case:** Attribution and responsibility tracking.
+
+---
+
+## Layer 1: Data Provenance Queries
+
+### Query 3: Find All Datasets
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dc: <http://purl.org/dc/terms/>
+
+SELECT ?dataset ?name ?description ?steward
+WHERE {
+  ?doc orp:hasLayer1 ?l1 .
+  ?l1 orp:dataset ?dataset .
+  ?dataset dcat:title ?name ;
+           dc:description ?description ;
+           prov:wasAttributedTo ?steward .
+}
+```
+
+**What it finds:** All datasets mentioned across all ORP documents.
+
+**Use case:** Data catalog creation.
+
+---
+
+### Query 4: Datasets by Funding Source
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX schema: <http://schema.org/>
+
+SELECT ?dataset ?name ?funder ?amount
+WHERE {
+  ?doc orp:hasLayer1 ?l1 .
+  ?l1 orp:dataset ?dataset .
+  ?dataset dcat:title ?name ;
+           orp:fundingSource ?funding .
+  ?funding schema:name ?funder .
+  OPTIONAL { ?funding orp:amount ?amount }
+}
+ORDER BY DESC(?amount)
+```
+
+**What it finds:** Datasets sorted by funding amount, showing who funded them.
+
+**Use case:** Track funding influence on research.
+
+---
+
+### Query 5: Datasets with Exclusions
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+
+SELECT ?doc ?dataset ?name ?exclusion ?rationale
+WHERE {
+  ?doc orp:hasLayer1 ?l1 .
+  ?l1 orp:dataset ?dataset .
+  ?dataset dcat:title ?name ;
+           orp:exclusionCriterion ?exclusion .
+  OPTIONAL { ?exclusion orp:rationale ?rationale }
+}
+```
+
+**What it finds:** All datasets that excluded data, with documented rationale.
+
+**Use case:** Identify potential selection bias.
+
+---
+
+### Query 6: Temporal Coverage Analysis
+
+```sparql
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+
+SELECT ?dataset ?name ?start ?end
+WHERE {
+  ?dataset dcat:title ?name ;
+           dcat:temporalCoverage ?temporal .
+  ?temporal dcat:startDate ?start ;
+            dcat:endDate ?end .
+}
+ORDER BY ?start
+```
+
+**What it finds:** Date ranges covered by each dataset.
+
+**Use case:** Identify data recency and coverage gaps.
+
+---
+
+## Layer 3: Empathy Mapping Queries
+
+### Query 7: Stakeholders with No Representation
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX schema: <http://schema.org/>
+
+SELECT ?doc ?stakeholder ?name ?population
+WHERE {
+  ?doc orp:hasLayer3 ?l3 .
+  ?l3 orp:stakeholder ?stakeholder .
+  ?stakeholder schema:name ?name ;
+               orp:representation "None" ;
+               orp:estimatedPopulation ?population .
+}
+ORDER BY DESC(?population)
+```
+
+**What it finds:** "Absent nodes" - stakeholder groups with zero voice in decisions, sorted by population affected.
+
+**Use case:** **Critical governance gap analysis.**
+
+---
+
+### Query 8: Stakeholders by Net Welfare Impact
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX schema: <http://schema.org/>
+
+SELECT ?doc ?stakeholder ?name ?impact ?population
+WHERE {
+  ?doc orp:hasLayer3 ?l3 .
+  ?l3 orp:stakeholder ?stakeholder .
+  ?stakeholder schema:name ?name ;
+               orp:netWelfareImpact ?impact ;
+               orp:estimatedPopulation ?population .
+  FILTER(?impact < 0)
+}
+ORDER BY ?impact
+```
+
+**What it finds:** Stakeholders experiencing net negative impact, sorted by severity.
+
+**Use case:** Identify populations bearing disproportionate harm.
+
+---
+
+### Query 9: Minority Stakeholder Representation
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+
+SELECT ?doc ?stakeholder ?name ?representation ?population
+WHERE {
+  ?stakeholder orp:representation ?representation ;
+               orp:estimatedPopulation ?population ;
+               schema:name ?name .
+  FILTER(?population < 1000000)
+}
+ORDER BY ?population
+```
+
+**What it finds:** Small stakeholder groups and their governance representation.
+
+**Use case:** Stress-test minority protection (REE Principle 4: Universal Sentience).
+
+---
+
+## Layer 4: Accountability Queries
+
+### Query 10: Decision Audit Trail
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+
+SELECT ?doc ?decision ?timestamp ?decisionMaker ?logic
+WHERE {
+  ?doc orp:hasLayer4 ?l4 .
+  ?l4 orp:decision ?decision .
+  ?decision prov:atTime ?timestamp ;
+            prov:wasAssociatedWith ?decisionMaker ;
+            orp:constitutiveLogic ?logic .
+}
+ORDER BY ?timestamp
+```
+
+**What it finds:** Chronological log of who decided what and why.
+
+**Use case:** Accountability audit (REE Principle 5: Transparent Accountability).
+
+---
+
+### Query 11: Decisions by Type
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+
+SELECT ?type (COUNT(?decision) as ?count)
+WHERE {
+  ?doc orp:hasLayer4 ?l4 .
+  ?l4 orp:decision ?decision .
+  ?decision orp:decisionType ?type .
+}
+GROUP BY ?type
+ORDER BY DESC(?count)
+```
+
+**What it finds:** Distribution of decision types across documents.
+
+**Use case:** Identify common decision patterns.
+
+---
+
+## Layer 5: Fork Analysis Queries
+
+### Query 12: Fork Genealogy
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX dc: <http://purl.org/dc/terms/>
+
+SELECT ?fork ?forkTitle ?original ?type ?description
+WHERE {
+  ?fork orp:forkedFrom ?original ;
+        orp:forkType ?type ;
+        dc:title ?forkTitle ;
+        dc:description ?description .
+}
+```
+
+**What it finds:** All alternative proposals and challenges, showing what they forked from.
+
+**Use case:** Track reasoning evolution through critique and alternatives.
+
+---
+
+### Query 13: Most Challenged Documents
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+
+SELECT ?original (COUNT(?fork) as ?challengeCount)
+WHERE {
+  ?fork orp:forkedFrom ?original ;
+        orp:forkType "challenge" .
+}
+GROUP BY ?original
+ORDER BY DESC(?challengeCount)
+```
+
+**What it finds:** Documents with the most challenges, indicating contentious reasoning.
+
+**Use case:** Identify high-controversy decisions requiring public debate.
+
+---
+
+## Cross-Document Pattern Queries
+
+### Query 14: Pharmaceutical Funding Across All Documents
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX schema: <http://schema.org/>
+
+SELECT ?doc ?dataset ?funder ?amount
+WHERE {
+  ?doc orp:hasLayer1 ?l1 .
+  ?l1 orp:dataset ?dataset .
+  ?dataset orp:fundingSource ?funding .
+  ?funding schema:name ?funder .
+  OPTIONAL { ?funding orp:amount ?amount }
+  FILTER(CONTAINS(LCASE(?funder), "pharma"))
+}
+```
+
+**What it finds:** All datasets funded by pharmaceutical companies across your entire document collection.
+
+**Use case:** Systematic conflict-of-interest analysis.
+
+---
+
+### Query 15: Documents Affecting Specific Population
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX schema: <http://schema.org/>
+
+SELECT DISTINCT ?doc ?title
+WHERE {
+  ?doc dc:title ?title ;
+       orp:hasLayer3 ?l3 .
+  ?l3 orp:stakeholder ?stakeholder .
+  ?stakeholder schema:name ?name .
+  FILTER(CONTAINS(LCASE(?name), "renters"))
+}
+```
+
+**What it finds:** All policy documents that affect a specific stakeholder group (e.g., renters).
+
+**Use case:** Stakeholder-centric policy review.
+
+---
+
+### Query 16: AI Training Datasets (Post-Hoc Reconstructions)
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+
+SELECT ?doc ?title ?extension
+WHERE {
+  ?doc dc:title ?title ;
+       orp:postHoc true ;
+       orp:extension ?extension .
+  FILTER(CONTAINS(?extension, "ai-training"))
+}
+```
+
+**What it finds:** All post-hoc reconstructions of AI training datasets.
+
+**Use case:** Discover accountability gap documentation in AI systems.
+
+---
+
+## Advanced Analytics
+
+### Query 17: Absent Node Population Impact
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+
+SELECT (SUM(?population) as ?totalAffected)
+WHERE {
+  ?stakeholder orp:representation "None" ;
+               orp:estimatedPopulation ?population .
+}
+```
+
+**What it finds:** Total number of people affected by decisions with zero representation.
+
+**Use case:** Quantify governance gap at portfolio level.
+
+---
+
+### Query 18: Compliance Level Distribution
+
+```sparql
+PREFIX orp: <https://openreason.org/vocab/>
+
+SELECT ?level (COUNT(?doc) as ?count)
+WHERE {
+  ?doc orp:complianceLevel ?level .
+}
+GROUP BY ?level
+ORDER BY ?level
+```
+
+**What it finds:** How many documents achieve each compliance level (ORP-Basic, ORP-Standard, ORP-Full, ORP-PostHoc).
+
+**Use case:** Track documentation quality across portfolio.
+
+---
+
+## Performance Tips
+
+### Optimize Queries
+
+1. **Use LIMIT** for large datasets:
+   ```sparql
+   SELECT ?doc ?title WHERE { ... } LIMIT 100
+   ```
+
+2. **Filter early** in the query:
+   ```sparql
+   WHERE {
+     ?doc orp:complianceLevel "full" .  # Filter first
+     ?doc dc:title ?title .
+   }
+   ```
+
+3. **Index frequently queried fields** in your triple store
+
+4. **Use OPTIONAL sparingly** - it's expensive
+
+---
+
+## Try These Queries
+
+### Setup Fuseki Triple Store
+
+```bash
+# Download and start Fuseki
+wget https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-4.9.0.tar.gz
+tar xzf apache-jena-fuseki-4.9.0.tar.gz
+cd apache-jena-fuseki-4.9.0
+./fuseki-server --update --mem /orp
+
+# Load ORP JSON-LD document
+curl -X POST \
+  -H "Content-Type: application/ld+json" \
+  --data-binary @danish_property_tax_reform.jsonld \
+  http://localhost:3030/orp/data
+
+# Visit http://localhost:3030/
+# Click "Query" tab
+# Paste queries from this page
+```
+
+### Python SPARQL Example
+
+```python
+from rdflib import Graph
+
+# Load ORP document
+g = Graph()
+g.parse("danish_property_tax_reform.jsonld", format="json-ld")
+
+# Run Query 7: Absent nodes
+query = """
+PREFIX orp: <https://openreason.org/vocab/>
+PREFIX schema: <http://schema.org/>
+
+SELECT ?name ?population WHERE {
+  ?stakeholder schema:name ?name ;
+               orp:representation "None" ;
+               orp:estimatedPopulation ?population .
+}
+ORDER BY DESC(?population)
+"""
+
+for row in g.query(query):
+    print(f"{row.name}: {row.population:,} people")
+```
+
+---
+
+## Next Steps
+
+1. **Try JSON-LD** - See [JSON-LD Format](/tools/jsonld) guide
+2. **Install Fuseki** - Set up your own SPARQL endpoint
+3. **Load Documents** - Convert your ORP YAML to JSON-LD
+4. **Run Queries** - Copy examples from this page
+
+---
+
+<Callout type="info">
+**More Queries:** See [sparql_examples.md](https://gitlab.com/publicreason/orp/-/blob/main/orp_validator/schemas/sparql_examples.md) in the repository for 15+ additional examples with detailed explanations.
+</Callout>

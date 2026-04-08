@@ -1,0 +1,1640 @@
+# ORP vs. Existing Data Governance Standards
+
+## Article Summary
+
+**The Problem:** Contemporary data governance — spanning GDPR, EU AI Act, W3C PROV, ISO 19115, Model Cards, Datasheets, FAIR Principles, and Open Data Charter — excels at governing what happens to data **after it exists**. These standards regulate processing, access, quality, and use. But they share a critical blind spot: **the constitutive layer** — the decisions made during data production that determine what the data represents, whose interests shaped it, what was excluded, and why.
+
+**ORP's Role:** OpenReason Protocol does not replace these standards. It **complements** them by requiring transparency at the constitutive layer. Where GDPR documents processing, ORP documents constitution. Where AI Act documents model behavior, ORP documents training data decisions. Where PROV documents what happened, ORP documents why it was decided.
+
+**Key Findings:**
+
+This analysis of 8 major data governance standards reveals systematic gaps:
+
+- **Layer 1 (Data Provenance):** 2 standards (ISO 19115, Datasheets) provide good coverage, but none systematically document **decision reasoning** for scope, exclusions, or methodology choices
+- **Layer 2 (Consequence Simulation):** 0 standards require forward-looking scenario modeling with quantifiable outcomes across affected populations
+- **Layer 3 (Empathy Mapping):** 0 standards require systematic stakeholder analysis with minority stress-testing
+- **Layer 4 (Accountability Ledger):** 0 standards require immutable logs of constitutive decisions with timestamps, decision-makers, reasoning, and alternatives considered
+- **Layer 5 (Fork Registry):** 0 standards provide infrastructure for documenting competing versions with alternative assumptions
+
+**Integration Pathways:** Organizations already compliant with existing standards can adopt ORP incrementally (2-6 weeks pilot effort). GDPR processing records become ORP constitution records. AI Act technical documentation extends to training data provenance. PROV graphs reference ORP decision reasoning. Model Cards link to ORP training data documents. Open Data publications include ORP provenance layers.
+
+**Result:** ORP + existing standards = **full transparency** from data constitution → processing → use. Not competitive replacement, but evolutionary addition addressing the layer existing standards weren't designed to cover.
+
+**The Core Insight:** Every existing standard focuses downstream of data constitution. ORP is the first framework to systematically address the constitutive layer — how data came to exist, whose interests shaped it, what was excluded, and how to contest those decisions. This is not a criticism of existing standards but recognition that a fundamental layer was missing from the entire governance ecosystem.
+
+**Recommendation:** Treat ORP as the **missing foundation** for data governance. Organizations can adopt ORP alongside existing compliance, extending (not duplicating) documentation to cover constitutive decisions, funding relationships, exclusion reasoning, stakeholder impacts, and alternative methodologies.
+
+---
+
+## 1. Introduction: The Downstream Focus Problem
+
+Contemporary data governance frameworks — spanning regulatory instruments (GDPR, EU AI Act), technical standards (W3C PROV, ISO 19115), documentation practices (Model Cards, Datasheets), and access principles (FAIR, Open Data Charter) — have converged on a sophisticated ecosystem for governing what happens to data **after it exists**.
+
+These frameworks address genuine concerns:
+- **Access rights** - Who can use data, under what conditions
+- **Processing obligations** - How data must be handled, secured, deleted
+- **Quality standards** - Accuracy, completeness, representativeness requirements
+- **Transparency mechanisms** - What must be disclosed about model behavior
+
+But they share a critical architectural assumption: **that the data asset itself is a pre-ethical given, and ethical work begins downstream of its production.**
+
+This assumption is the gap OpenReason Protocol addresses.
+
+ORP does not replace existing standards. It complements them by requiring transparency at the **constitutive layer** — the decisions made during data production that determine what the data is capable of representing, whose interests shaped its scope, what was excluded, and why.
+
+This document provides a structured comparison showing:
+1. What each standard does well (its genuine contribution)
+2. What constitutive-layer concerns each standard does not address
+3. How ORP fills those gaps without duplicating existing requirements
+4. How ORP can be integrated alongside existing compliance obligations
+
+---
+
+## 2. High-Level Comparison Matrix
+
+| Standard | Primary Purpose | What It Requires | What ORP Adds | Integration Pathway |
+|----------|-----------------|------------------|---------------|---------------------|
+| **GDPR** (EU 2016/679) | Data subject rights & processing obligations | Records of processing activities (Art. 30)<br>Purpose limitation<br>Data minimization | **L1:** Constitution decisions (not just processing)<br>**L1:** Funding disclosure<br>**L1:** Exclusion reasoning | Existing Art. 30 records become foundation for ORP L1 provenance documentation |
+| **EU AI Act** (EU 2024/1689) | AI risk management & model transparency | Training data quality (Art. 10)<br>Technical documentation (Art. 11, Annex IV)<br>Transparency obligations (Art. 13) | **L1:** Funding relationships for training data<br>**L2:** Consequence modeling under data limitations<br>**L4:** Decision accountability for dataset choices | Annex IV technical documentation extended with ORP L1-L4 for training data |
+| **W3C PROV** | Provenance tracking (who/what/when) | Entity-Activity-Agent graphs<br>`wasGeneratedBy`, `wasAttributedTo`<br>Derivation chains | **L1:** Why decisions (not just what happened)<br>**L1:** Funding + incentive structures<br>**L4:** Alternatives considered | ORP documents reference PROV graphs; PROV agents extended with ORP funding/interest disclosure |
+| **ISO 19115** | Geographic metadata standardization | Data identification<br>Quality information<br>Lineage (sources, processing) | **L1:** Decision reasoning (not just technical lineage)<br>**L1:** Funding + scope decisions<br>**L4:** Accountability for methodology choices | ISO 19115 lineage becomes ORP L1 component; ORP extends with decision layer |
+| **Model Cards** (Mitchell et al., 2019) | Model reporting & performance documentation | Model details, use cases<br>Training/evaluation data description<br>Metrics, limitations | **L1:** Training data constitution decisions<br>**L2:** Scenarios under data limitations<br>**L3:** Stakeholder impact (beyond "ethical considerations")<br>**L5:** Model variant comparison (forks) | Model Card "Training Data" section references ORP document for dataset |
+| **Datasheets** (Gebru et al., 2018) | Dataset documentation | Motivation (including funding)<br>Composition, collection process<br>Preprocessing, uses | **L1:** Decision reasoning (why exclusions)<br>**L2:** Forward-looking consequence modeling<br>**L3:** Systematic stakeholder identification<br>**L4:** Decision log with attribution<br>**L5:** Fork registry for alternatives | Datasheet becomes ORP L1; full ORP adds L2-L5 decision/impact/contestability layers |
+| **FAIR Principles** | Scientific data reusability | Findable (unique ID, rich metadata)<br>Accessible (standard protocols)<br>Interoperable (shared vocabularies)<br>Reusable (provenance, license) | **L1:** Provenance quality/depth (FAIR requires presence, not content)<br>**L1:** Constitutive decisions<br>All ORP layers (FAIR silent on constitution) | FAIR R4 (provenance) implemented via ORP L1; FAIR ensures ORP documents are themselves findable/reusable |
+| **Open Data Charter** | Government data access principles | Open by default<br>Timely, comprehensive<br>Machine-readable formats | **L1:** What the open data represents (constitution)<br>**L1:** What was excluded<br>**L3:** Who is affected by data/decisions<br>All ORP layers | Open Data Charter ensures data is public; ORP ensures published data's constitution is transparent |
+
+### Key Insight
+
+**What existing standards share:**
+- Focus on data **as product** (how to use it responsibly)
+- Requirements **downstream of constitution** (processing, access, quality)
+- Silence on **constitutive decisions** (funding, scope, exclusions, alternatives)
+
+**What ORP provides:**
+- Focus on data **as process** (how it came to be)
+- Requirements **at point of constitution** (decisions, reasoning, accountability)
+- Infrastructure for **contestability** (fork registry, alternative assumptions)
+
+**Integration principle:** ORP complements existing standards by addressing the constitutive layer they systematically omit.
+
+---
+
+## 3. Layer-by-Layer Analysis
+
+This section examines each ORP layer, identifying which existing standards partially address similar concerns and precisely documenting what ORP adds that no current standard requires.
+
+---
+
+### 3.1 Layer 1: Data Provenance
+
+**ORP Layer 1 Purpose:** Document the constitutive conditions of data assets — how they were produced, by whom, under what funding relationships, with what exclusions, and with what known limitations.
+
+#### Closest Existing Standards
+
+**W3C PROV** (Provenance Ontology)
+- **What it covers:**
+  - Entity-Activity-Agent relationships
+  - `prov:wasGeneratedBy` (what activity created this entity)
+  - `prov:wasAttributedTo` (who is responsible)
+  - Derivation chains (entity X derived from entity Y)
+  - Temporal properties (when activities occurred)
+
+- **What it does well:**
+  - Formal RDF vocabulary (machine-readable, interoperable)
+  - Captures lineage (what came from what)
+  - Standardized by W3C (broad adoption in scientific community)
+
+- **What it does NOT cover:**
+  - **Why decisions were made** (PROV documents *what* happened, not *why*)
+  - **Funding relationships** (can attribute to agent, but not funding source or interests)
+  - **Exclusion criteria** (what was deliberately omitted and why)
+  - **Alternatives considered** (decision reasoning)
+  - **Incentive structures** (what motivated scope/method choices)
+
+**ISO 19115** (Geographic Information Metadata)
+- **What it covers:**
+  - Data identification (title, abstract, purpose)
+  - Lineage (sources and process steps)
+  - Quality information (completeness, accuracy)
+  - Contact information for responsible parties
+
+- **What it does well:**
+  - Comprehensive metadata framework for geographic data
+  - International standard (widely adopted in GIS community)
+  - Structured quality reporting
+
+- **What it does NOT cover:**
+  - **Decision reasoning** (technical lineage only, not why choices made)
+  - **Funding disclosure** (responsible party ≠ funding source)
+  - **Scope capture** (why this geographic extent, not another)
+  - **Exclusion justification** (what areas/features excluded and why)
+
+**Datasheets for Datasets** (Gebru et al., 2018)
+- **What it covers:**
+  - Motivation section (including "Who funded creation?")
+  - Composition (what data, sampling strategy, missing info)
+  - Collection process (how acquired, timeframe, who involved)
+  - Preprocessing/cleaning (what transformations applied)
+
+- **What it does well:**
+  - **Comprehensive** — 7 sections covering most aspects of dataset creation
+  - **Practical** — question-based format, easy to adopt
+  - **Includes funding** — explicitly asks who paid for creation
+  - Gaining adoption in ML community
+
+- **What it does NOT cover (that ORP L1 adds):**
+  - **Decision accountability** (answers "what was done" but not "why this choice vs. alternatives")
+  - **Exclusion reasoning** (documents what's missing, but not *why* it was excluded)
+  - **Incentive analysis** (asks who funded but not how funding shaped scope)
+  - **Structured attestation** (no formal attestation of provenance claims)
+
+#### What ORP Layer 1 Adds
+
+**1. Funding Transparency with Incentive Analysis**
+
+Example contrast:
+```yaml
+# Datasheet might say:
+"Funded by Pharmaceutical Company X"
+
+# ORP L1 requires:
+l1_data_provenance:
+  - dataset_id: clinical-trial-2023
+    funding_sources:
+      - name: "Pharmaceutical Company X"
+        amount: "$2.5M"
+        grant_id: "GR-2023-001"
+        interests: "Company manufactures drug being tested"
+        relationship_to_scope: "Funder has financial interest in positive outcome"
+```
+
+**What this enables:**
+- Readers can assess potential scope capture
+- Incentive structures are transparent, not hidden
+- Funding ≠ automatic bias, but lack of disclosure prevents assessment
+
+**2. Exclusion Criteria with Reasoning**
+
+Example contrast:
+```yaml
+# ISO 19115 might say:
+"Geographic coverage: United States"
+
+# ORP L1 requires:
+exclusion_criteria:
+  - description: "Non-US populations excluded from sample"
+    rationale: "Study funded by US agency, US regulatory approval targeted"
+    affected_populations: "International patients using same drug"
+    documented_limitation: "Results may not generalize beyond US healthcare context"
+```
+
+**What this enables:**
+- Readers understand *why* exclusions happened (methodological vs. incentive-driven)
+- Affected populations identified explicitly
+- Generalizability limits made transparent
+
+**3. Decision Alternatives Documentation**
+
+No existing standard requires documenting alternatives considered:
+
+```yaml
+# ORP L1 approach:
+collection_methodology:
+  method_used: "Retrospective electronic health record analysis"
+  alternatives_considered:
+    - method: "Prospective randomized trial"
+      reason_not_used: "Cost prohibitive ($5M vs $500K), timeline too long (3 years vs 6 months)"
+    - method: "Patient self-reporting"
+      reason_not_used: "Lower reliability, higher dropout rate in pilot study"
+```
+
+**What this enables:**
+- Readers understand constraints that shaped data collection
+- Trade-offs are explicit, not hidden
+- Can assess whether different method would change conclusions
+
+**4. Structured Attestation**
+
+```yaml
+# ORP L1 attestation (enforceable):
+attested_by:
+  - name: "Dr. Jane Smith"
+    role: "Principal Investigator"
+    organization: "Research Institute"
+    date: "2023-06-15"
+    statement: "I attest that this provenance documentation accurately represents
+                the data collection process, funding relationships, and known
+                limitations to the best of my knowledge."
+    orcid: "0000-0002-1234-5678"  # Verifiable identity
+```
+
+**What this enables:**
+- Accountability for provenance claims (not anonymous documentation)
+- Verification pathway (can contact attester)
+- Professional reputation at stake (discourages fabrication)
+
+#### Gap Summary: Layer 1
+
+| Standard | Entity lineage | Funding disclosure | Exclusion reasoning | Decision alternatives | Structured attestation |
+|----------|----------------|-------------------|---------------------|----------------------|----------------------|
+| W3C PROV | ✓✓ | ✗ | ✗ | ✗ | Partial (attribution) |
+| ISO 19115 | ✓ | ✗ | ✗ | ✗ | Partial (contact info) |
+| Datasheets | Partial | ✓ | Partial | ✗ | ✗ |
+| **ORP L1** | ✓ | ✓✓ | ✓✓ | ✓ | ✓✓ |
+
+**Key citation:**
+- GDPR Article 30 requires records of *processing* activities, not data *constitution* decisions
+- EU AI Act Article 11 requires training data description, not provenance reasoning
+- Datasheets ask "Who funded?" but not "How did funding shape scope?"
+
+---
+
+### 3.2 Layer 2: Consequence Simulation
+
+**ORP Layer 2 Purpose:** Model foreseeable downstream effects of data constitution decisions under multiple scenarios, including scenarios where documented limitations (from L1) affect outcomes.
+
+#### Closest Existing Standards
+
+**EU AI Act** (Risk Assessment - Articles 9, 27)
+- **What it covers:**
+  - Risk management system for high-risk AI
+  - Identification and analysis of known/foreseeable risks
+  - Testing for intended purpose and reasonably foreseeable misuse
+
+- **What it does well:**
+  - Mandatory for high-risk AI systems
+  - Risk categorization framework
+  - Ongoing monitoring obligations
+
+- **What it does NOT cover:**
+  - **Backward-looking** (assesses risks given model, not risks from data constitution)
+  - **Model-level** (evaluates system behavior, not data choices)
+  - **No counterfactual analysis** (what if different data had been used?)
+  - **No scenario modeling** under different data constitution choices
+
+**Model Cards** (Evaluation section)
+- **What it covers:**
+  - Quantitative analyses (performance metrics)
+  - Performance across demographic factors
+  - Model behavior under various conditions
+
+- **What it does NOT cover:**
+  - **Model output** analysis (not data constitution consequences)
+  - **Retrospective** (performance on existing test sets)
+  - **No prospective modeling** of how data choices affect outcomes
+
+#### What ORP Layer 2 Adds
+
+**1. Forward-Looking Consequence Modeling**
+
+ORP L2 requires prospective scenario analysis, not just retrospective performance:
+
+```yaml
+l2_consequence_simulation:
+  affected_population:
+    primary: "Patients considering Drug X"
+    secondary: "Healthcare providers prescribing Drug X"
+    tertiary: "Insurance companies covering Drug X"
+
+  variables:
+    - "Patient demographics (age, comorbidities)"
+    - "Drug efficacy (measured by outcome Y)"
+    - "Side effect profile"
+    - "Cost-effectiveness"
+
+  scenarios:
+    - scenario_id: "A"
+      name: "Current data (US population only)"
+      description: "Efficacy conclusions based on existing trial data"
+      assumptions:
+        - "US healthcare context generalizes globally"
+        - "Trial exclusion criteria don't affect efficacy estimates"
+      expected_outcomes:
+        - "Drug approved for general use"
+        - "Prescribed to ~500K patients/year"
+      uncertainties:
+        - "International populations may respond differently"
+        - "Excluded comorbidity groups not studied"
+
+    - scenario_id: "B"
+      name: "Alternative: Global representative sample"
+      description: "What if trial included international populations?"
+      assumptions:
+        - "Different genetic backgrounds affect drug metabolism"
+        - "Healthcare contexts affect adherence/outcomes"
+      expected_outcomes:
+        - "Lower average efficacy (heterogeneous responses)"
+        - "More precise targeting of responsive populations"
+      uncertainties:
+        - "Cost would increase trial budget 3x"
+        - "Timeline extended 2 years"
+```
+
+**What this enables:**
+- Readers see how *data constitution choices* (not model choices) affect conclusions
+- Counterfactual thinking: "What if different data had been collected?"
+- Trade-offs made explicit (cost/time vs. generalizability)
+
+**2. Linking L1 Limitations to L2 Scenarios**
+
+ORP requires consequences of L1-documented limitations to be modeled:
+
+```yaml
+# Layer 1 documented:
+known_limitations:
+  - "Sample excludes patients with renal impairment"
+
+# Layer 2 must address:
+scenarios:
+  - scenario_id: "C"
+    name: "Renal impairment population impact"
+    description: "Drug prescribed to excluded population"
+    expected_outcomes:
+      - "Unknown efficacy in renal impairment patients"
+      - "Potential adverse events not captured in trial"
+      - "Off-label prescribing without evidence base"
+```
+
+**What this enables:**
+- Constitutive exclusions propagate forward into consequence analysis
+- Can't claim "we documented limitations" without showing their implications
+- Downstream effects of upstream decisions become visible
+
+**3. Sensitivity Analysis**
+
+ORP requires testing conclusion robustness:
+
+```yaml
+sensitivity_analysis:
+  - variable: "Efficacy threshold assumption"
+    baseline_value: "20% improvement required"
+    tested_range: "10% to 30%"
+    impact_on_conclusions:
+      - at_10pct: "Drug meets approval threshold"
+      - at_20pct: "Drug marginally meets threshold"
+      - at_30pct: "Drug fails to meet threshold"
+    interpretation: "Approval decision highly sensitive to threshold choice"
+```
+
+**What this enables:**
+- Identifies which assumptions conclusions depend on
+- Shows where uncertainty matters most
+- Prevents false confidence in fragile conclusions
+
+#### Gap Summary: Layer 2
+
+| Concern | EU AI Act | Model Cards | ORP L2 |
+|---------|-----------|-------------|--------|
+| Risk assessment | ✓ (model-level) | ✓ (performance) | ✓✓ (constitution-level) |
+| Forward-looking scenarios | Partial | ✗ | ✓✓ |
+| Counterfactual analysis | ✗ | ✗ | ✓✓ |
+| L1 limitation consequences | ✗ | ✗ | ✓✓ |
+| Sensitivity analysis | Partial | Partial | ✓✓ |
+
+**Key insight:** Existing standards assess **what the model does given data**. ORP L2 assesses **what conclusions would look like with different data constitution**.
+
+---
+
+### 3.3 Layer 3: Empathy Mapping
+
+**ORP Layer 3 Purpose:** Systematically identify all stakeholders affected by data/decisions, including those **absent from the data**, and document projected impacts under L2 scenarios.
+
+#### Closest Existing Standards
+
+**EU AI Act** (Article 10(2)(g) - Affected persons)
+- **What it covers:**
+  - High-risk AI must identify categories of persons affected
+  - Consider bias monitoring requirements
+
+- **What it does well:**
+  - Mandatory stakeholder consideration for high-risk systems
+  - Links to bias mitigation
+
+- **What it does NOT cover:**
+  - **Absent stakeholders** (people not in training data)
+  - **Systematic identification** (no structured process required)
+  - **Impact documentation** (identifies affected persons, not impacts)
+  - **Minority stress-testing** (no requirement for focused analysis of marginalized groups)
+
+**Model Cards** (Ethical Considerations section)
+- **What it covers:**
+  - Sensitive use cases
+  - Potential harms
+  - Demographic factors considered in evaluation
+
+- **What it does NOT cover:**
+  - **Systematic stakeholder mapping** (ad-hoc mentions, not structured)
+  - **Absent stakeholders** (focus on who's in evaluation set, not who's missing)
+  - **Impact quantification** (qualitative discussion, not projected impacts)
+
+**Impact Assessments** (Various frameworks - DPIA, AAIA, etc.)
+- **What they cover:**
+  - Identification of affected groups
+  - Assessment of impacts (privacy, fairness, etc.)
+  - Mitigation measures
+
+- **What they do NOT cover consistently:**
+  - **Data constitution impacts** (focus on system deployment, not data choices)
+  - **Absent stakeholder analysis** (focus on who interacts with system)
+
+#### What ORP Layer 3 Adds
+
+**1. Universal Sentience Principle (Including Absent Stakeholders)**
+
+ORP explicitly requires identifying stakeholders **not represented in data**:
+
+```yaml
+l3_empathy_mapping:
+  stakeholder_groups:
+    - group_id: "SH-1"
+      name: "Clinical trial participants"
+      size: "2,400 patients"
+      representation_in_data: "Full (they are the data)"
+      interests:
+        - "Receive effective treatment"
+        - "Avoid adverse effects"
+      projected_impact:
+        scenario_A: "Positive (if drug effective)"
+        scenario_B: "Neutral (already received treatment)"
+
+    - group_id: "SH-4"
+      name: "Renal impairment patients"  # ABSENT STAKEHOLDER
+      size: "~50,000 potential users (US)"
+      representation_in_data: "None (excluded from trial)"  # ← KEY
+      interests:
+        - "Access to effective treatments"
+        - "Safety (unknown side effects in their population)"
+      projected_impact:
+        scenario_A: "Negative (drug prescribed off-label without evidence)"
+        scenario_B: "Positive (would have been included, safety data available)"
+      absent_node_analysis:
+        reason_for_absence: "Renal impairment was trial exclusion criterion"
+        consequence_of_absence: "No safety/efficacy data for this population"
+        mitigation: "Post-market surveillance required, or additional trial"
+```
+
+**What this enables:**
+- The "absent node problem" (Section 2 of academic paper) is made explicit
+- Can't claim "we considered stakeholders" while ignoring systematically excluded groups
+- **Ethical visibility** for groups invisible in the data
+
+**2. Representation Analysis**
+
+ORP requires documenting how much voice each stakeholder has:
+
+```yaml
+stakeholder_groups:
+  - group_id: "SH-2"
+    name: "Amazon Mechanical Turk annotators"
+    size: "~500 workers"
+    representation_in_data: "High (shaped labels, but not credited)"
+    representation_in_decision_making: "None (no input on dataset scope/design)"
+    interests:
+      - "Fair compensation for labor"
+      - "Credit for contribution"
+    projected_impact:
+      scenario_A: "Negative (labor commodified, no attribution)"
+    minority_status: "Low-wage digital labor class"
+```
+
+**What this enables:**
+- Distinguishes between "in the data" and "in the decision-making"
+- Makes power dynamics explicit
+- Connects to Crawford & Paglen's "Excavating AI" analysis
+
+**3. Minority Stakeholder Stress-Testing**
+
+ORP explicitly requires focused analysis of marginalized groups:
+
+```yaml
+minority_stakeholder_analysis:
+  - group: "Non-Western communities"
+    current_representation: "~5% of training images (ImageNet example)"
+    systematic_disadvantage:
+      - "Cultural categories underrepresented in taxonomy"
+      - "Models perform worse on non-Western contexts"
+      - "No input into category selection process"
+    projected_impact:
+      downstream_models: "Biased performance in non-Western deployments"
+      affected_populations: "~4 billion people"
+    mitigation_required:
+      - "Geographic diversity requirements in future versions"
+      - "Cultural consultation in taxonomy design"
+```
+
+**What this enables:**
+- Can't bury minority impacts in aggregate analysis
+- Requires explicit attention to groups most likely harmed
+- Operationalizes Measured Compassion + Universal Sentience principles
+
+**4. Cross-Layer Integration**
+
+ORP L3 is explicitly linked to L1 and L2:
+
+```yaml
+# L1 documented exclusion:
+exclusion_criteria:
+  - description: "Geographic scope: US only"
+
+# L2 modeled consequence:
+scenarios:
+  - scenario_id: "B"
+    description: "International deployment"
+
+# L3 MUST identify affected stakeholders:
+stakeholder_groups:
+  - group_id: "SH-X"
+    name: "International users of AI system"
+    representation_in_data: "None (training data US-only)"
+    projected_impact:
+      scenario_B: "System deployed globally but trained on US data only"
+```
+
+**What this enables:**
+- Exclusions (L1) → Scenarios (L2) → Stakeholders (L3) form traceable chain
+- Can't document exclusions without analyzing who's affected
+- Constitutive decisions have documented consequences on real people
+
+#### Gap Summary: Layer 3
+
+| Concern | EU AI Act | Model Cards | Impact Assessments | ORP L3 |
+|---------|-----------|-------------|-------------------|--------|
+| Stakeholder identification | ✓ | Partial | ✓ | ✓✓ |
+| Absent stakeholders | ✗ | ✗ | ✗ | ✓✓ |
+| Representation analysis | ✗ | ✗ | Partial | ✓✓ |
+| Minority stress-testing | ✗ | ✗ | Partial | ✓✓ |
+| Impact quantification | Partial | ✗ | ✓ | ✓✓ |
+| Cross-layer integration | ✗ | ✗ | ✗ | ✓✓ |
+
+**Key insight:** Existing standards identify stakeholders **who interact with deployed systems**. ORP L3 identifies stakeholders **affected by data constitution decisions**, including those absent from the data.
+
+---
+
+### 3.4 Layer 4: Accountability Ledger
+
+**ORP Layer 4 Purpose:** Create traceable record of every significant decision in data production / reasoning process — who made it, when, why, and what alternatives were considered.
+
+#### Closest Existing Standards
+
+**GDPR Article 30** (Records of Processing Activities)
+- **What it covers:**
+  - Name and contact details of controller
+  - Purposes of processing
+  - Categories of data subjects and personal data
+  - Categories of recipients
+  - Transfers to third countries
+  - Retention periods
+
+- **What it does well:**
+  - Mandatory for all controllers/processors
+  - Creates audit trail of **processing activities**
+  - Regulators can request records
+
+- **What it does NOT cover:**
+  - **Constitution decisions** (records what was processed, not how data was created)
+  - **Reasoning** (documents purposes, not alternatives considered)
+  - **Attribution** (controller identity, not individual decision-makers)
+  - **Timestamps** (retention periods, not decision dates)
+
+**ISO 9001 / SOC 2** (Audit Trails)
+- **What they cover:**
+  - Quality management system documentation
+  - Process controls and evidence
+  - Change management records
+
+- **What they do well:**
+  - Comprehensive organizational accountability
+  - Third-party auditable
+
+- **What they do NOT cover:**
+  - **Reasoning for decisions** (what was done, not why)
+  - **Alternatives** (chosen approach documented, not rejected alternatives)
+  - **Publicly accessible** (audit logs typically confidential)
+
+**Academic Publishing** (Methods sections)
+- **What it covers:**
+  - Description of methodology
+  - Data sources
+  - Analysis procedures
+
+- **What it does NOT cover:**
+  - **Decision attribution** (methods described, but not who decided)
+  - **Alternatives considered** (chosen method described, not rejected options)
+  - **Timestamps** (publication date, not decision dates)
+  - **Structured accountability** (prose description, not traceable log)
+
+#### What ORP Layer 4 Adds
+
+**1. Decision-Level Accountability**
+
+ORP requires logging individual **decisions** (not just activities):
+
+```yaml
+l4_accountability_ledger:
+  - decision_id: "DEC-001"
+    date: "2023-01-15"
+    decision_maker:
+      name: "Dr. Jane Smith"
+      role: "Principal Investigator"
+      organization: "Research Institute"
+      orcid: "0000-0002-1234-5678"
+
+    decision: "Exclude patients with renal impairment from trial"
+
+    rationale: |
+      Drug metabolism significantly altered in renal impairment.
+      Including this population would require additional safety monitoring
+      and extended timeline (estimated +18 months, +$1.5M cost).
+      Decision made to focus on primary population for initial approval.
+
+    alternatives_considered:
+      - option: "Include renal impairment with separate arm"
+        reason_not_chosen: "Budget constraint (exceeds available funding by $1.5M)"
+      - option: "Delay trial until additional funding secured"
+        reason_not_chosen: "Timeline unacceptable to funder (regulatory approval delayed 2 years)"
+      - option: "Include with standard monitoring"
+        reason_not_chosen: "Safety risk unacceptable per IRB preliminary review"
+
+    related_decisions: ["DEC-004", "DEC-007"]  # Links to funding and safety decisions
+
+    impact_documented_in: "L3:SH-4"  # Links to stakeholder analysis
+```
+
+**What this enables:**
+- **Individual accountability** (not just organizational)
+- **Reasoning transparency** (why this choice, not alternatives)
+- **Constraint documentation** (budget/timeline pressures explicit)
+- **Traceability** (can follow decision chains)
+
+**2. Temporal Accountability**
+
+ORP timestamps decisions, showing when choices were locked in:
+
+```yaml
+  - decision_id: "DEC-002"
+    date: "2023-02-10"  # Before data collection started
+    decision: "Use Amazon Mechanical Turk for image annotation"
+
+  - decision_id: "DEC-015"
+    date: "2024-11-20"  # After results published
+    decision: "Remove offensive category labels from ImageNet"
+    decision_maker:
+      name: "ImageNet Team"
+      role: "Dataset maintainers"
+    rationale: "Community feedback identified problematic labels post-publication"
+    retrospective: true  # Indicates post-hoc fix
+```
+
+**What this enables:**
+- Shows when decisions were made relative to data collection/publication
+- Distinguishes prospective decisions from retrospective fixes
+- Prevents retroactive rewriting of decision history
+
+**3. Publicly Accessible Accountability**
+
+Unlike confidential audit logs, ORP L4 is **public by default**:
+
+```yaml
+# GDPR Art. 30 records: Internal, regulator-accessible only
+# ISO audit trails: Confidential, third-party auditors only
+# ORP L4: Public, community-auditable
+
+accountability_status:
+  visibility: "public"
+  rationale: "Epistemic accountability requires community scrutiny"
+  redactions: "None (or list specific redactions with justification)"
+```
+
+**What this enables:**
+- **Community audit** (not just regulators/auditors)
+- **Academic scrutiny** (researchers can analyze decision patterns)
+- **Fork basis** (alternative approaches can reference these decisions)
+
+**4. Cross-Layer Integration**
+
+ORP L4 creates traceable links across all layers:
+
+```yaml
+  - decision_id: "DEC-008"
+    decision: "Define efficacy threshold as 20% improvement"
+
+    # Linked to other layers:
+    documented_in_L1: "primary_outcome_definition"
+    affects_L2_scenarios: ["scenario_A", "scenario_C"]
+    impacts_L3_stakeholders: ["SH-1", "SH-5"]
+    forked_in_L5: "FORK-2024-02"  # Alternative used 15% threshold
+```
+
+**What this enables:**
+- Follow decision from constitution (L1) → consequences (L2) → stakeholders (L3) → alternatives (L5)
+- Can't make major decision without documenting it
+- Every layer references L4 for decision history
+
+#### Gap Summary: Layer 4
+
+| Standard | Individual attribution | Decision reasoning | Alternatives documented | Timestamps | Public accessibility | Cross-layer links |
+|----------|----------------------|-------------------|------------------------|------------|---------------------|------------------|
+| GDPR Art. 30 | Partial (controller) | ✗ | ✗ | ✗ | ✗ (internal) | ✗ |
+| ISO/SOC2 Audits | ✓ | Partial | ✗ | ✓ | ✗ (confidential) | ✗ |
+| Methods sections | ✗ (implicit) | Partial | ✗ | ✗ | ✓ (published) | ✗ |
+| **ORP L4** | ✓✓ | ✓✓ | ✓✓ | ✓✓ | ✓✓ (public) | ✓✓ |
+
+**Key insight:** Existing standards create **activity logs**. ORP L4 creates **decision logs** with reasoning and alternatives.
+
+---
+
+### 3.5 Layer 5: Fork Registry
+
+**ORP Layer 5 Purpose:** Formal mechanism for documenting alternative versions of reasoning that adopt different assumptions, scope, or methods — making contestability infrastructure explicit.
+
+#### Existing Standards
+
+**No direct analog exists** in current data governance standards.
+
+Closest concepts:
+- **Version control (Git)** - Technical versioning, not assumption forks
+- **Scientific peer review** - Critique without structured alternatives
+- **Replication studies** - New studies, not documented forks of assumptions
+
+#### Why This Gap Matters
+
+Current standards allow three responses to disagreement:
+1. **Accept the data/conclusion** (even if you disagree with assumptions)
+2. **Reject the data/conclusion** (but provide no alternative)
+3. **Conduct entirely new study** (expensive, time-consuming, often infeasible)
+
+**ORP L5 adds a fourth option:**
+4. **Fork: Propose alternative assumptions and show different conclusions**
+
+#### What ORP Layer 5 Provides
+
+**1. Assumption Forks**
+
+```yaml
+l5_fork_registry:
+  - fork_id: "FORK-2024-01"
+    fork_type: "assumption"
+    forked_from: "dk-property-tax-reform-2024"
+    forked_by:
+      name: "Dr. Anders Jensen"
+      organization: "Alternative Policy Institute"
+      date: "2024-03-15"
+
+    fork_reasoning: |
+      Original document assumes property values perfectly reflect market.
+      This fork models scenario where property values lag market by 12-18 months
+      (typical in rapidly changing markets).
+
+    changes_made:
+      layer_1:
+        - field: "data_provenance.property_valuations.known_limitations"
+          original: "Valuations updated annually"
+          forked: "Valuations lag market by 12-18 months in volatile periods"
+
+      layer_2:
+        - field: "scenarios.scenario_B"
+          added: "Market volatility scenario (18-month lag)"
+          outcome: "Tax burden misaligned with actual wealth for 24-30 month period"
+
+    comparison_with_original:
+      - conclusion_divergence: "High"
+      - affected_populations: "Homeowners in rapidly appreciating neighborhoods"
+      - policy_implication: "May require quarterly revaluation, not annual"
+
+    community_response:
+      - citations: 3
+      - derivative_forks: 1
+      - adopted_by_policymakers: false
+```
+
+**What this enables:**
+- **Contestability without full replication** (modify assumptions, not redo entire study)
+- **Transparent divergence** (shows exactly where/why conclusions differ)
+- **Cumulative critique** (forks can be forked, building alternative reasoning chains)
+
+**2. Extension Forks**
+
+```yaml
+  - fork_id: "FORK-2024-02"
+    fork_type: "extension"
+    forked_from: "imagenet-training-data-2012"
+    forked_by:
+      name: "Dr. Emily Chen"
+      organization: "Fairness in AI Institute"
+      date: "2024-06-20"
+
+    fork_reasoning: |
+      Original ImageNet document (ORP-Standard) covers L1-L3.
+      This fork extends to ORP-Full by adding L4 (decision log) and L5.
+      Reconstructs key training decisions from published papers + team interviews.
+
+    changes_made:
+      layer_4:
+        added: "Reconstructed accountability ledger (15 key decisions)"
+
+      layer_5:
+        added: "Documents ImageNet-V2, ImageNet-R as technical forks"
+```
+
+**What this enables:**
+- Community can improve ORP documents (not just critique)
+- Lower-compliance documents can be extended to higher compliance
+- Collaborative refinement
+
+**3. Response Forks (Official Rebuttals)**
+
+```yaml
+  - fork_id: "FORK-2024-03"
+    fork_type: "response"
+    forked_from: "FORK-2024-01"  # Responding to someone else's fork
+    forked_by:
+      name: "Dr. Jane Smith"  # Original author
+      organization: "Research Institute"
+      date: "2024-03-25"
+
+    fork_reasoning: |
+      Fork-2024-01 raises valid point about market lag.
+      This response fork incorporates their criticism by:
+      1. Acknowledging 12-18 month lag in L1 limitations
+      2. Adding market volatility scenario to L2
+      3. Modifying policy recommendations to account for lag
+
+      Original conclusions upheld with modifications.
+```
+
+**What this enables:**
+- Structured dialogue (not just "comments section")
+- Original authors can respond by improving document
+- Critique becomes productive (leads to better documentation)
+
+**4. Divergence Tracking**
+
+ORP L5 creates a **fork graph** showing relationships:
+
+```
+dk-property-tax-reform-2024 (original)
+  │
+  ├─→ FORK-2024-01 (market lag assumption)
+  │     └─→ FORK-2024-03 (original author response)
+  │
+  └─→ FORK-2024-04 (climate impact extension)
+        └─→ FORK-2024-05 (combines market lag + climate)
+```
+
+**What this enables:**
+- **Epistemic genealogy** (trace evolution of reasoning)
+- **Comparison across forks** (which assumptions produce which outcomes?)
+- **Meta-analysis** (sensitivity of conclusions to assumption choices)
+
+#### Why No Existing Standard Has This
+
+**Git/version control:**
+- Technical changes (code, text) not assumption changes
+- No structured comparison of outcomes under different assumptions
+
+**Peer review:**
+- Critique without alternatives
+- No mechanism for systematic fork comparison
+- Comments are unstructured
+
+**Replication studies:**
+- Entirely new studies (not forks of existing)
+- Expensive, time-consuming
+- Often infeasible (can't re-collect historical data)
+
+**ORP L5 fills a unique gap: structured, lightweight contestability**
+
+#### Gap Summary: Layer 5
+
+| Concept | Git | Peer Review | Replication | ORP L5 |
+|---------|-----|-------------|-------------|--------|
+| Version tracking | ✓✓ | ✗ | Partial | ✓✓ |
+| Assumption forks | ✗ | ✗ | ✗ | ✓✓ |
+| Structured comparison | ✗ | ✗ | Partial | ✓✓ |
+| Lightweight (no new data) | ✓ | ✓ | ✗ | ✓✓ |
+| Outcome divergence tracking | ✗ | ✗ | ✗ | ✓✓ |
+| Genealogy of reasoning | Partial | ✗ | ✗ | ✓✓ |
+
+**Key insight:** ORP L5 is **contestability infrastructure** — makes "fork and show us your alternative" operationally feasible, not just philosophically encouraged.
+
+---
+
+## Layer-by-Layer Summary
+
+| ORP Layer | Closest Standards | What Standards Cover | What ORP Adds |
+|-----------|------------------|---------------------|---------------|
+| **L1: Data Provenance** | PROV, ISO 19115, Datasheets | Entity lineage, technical metadata, dataset description | Funding transparency, exclusion reasoning, decision alternatives, structured attestation |
+| **L2: Consequence Simulation** | EU AI Act (risk), Model Cards (performance) | Model-level risk assessment, performance metrics | Constitution-level scenario modeling, counterfactual analysis, sensitivity to data choices |
+| **L3: Empathy Mapping** | EU AI Act (affected persons), Impact Assessments | Stakeholder identification for deployed systems | Absent stakeholders, representation analysis, minority stress-testing, cross-layer integration |
+| **L4: Accountability Ledger** | GDPR Art. 30, ISO audits, Methods sections | Processing activity records, audit trails, methodology description | Decision-level attribution, reasoning transparency, alternatives documented, public accessibility |
+| **L5: Fork Registry** | None | — | Contestability infrastructure, assumption forks, structured alternative comparison, epistemic genealogy |
+
+**Cross-cutting insight:** Every existing standard focuses **downstream of constitution**. ORP addresses the **constitutive layer** systematically across all five dimensions.
+
+---
+
+## 4. What Each Standard Does Well
+
+Before examining gaps, it's essential to acknowledge what each standard genuinely accomplishes. Every framework compared here addresses real problems with real sophistication. ORP builds on this foundation rather than dismissing it.
+
+---
+
+### 4.1 GDPR: Access Rights and Processing Obligations
+
+The General Data Protection Regulation represents the most comprehensive regulatory response to data ethics yet produced, and its contributions are substantial.
+
+**Genuine achievements:**
+- **Enforceable rights** - GDPR creates legally binding obligations, not voluntary principles. Data subjects have actionable rights (access, rectification, erasure, portability) with regulatory enforcement.
+- **Purpose limitation** - Requires explicit, legitimate purposes for data processing, preventing mission creep and secondary uses without consent.
+- **Data minimization** - Mandates collecting only necessary data, reducing unnecessary surveillance and exposure risks.
+- **Cross-border reach** - Applies to any organization processing EU residents' data, creating de facto global standard.
+- **Accountability framework** - Controllers must demonstrate compliance, not merely claim it.
+
+**What GDPR does supremely well:** It shifts the burden of proof from data subjects to data controllers. Organizations must prove they're complying with principles, not individuals proving harm. This is a genuine governance innovation.
+
+**ORP's relationship to GDPR:** ORP does not replace GDPR's access rights or processing obligations. It extends GDPR's logic backward to data **constitution** (how data came to exist), using similar accountability principles. An organization compliant with GDPR Article 30 (records of processing) has the foundation to implement ORP Layer 1 (provenance of constitution).
+
+---
+
+### 4.2 EU AI Act: Risk Categorization and High-Risk Safeguards
+
+The EU AI Act (2024) is the world's first comprehensive AI regulation, and it establishes important precedents for governing powerful technologies.
+
+**Genuine achievements:**
+- **Risk-based approach** - Four-tier classification (prohibited/high-risk/limited-risk/minimal-risk) proportions regulation to actual risk, avoiding one-size-fits-all overreach.
+- **Prohibited practices** - Bans clearly harmful applications (social scoring, real-time biometric surveillance in public spaces, exploitative manipulation) before harm occurs.
+- **Training data requirements** - Article 10 mandates data quality, representativeness, and bias mitigation for high-risk systems — addressing data concerns explicitly.
+- **Transparency obligations** - Users must know when interacting with AI systems and understand their logic.
+- **Conformity assessment** - Third-party testing for high-risk applications before market deployment.
+
+**What EU AI Act does supremely well:** It moves beyond "ethics principles" to binding obligations with market access consequences. Non-compliant systems cannot be deployed in EU. This creates real incentives for responsible development.
+
+**ORP's relationship to EU AI Act:** ORP complements Article 10's data quality requirements and Article 11's technical documentation. Where AI Act says "training data must be representative," ORP provides the documentation framework showing how representativeness was assessed, what was excluded, why, and by whom. AI Act technical documentation (Annex IV) extended with ORP = comprehensive data governance.
+
+---
+
+### 4.3 W3C PROV: Formal Provenance Vocabulary
+
+The W3C PROV specification (2013) is a technically elegant standard that has achieved broad adoption in scientific computing and data science.
+
+**Genuine achievements:**
+- **Formal vocabulary** - PROV provides RDF-based ontology with precise semantics, enabling machine-readable provenance graphs across systems.
+- **Three-class model** - Entity-Activity-Agent design is simple enough to adopt widely, expressive enough to model complex processes.
+- **W3C standardization** - Official recommendation status ensures stability, tool ecosystem, and community support.
+- **Domain-agnostic** - Works for datasets, documents, software, scientific workflows — not tied to single application.
+- **Queryable** - SPARQL queries over PROV graphs enable powerful provenance analysis ("show all entities derived from source X").
+
+**What PROV does supremely well:** It makes provenance **interoperable**. Different systems can publish PROV graphs that reference each other, creating distributed provenance ecosystem. This is genuine infrastructure, not just documentation.
+
+**ORP's relationship to PROV:** PROV and ORP are complementary. PROV captures structural relationships (what came from what), ORP captures decision reasoning (why this, not alternatives). An ORP document can **reference** PROV graphs (Layer 1 provenance), and ORP's own JSON-LD schema (Sprint 1.7.4) **extends** PROV with decision-focused properties. Integration: PROV + ORP = structure + reasoning.
+
+---
+
+### 4.4 ISO 19115: Comprehensive Metadata Coverage
+
+ISO 19115 (2014) is a mature international standard for geographic information metadata, with decades of adoption in GIS and earth science communities.
+
+**Genuine achievements:**
+- **Comprehensive scope** - Covers identification, quality, lineage, constraints, distribution, spatial/temporal extent — virtually every aspect of geographic data description.
+- **International standard** - ISO designation ensures multi-jurisdictional adoption, reducing fragmentation.
+- **Quality information** - Structured reporting of completeness, positional accuracy, temporal validity enables users to assess fitness for purpose.
+- **Lineage section** - Documents data sources and processing steps, creating audit trail.
+- **Extensibility** - Designed for domain-specific extensions while maintaining core interoperability.
+
+**What ISO 19115 does supremely well:** It proves that structured, comprehensive metadata **scales**. Used by government agencies, research institutions, and commercial providers globally for millions of datasets. This demonstrates that detailed documentation is feasible at scale.
+
+**ORP's relationship to ISO 19115:** For geographic datasets, ISO 19115 metadata becomes a component of ORP Layer 1. The lineage section (sources, process steps) is technical provenance; ORP adds decision provenance (why this processing, funding sources, exclusion reasoning). Integration: ISO 19115 records referenced in ORP documents, ORP extends with constitutive layer.
+
+---
+
+### 4.5 Model Cards: Practical Model Documentation
+
+Model Cards (Mitchell et al., 2019) have achieved remarkable adoption in the ML community for a simple reason: they work in practice.
+
+**Genuine achievements:**
+- **Pragmatic design** - Question-based format (intended use, factors, metrics, caveats) is straightforward to complete, lowering adoption barriers.
+- **Performance transparency** - Quantitative analyses across demographic factors make fairness evaluation concrete and comparable.
+- **Limitation acknowledgment** - Caveats section normalizes discussing what models cannot do, countering hype.
+- **Rapid adoption** - Major ML frameworks (Hugging Face, TensorFlow) integrate Model Cards into model repositories, creating ecosystem effect.
+- **Living documents** - Model Cards are updated as models are fine-tuned or evaluated on new tasks, not static snapshots.
+
+**What Model Cards do supremely well:** They meet developers where they are. Not a heavyweight compliance exercise, but a practical tool that improves model sharing and reuse. This pragmatism drives adoption.
+
+**ORP's relationship to Model Cards:** Model Cards document **models**, ORP documents the **training data**'s constitution. A complete transparency package: Model Card for model + ORP document for training dataset. Model Card's "Training Data" section can reference ORP document ID for deep provenance. Integration: Complementary layers of the ML transparency stack.
+
+---
+
+### 4.6 Datasheets: Comprehensive Dataset Description
+
+Datasheets for Datasets (Gebru et al., 2018) is arguably the closest existing framework to ORP's concerns, and it addresses them with rigor and practicality.
+
+**Genuine achievements:**
+- **Motivation section** - Explicitly asks "Who funded creation?" and "What are their interests?" — addressing incentive structures directly.
+- **Comprehensive coverage** - Seven sections (Motivation, Composition, Collection, Preprocessing, Uses, Distribution, Maintenance) cover dataset lifecycle.
+- **Missing information** - Asks what's absent from dataset, making exclusions visible.
+- **Practical format** - Question-based structure (like Model Cards) makes completion straightforward.
+- **Growing adoption** - Increasingly required by ML conferences and data repositories.
+
+**What Datasheets do supremely well:** They normalize asking hard questions about datasets that were previously treated as neutral objects. "Who funded this?" becomes standard query, not suspicious challenge.
+
+**ORP's relationship to Datasheets:** Datasheets are **documentation**, ORP is **accountability**. A Datasheet answers "what was done," ORP answers "what was done + why + by whom + what alternatives + how to contest." Integration: Datasheet becomes ORP Layer 1 foundation, ORP adds Layers 2-5 (consequences, stakeholders, decisions, forks). Completing a Datasheet is excellent first step toward ORP compliance.
+
+---
+
+### 4.7 FAIR Principles: Scientific Data Reusability
+
+The FAIR Principles (Wilkinson et al., 2016) have become the global standard for scientific data management, endorsed by funding agencies and research institutions worldwide.
+
+**Genuine achievements:**
+- **Findability** - Globally unique identifiers (DOIs, ORCIDs) make data discoverable, reducing "orphan datasets."
+- **Accessibility** - Standard protocols (HTTP, OAI-PMH) ensure data can be retrieved programmatically, not siloed.
+- **Interoperability** - Shared vocabularies and ontologies enable data integration across studies and domains.
+- **Reusability** - Clear licensing and usage conditions reduce legal ambiguity, enabling legitimate reuse.
+- **Simple yet comprehensive** - Four principles are memorable and actionable, driving adoption.
+
+**What FAIR does supremely well:** It creates **positive incentives**. Funding agencies require FAIR compliance, journals reward FAIR datasets with data papers, repositories implement FAIR metrics. This drives cultural change toward open science.
+
+**ORP's relationship to FAIR:** FAIR ensures data is **reusable**, ORP ensures you understand **what you're reusing**. FAIR's R4 (provenance) is entry point for ORP Layer 1. Integration: FAIR-compliant dataset (findable, accessible, interoperable) + ORP documentation (constitution, decisions, stakeholders) = fully transparent and reusable resource. ORP documents should themselves be FAIR (unique IDs, open formats, linked data).
+
+---
+
+### 4.8 Open Data Charter: Government Transparency Principles
+
+The International Open Data Charter (2015, updated 2018) has been adopted by governments and institutions globally, advancing public data access.
+
+**Genuine achievements:**
+- **Open by default** - Shifts burden: data should be open unless legitimate reason (privacy, security) not to be.
+- **Political momentum** - Creates peer pressure among governments, making openness a competitive advantage.
+- **Citizen engagement** - Frames open data as enabling democratic participation, not just economic innovation.
+- **Inclusivity principle** - Explicitly addresses equity: open data should serve inclusive development, not just elite interests.
+- **Implementation guidance** - Practical resources help governments move from principles to practice.
+
+**What Open Data Charter does supremely well:** It makes **political argument** for transparency, not just technical one. Open data is framed as democratic necessity, which motivates government adoption beyond efficiency gains.
+
+**ORP's relationship to Open Data Charter:** Open Data Charter ensures data is **published**, ORP ensures published data's **constitution is transparent**. Democratizing access to distorted data doesn't correct distortion — it universalizes it. Integration: Open Data Charter mandates publication + ORP ensures what's published includes provenance, exclusions, decision reasoning. ORP makes open data **interpretable**, not just available.
+
+---
+
+## Summary: Building on Existing Foundations
+
+Each of these standards represents genuine intellectual and institutional achievement. They address real problems — access rights, risk management, provenance tracking, metadata completeness, model documentation, dataset description, reusability, transparency.
+
+**What they share:**
+- Legitimate concerns about data/AI governance
+- Sophisticated responses within their scope
+- Real adoption and institutional support
+- Measurable improvements over previous practice
+
+**What they don't address — and weren't designed to:**
+- The constitutive conditions under which data assets are produced
+- Funding relationships and incentive structures shaping scope
+- Reasoning for exclusions and alternatives considered
+- Accountability for constitutive decisions (not just processing activities)
+- Contestability infrastructure for alternative assumptions
+
+**ORP does not claim these standards failed.** It claims they addressed **different questions**. They govern data's processing, access, quality, and use. ORP governs data's **constitution** — the decisions made before data becomes the "product" these standards manage.
+
+Integration is not just possible but natural: Organizations complying with existing standards have foundations (GDPR records, AI Act documentation, PROV graphs, Datasheets, Model Cards) on which to build ORP's constitutive layer.
+
+---
+
+---
+
+## 5. Integration Pathways: Building ORP on Existing Compliance
+
+This section demonstrates that ORP is **not a replacement** for existing compliance regimes but an **incremental addition** that extends their logic to the constitutive layer. Organizations already compliant with GDPR, EU AI Act, ISO standards, or using Model Cards/Datasheets have foundations on which to build ORP documents with minimal additional effort.
+
+### 5.1 GDPR-Compliant Organization + ORP
+
+**Scenario:** Organization already compliant with GDPR Art. 30 (records of processing activities), Art. 35 (DPIA for high-risk processing), and Art. 25 (data protection by design).
+
+**What you have:**
+- **Records of processing activities** (Art. 30) documenting: purposes of processing, data categories, recipients, retention periods, security measures
+- **Data Protection Impact Assessments (DPIAs)** for high-risk processing, including: necessity and proportionality analysis, measures to mitigate risks, safeguards
+- **Processing principles** adherence records: lawfulness, fairness, transparency, purpose limitation, data minimization, accuracy, storage limitation, integrity, confidentiality
+- **Data subject rights infrastructure**: access, rectification, erasure, restriction, portability, objection
+
+**What ORP adds:**
+- **Layer 1 (Data Provenance)**: Extend GDPR processing records **backward** to data constitution
+  - Your GDPR records document processing activities; ORP documents **how the dataset was constituted before processing**
+  - GDPR: "We collected this data for purpose X" → ORP: "We collected this data using method Y, excluded Z, made decisions A, B, C"
+  - Example: GDPR records say "collected customer transaction data for fraud detection"; ORP Layer 1 documents: geographic scope, exclusion criteria (e.g., transactions <€10 excluded), data cleaning decisions, synthetic elements (if any), attestation by data team
+
+- **Layer 2 (Consequence Simulation)**: Turn DPIA risk analysis into structured scenarios
+  - Your DPIA identifies risks; ORP Layer 2 models **quantifiable outcomes** for affected populations
+  - GDPR DPIA: "Risk of discrimination against minority groups" → ORP: "Simulated scenarios with variables (threshold, demographic distribution) showing predicted impact on subpopulations"
+
+- **Layer 4 (Accountability Ledger)**: Extend GDPR accountability (Art. 5(2)) to constitutive decisions
+  - GDPR: "Controller demonstrates compliance with principles" → ORP: "Controller demonstrates reasoning for scope, exclusions, methodology choices"
+  - GDPR accountability covers **processing** decisions; ORP covers **constitution** decisions
+
+**Migration path:**
+
+**Step 1: Pilot with One Dataset (1-2 weeks)**
+- Choose dataset already documented in GDPR Art. 30 records
+- Extract existing documentation: DPIA, processing records, retention policy
+- Create ORP Layer 1 by answering: "How was this dataset constituted before we started processing it?"
+- Validate with `orp validate`
+
+**Step 2: Leverage Existing DPIA (1 week)**
+- Take DPIA risk analysis (Art. 35)
+- Convert qualitative risks into quantifiable Layer 2 scenarios
+- Example: DPIA says "risk of bias against older users" → ORP Layer 2: model with age distribution variable, threshold parameter, predicted outcome metrics
+
+**Step 3: Integrate Accountability (1 week)**
+- Review internal data governance meeting notes, methodology decisions
+- Reconstruct Layer 4 accountability ledger: who decided scope, who approved exclusions, who attested to data quality
+- Link to GDPR records of processing (cross-reference by dataset ID)
+
+**Step 4: Extend to New Datasets**
+- Make ORP Layer 1 completion part of standard data collection process
+- Add provenance attestation to data team responsibilities
+- Train data protection officers on ORP Layer 1 requirements (complements GDPR training)
+
+**Result:** GDPR compliance **+** ORP = Full transparency from data constitution through processing lifecycle
+
+---
+
+### 5.2 EU AI Act Compliance + ORP
+
+**Scenario:** Organization deploying high-risk AI system under EU AI Act (Annex III categories: biometric identification, critical infrastructure, education/employment, law enforcement, migration/asylum, justice).
+
+**What you have:**
+- **Risk management system** (Art. 9) with: risk identification, estimation, evaluation, mitigation
+- **Data governance requirements** (Art. 10): training/validation/testing datasets documented, bias detection, data quality measures
+- **Technical documentation** (Art. 11 + Annex IV): datasets used, model architecture, performance metrics, risk assessments
+- **Transparency obligations** (Art. 13): Instructions for use, capabilities/limitations, performance metrics
+- **Human oversight measures** (Art. 14)
+
+**What ORP adds:**
+- **Layer 1 (Data Provenance)**: Fulfill AI Act Art. 10 data governance with **structured provenance**
+  - AI Act: "Training data shall be relevant, sufficiently representative, and free of errors" → ORP: "Document HOW you determined relevance, representativeness, error-freeness"
+  - AI Act requires bias mitigation; ORP Layer 1 documents: what biases were detected, how detection was performed, what mitigation was attempted, what tradeoffs were made
+
+- **Layer 2 (Consequence Simulation)**: Extend AI Act risk assessment (Art. 9) to structured scenarios
+  - AI Act: "Identify and analyze known and foreseeable risks" → ORP: "Model risks with variables, parameters, predicted outcomes across affected populations"
+  - AI Act requires "risk estimation and evaluation"; ORP Layer 2 provides **quantifiable scenario framework**
+
+- **Layer 3 (Empathy Mapping)**: Fulfill AI Act's "fundamental rights impact assessment" requirement
+  - AI Act requires assessment of impact on fundamental rights → ORP Layer 3: Structured stakeholder analysis with minority stress-testing
+  - Directly supports Art. 29 (obligations for high-risk AI in fundamental rights areas)
+
+- **Layer 4 (Accountability Ledger)**: Extend AI Act documentation to **decision reasoning**
+  - AI Act requires technical documentation; ORP adds: WHY decisions were made (not just WHAT was decided)
+  - AI Act Art. 11: "Documentation shall be kept up to date" → ORP Layer 4: Immutable ledger of decisions with timestamps, decision-makers, alternatives considered
+
+**Migration path:**
+
+**Step 1: Map Existing AI Act Documentation (1 week)**
+- Gather Art. 9 risk assessment, Art. 10 data governance docs, Art. 11 technical documentation
+- Identify gaps: Where does AI Act require evidence you haven't fully documented?
+
+**Step 2: Convert Data Governance (Art. 10) to ORP Layer 1 (2 weeks)**
+- AI Act requires "training data appropriate, relevant, representative" → ORP Layer 1: Document provenance decisions
+- Add: collection methodology, exclusion reasoning, cleaning decisions, synthetic elements, attestation
+- Link ORP document ID to AI Act technical documentation
+
+**Step 3: Convert Risk Assessment (Art. 9) to ORP Layer 2 (2 weeks)**
+- Take qualitative risk assessment ("risk of discrimination")
+- Build quantifiable scenarios: variables (threshold, population distribution), outcomes (false positive/negative rates per demographic group)
+- Document scenario assumptions and model limitations
+
+**Step 4: Add Fundamental Rights Assessment as ORP Layer 3 (1 week)**
+- AI Act increasingly requires fundamental rights impact assessments
+- Use ORP Layer 3 stakeholder structure: affected parties, impacts (direct/indirect), uncertainty, minority analysis
+- Provides structured format for Art. 29 compliance
+
+**Step 5: Integrate into AI System Lifecycle**
+- Make ORP document creation part of high-risk AI system development process
+- Update ORP Layer 4 as system evolves (model retraining, data updates)
+- Reference ORP document ID in AI Act technical documentation
+
+**Result:** EU AI Act compliance **+** ORP = High-risk AI systems with full provenance and reasoning transparency
+
+---
+
+### 5.3 PROV-Documented Data Workflows + ORP
+
+**Scenario:** Research institution using W3C PROV to track data lineage in computational workflows (common in scientific computing, bioinformatics, climate modeling).
+
+**What you have:**
+- **PROV graphs** documenting: entities (datasets), activities (processing steps), agents (people/software)
+- **Provenance traces**: Complete lineage from raw data → processed data → analysis → publication
+- **PROV-JSON or PROV-XML** serializations for machine-readable provenance
+- **ProvStore or similar** repository for sharing provenance graphs
+
+**What ORP adds:**
+- **Layer 1 (Data Provenance)**: Extend PROV entities with **constitutive metadata**
+  - PROV documents: "Dataset D was derived from Dataset C via Activity A" → ORP: "Dataset C was constituted with exclusions X, decisions Y, attestation Z"
+  - PROV: "Activity A was performed by Agent B" → ORP Layer 4: "Agent B decided on methodology M, considered alternatives N, reasoned that..."
+  - **Integration point**: PROV `wasAttributedTo` + ORP Layer 1 `attested_by` = Complete attribution
+
+- **Layer 2 (Consequence Simulation)**: Add interpretive layer to PROV workflows
+  - PROV documents **what happened**; ORP Layer 2 documents **what it means**
+  - Example: Climate model workflow in PROV → ORP Layer 2: Scenarios of predicted outcomes under different parameter settings
+
+- **Layer 4 (Accountability Ledger)**: Extend PROV activities to **decision reasoning**
+  - PROV: "Activity happened at time T by agent A" → ORP: "Decision happened at time T by agent A because of reasoning R, considering alternatives S"
+
+**Migration path:**
+
+**Step 1: Identify Critical PROV Entities (1 week)**
+- Review existing PROV graphs
+- Identify entities (datasets) where **constitution matters** (not just processing lineage)
+- Example: Training dataset for ML model, observational dataset for scientific study
+
+**Step 2: Create ORP Documents for Critical Entities (2-3 weeks)**
+- For each critical PROV entity (dataset), create ORP Layer 1
+- Document: provenance, collection method, exclusions, attestation
+- Add ORP document ID as PROV entity attribute:
+  ```turtle
+  :dataset_123 a prov:Entity ;
+      prov:wasGeneratedBy :collection_activity ;
+      orp:document_id "doi:10.example/orp-dataset-123" .
+  ```
+
+**Step 3: Link PROV Activities to ORP Layer 4 (1 week)**
+- For PROV activities that involved **decisions** (not just automatic processing):
+  - Create ORP Layer 4 entries documenting reasoning
+  - Link via activity ID:
+  ```turtle
+  :data_cleaning_activity a prov:Activity ;
+      prov:wasAssociatedWith :data_scientist_alice ;
+      orp:decision_ledger "doi:10.example/orp-dataset-123#L4-decision-001" .
+  ```
+
+**Step 4: Publish Combined PROV+ORP (1 week)**
+- Export PROV graphs with ORP references
+- Publish ORP documents alongside PROV provenance
+- Enable discovery: PROV graph → ORP document → full constitution
+
+**Result:** PROV lineage **+** ORP = Complete provenance from raw data → processed data → reasoning → publication
+
+---
+
+### 5.4 Model Cards + ORP for ML Training Data
+
+**Scenario:** ML team using Model Cards (Mitchell et al., 2019) to document models in Hugging Face Hub or TensorFlow Model Garden.
+
+**What you have:**
+- **Model Card** with sections:
+  - Model Details (architecture, version, owners, citation)
+  - Intended Use (primary uses, out-of-scope uses)
+  - Factors (demographic/environmental variables affecting performance)
+  - Metrics (performance measures, decision thresholds)
+  - Training Data (brief description)
+  - Evaluation Data (test sets, metrics per demographic)
+  - Quantitative Analyses (performance across factors)
+  - Ethical Considerations (sensitive use cases)
+  - Caveats and Recommendations
+
+**What ORP adds:**
+- **Training Data Section → ORP Layer 1**:
+  - Model Card: "Trained on ImageNet (Deng et al., 2009)" → ORP: Full ImageNet constitution documented (provenance, exclusions, decisions, attestation)
+  - Model Card has 1 paragraph on training data; ORP provides **full provenance document**
+
+- **Factors Section → ORP Layer 3**:
+  - Model Card: "Performance varies by age, gender, skin tone" → ORP Layer 3: Full stakeholder impact analysis with minority stress-testing
+
+- **Quantitative Analyses → ORP Layer 2**:
+  - Model Card: "Accuracy: 85% overall, 78% for group X" → ORP Layer 2: Scenario modeling of performance under deployment conditions
+
+**Migration path:**
+
+**Step 1: Create ORP Document for Training Dataset (2-3 weeks)**
+- Identify training dataset(s) referenced in Model Card "Training Data" section
+- Create ORP-Full document for training data:
+  - Layer 1: Dataset provenance, collection, exclusions, attestation
+  - Layer 2: Scenarios of dataset properties (distribution, coverage, gaps)
+  - Layer 3: Stakeholder analysis (who's represented, who's excluded, minority impacts)
+  - Layer 4: Dataset creation decisions (scope, methodology, alternatives)
+  - Layer 5: Forks (if alternative training sets exist)
+
+**Step 2: Link Model Card to ORP Document (1 day)**
+- In Model Card "Training Data" section, add:
+  ```markdown
+  ## Training Data
+  **Dataset:** ImageNet ILSVRC 2012
+  **Full Provenance:** See ORP document at `doi:10.example/orp-imagenet-2012`
+  **ORP Compliance:** ORP-Full (5 layers)
+  ```
+
+**Step 3: Enhance Model Card with ORP Insights (1 week)**
+- Use ORP Layer 3 stakeholder analysis to improve Model Card "Factors" section
+- Use ORP Layer 2 scenarios to enhance Model Card "Quantitative Analyses"
+- Use ORP Layer 4 decisions to add to Model Card "Ethical Considerations"
+
+**Step 4: Integrate into ML Pipeline (Ongoing)**
+- Make ORP training data documentation part of model development process
+- Before training new model: check if training data has ORP document; if not, create one
+- Update Model Card template to reference ORP documents
+
+**Result:** Model Card (documents model) **+** ORP (documents training data) = Complete ML transparency stack
+
+---
+
+### 5.5 Open Data + ORP for Government Datasets
+
+**Scenario:** Government agency publishing datasets under Open Data Charter principles (open by default, timely, accessible, comparable, interoperable, inclusive).
+
+**What you have:**
+- **Open data portal** (CKAN, Socrata, or similar) with datasets published in open formats (CSV, JSON, API access)
+- **Metadata** (basic): title, description, publisher, license, update frequency, geographic coverage
+- **Open Government License** (e.g., CC-BY, OGL, CC0) allowing reuse
+- **Data quality statements** (variable quality — often minimal)
+
+**What ORP adds:**
+- **Layer 1 (Data Provenance)**: Extend metadata to **full provenance**
+  - Open Data: "Published by Department X, updated monthly" → ORP: Collection methodology, exclusions, cleaning decisions, synthetic elements, attestation
+  - Open Data Charter: "Open by default" → ORP: "Open **and interpretable** by default" (can't interpret without knowing constitution)
+
+- **Layer 4 (Accountability Ledger)**: Make Open Data Charter's "accountable and transparent" principle **concrete**
+  - Open Data Charter (Principle 6): "Publish information on governance frameworks" → ORP Layer 4: Immutable ledger of decisions (scope, methodology, exclusions)
+  - Open Data: "Published by Department" → ORP: "Decided by Person A on Date, reviewed by Person B, approved by Person C, reasoning documented"
+
+**Migration path:**
+
+**Step 1: Pilot with High-Impact Dataset (2 weeks)**
+- Choose widely-used government dataset (e.g., crime statistics, health outcomes, economic indicators)
+- Interview data collectors: How was this dataset constituted? What was excluded? What methodological decisions were made?
+- Create ORP Layer 1 documenting provenance
+
+**Step 2: Add to Open Data Portal (1 week)**
+- Publish ORP document alongside dataset
+- Add link in portal metadata:
+  ```json
+  {
+    "title": "Crime Statistics 2024",
+    "publisher": "Department of Justice",
+    "license": "CC-BY-4.0",
+    "provenance_document": "https://data.gov.example/orp/crime-stats-2024.yaml",
+    "provenance_standard": "OpenReason Protocol v0.1 (ORP-Standard)"
+  }
+  ```
+
+**Step 3: Train Data Publishers (2-3 weeks)**
+- Workshop for government data teams: "Publishing Open Data with Full Provenance"
+- Templates: ORP-Basic (L1 only) for simple datasets, ORP-Standard (L1-L3) for consequential data
+- Integration: Make ORP Layer 1 completion part of data publication workflow
+
+**Step 4: Update Data Publication Standards (Ongoing)**
+- Amend government open data policy: datasets must include provenance documentation
+- Compliance levels:
+  - **Minimum:** ORP-Basic (Layer 1 only — provenance)
+  - **Standard:** ORP-Standard (Layers 1-3 — provenance, consequences, stakeholders)
+  - **High-Impact Data:** ORP-Full (all 5 layers — including decisions and forks)
+
+**Step 5: Enable Citizen Forks (Innovative)**
+- Open Data Charter emphasizes citizen engagement
+- ORP Layer 5: Enable citizens to **fork government datasets** with alternative assumptions
+  - Example: Government publishes unemployment data with methodology A → Economist forks with methodology B → Both transparent, users decide
+
+**Result:** Open Data Charter (access) **+** ORP (constitution) = Open data that's interpretable, accountable, and contestable
+
+---
+
+## Integration Summary
+
+These five pathways demonstrate that **ORP is not starting from zero**. Organizations already compliant with existing standards have:
+
+| Existing Compliance | ORP Builds On | Integration Effort | Result |
+|---------------------|---------------|-------------------|--------|
+| **GDPR Art. 30 Records** | Processing records → Constitution records | 2-4 weeks pilot | GDPR + ORP = Full lifecycle transparency |
+| **EU AI Act Art. 10** | Data governance → Provenance documentation | 3-5 weeks | AI Act + ORP = Accountable AI systems |
+| **PROV Graphs** | Activity traces → Decision reasoning | 4-6 weeks | PROV + ORP = Complete scientific provenance |
+| **Model Cards** | Model docs → Training data docs | 2-4 weeks | Model Card + ORP = ML transparency stack |
+| **Open Data Portal** | Published data → Interpretable data | 3-4 weeks pilot | Open Data + ORP = Accountable government data |
+
+**Common pattern across all five:**
+1. **Existing compliance creates foundation** (you're not starting from scratch)
+2. **ORP extends existing documentation backward/deeper** (to constitution layer)
+3. **Integration is incremental** (pilot with one dataset, scale gradually)
+4. **Effort is measured in weeks, not years** (pragmatic adoption path)
+5. **Result is complementary, not duplicative** (ORP fills gaps, doesn't replace)
+
+**Key insight:** Every standard ORP complements has **most of the infrastructure** already (metadata systems, documentation workflows, compliance teams). ORP asks: "Extend what you're already doing to the constitutive layer."
+
+This is not a revolutionary replacement of existing standards. It's an **evolutionary addition** that addresses the layer they weren't designed to cover.
+
+---
+
+---
+
+## 6. Visual Comparison: Coverage Matrix
+
+This matrix shows which existing standards address each layer of the OpenReason Protocol. It demonstrates that **no existing standard addresses the complete constitutive problem** — each covers fragments, but none systematically document data constitution with accountability and contestability.
+
+### Coverage Matrix
+
+| ORP Layer | GDPR | EU AI Act | W3C PROV | ISO 19115 | Model Cards | Datasheets | FAIR | Open Data Charter |
+|-----------|------|-----------|----------|-----------|-------------|------------|------|-------------------|
+| **L1: Data Provenance**<br>*(Collection method, exclusions, cleaning, attestation)* | ◐ | ◐ | ◐ | ✓ | ◐ | ✓ | ◐ | ✗ |
+| **L2: Consequence Simulation**<br>*(Scenarios, variables, outcomes, affected populations)* | ◐ | ◐ | ✗ | ✗ | ◐ | ◐ | ✗ | ✗ |
+| **L3: Empathy Mapping**<br>*(Stakeholder analysis, impacts, minority stress-testing)* | ◐ | ◐ | ✗ | ✗ | ◐ | ◐ | ✗ | ◐ |
+| **L4: Accountability Ledger**<br>*(Decision reasoning, who decided, alternatives considered)* | ◐ | ◐ | ◐ | ✗ | ✗ | ◐ | ✗ | ✗ |
+| **L5: Fork Registry**<br>*(Alternative versions, contestation, lineage)* | ✗ | ✗ | ◐ | ✗ | ✗ | ✗ | ◐ | ✗ |
+
+### Legend
+
+- **✓** = **Covered**: Standard systematically addresses this layer with structured requirements
+- **◐** = **Partial**: Standard touches on aspects of this layer but incompletely or indirectly
+- **✗** = **Gap**: Standard does not address this layer
+
+### What the Matrix Reveals
+
+#### 1. **Layer 1 (Data Provenance) Has Most Coverage — But Still Incomplete**
+
+**Who covers it well:**
+- **ISO 19115** (✓): Geographic metadata standard comprehensively documents data lineage, collection methods, quality
+- **Datasheets** (✓): Motivation, composition, collection, preprocessing sections directly address provenance
+- **PROV** (◐): Documents what happened but not why decisions were made
+- **GDPR** (◐): Records of processing (Art. 30) cover processing activities but not data constitution
+- **EU AI Act** (◐): Art. 10 requires training data documentation but doesn't specify what to document
+- **Model Cards** (◐): "Training Data" section exists but usually 1-2 paragraphs
+- **FAIR** (◐): Principle R1.2 requires provenance but doesn't define format
+
+**What's still missing:** None systematically document **decision reasoning** for exclusions, scope choices, or methodology decisions. ISO 19115 and Datasheets come closest but focus on "what was done" not "why it was decided."
+
+#### 2. **Layer 2 (Consequence Simulation) Mostly Absent**
+
+**Who covers it partially:**
+- **EU AI Act** (◐): Art. 9 requires risk assessment with "foreseeable risks" but doesn't mandate scenario modeling
+- **GDPR** (◐): DPIA (Art. 35) requires risk analysis but usually qualitative, not quantifiable scenarios
+- **Model Cards** (◐): Quantitative analyses section shows performance across demographics but post-hoc, not forward-looking
+- **Datasheets** (◐): "Uses" section discusses appropriate/inappropriate uses but not systematic consequence modeling
+
+**What's missing:** No standard requires **forward-looking scenario modeling** with variables, parameters, and predicted outcomes across affected populations. Consequence analysis is retrospective (Model Cards) or qualitative (GDPR DPIA).
+
+#### 3. **Layer 3 (Empathy Mapping) Partially Covered in Fairness Contexts**
+
+**Who covers it partially:**
+- **EU AI Act** (◐): Increasingly requires fundamental rights impact assessment (Art. 29) but structure undefined
+- **GDPR** (◐): DPIA includes impact on rights and freedoms but no systematic stakeholder framework
+- **Model Cards** (◐): "Factors" section identifies demographic variables but doesn't systematically stress-test minority impacts
+- **Datasheets** (◐): Can describe dataset demographics but doesn't require stakeholder impact analysis
+- **Open Data Charter** (◐): Inclusivity principle mentions equity but no structured approach
+
+**What's missing:** No standard requires **systematic stakeholder analysis** with identification of absent stakeholders, minority stress-testing, or structured impact assessment. Stakeholder consideration is ad-hoc.
+
+#### 4. **Layer 4 (Accountability Ledger) Weakest Across All Standards**
+
+**Who covers it partially:**
+- **GDPR** (◐): Art. 30 records who processes data but not who made constitutive decisions or why
+- **EU AI Act** (◐): Technical documentation (Art. 11) includes decisions but not reasoning or alternatives considered
+- **PROV** (◐): Documents who did what when, but not why or what alternatives were rejected
+- **Datasheets** (◐): Motivation section asks "who funded?" but doesn't require decision reasoning
+
+**What's missing:** **No standard requires an immutable ledger of constitutive decisions** with timestamps, decision-makers, reasoning, alternatives considered, and contestation mechanisms. Accountability is either absent or focuses on processing (GDPR) not constitution.
+
+#### 5. **Layer 5 (Fork Registry) Almost Completely Absent**
+
+**Who covers it partially:**
+- **PROV** (◐): Tracks entity derivation (wasRevisionOf, wasDerivedFrom) but doesn't capture alternative methodologies
+- **FAIR** (◐): Identifiers and versioning enable tracking but no contestation infrastructure
+
+**What's missing:** **No standard provides infrastructure for documenting alternative versions with different assumptions.** Existing provenance tracks "what happened" not "what could have happened differently." No framework for competing analyses.
+
+### Coverage Summary Statistics
+
+| Layer | Standards with Full Coverage (✓) | Standards with Partial Coverage (◐) | Standards with No Coverage (✗) |
+|-------|-----------------------------------|--------------------------------------|--------------------------------|
+| **L1 Provenance** | 2 (ISO 19115, Datasheets) | 5 (GDPR, AI Act, PROV, Model Cards, FAIR) | 1 (Open Data Charter) |
+| **L2 Consequences** | 0 | 4 (GDPR, AI Act, Model Cards, Datasheets) | 4 (PROV, ISO 19115, FAIR, Open Data Charter) |
+| **L3 Stakeholders** | 0 | 5 (GDPR, AI Act, Model Cards, Datasheets, Open Data Charter) | 3 (PROV, ISO 19115, FAIR) |
+| **L4 Accountability** | 0 | 4 (GDPR, AI Act, PROV, Datasheets) | 4 (ISO 19115, Model Cards, FAIR, Open Data Charter) |
+| **L5 Forks** | 0 | 2 (PROV, FAIR) | 6 (all others) |
+
+### Key Findings
+
+1. **No standard achieves full coverage (✓) on more than 1 layer** (ISO 19115 and Datasheets excel at L1 only)
+
+2. **Layers 2, 3, 4, 5 have ZERO standards with full coverage** — these are systematic gaps across the entire governance ecosystem
+
+3. **Layer 4 (Accountability) and Layer 5 (Forks) are weakest** — 4-6 standards have no coverage at all
+
+4. **Even "partial" coverage is often superficial** — a standard marked ◐ may mention the concept but lack structured requirements
+   - Example: GDPR DPIA mentions "impact on data subjects" (L3) but doesn't require systematic stakeholder analysis
+
+5. **Geographic data (ISO 19115) and ML datasets (Datasheets) have best Layer 1 coverage** — other domains lag behind
+
+### Why This Matters
+
+**The matrix shows that the constitutive layer is a blind spot across ALL existing standards.** Each standard focuses on:
+- **GDPR**: Processing (after data exists)
+- **EU AI Act**: Model behavior (after training)
+- **PROV**: What happened (not why it was decided)
+- **ISO 19115**: What data contains (not how scope was chosen)
+- **Model Cards**: Model performance (not training data constitution)
+- **Datasheets**: Dataset description (not decision reasoning)
+- **FAIR**: Reusability (not interpretability of constitution)
+- **Open Data Charter**: Access (not accountability for scope/exclusions)
+
+**ORP fills the blank cells.** It doesn't claim existing standards failed — it addresses the layers they weren't designed to cover.
+
+### Visual Summary
+
+```
+Constitutive Layer Coverage (% of standards with ✓ or ◐)
+
+L1 Provenance:     ███████░ 87.5% (7/8 have ✓ or ◐)
+L2 Consequences:   ████░░░░ 50% (4/8 have ◐, 0 have ✓)
+L3 Stakeholders:   ██████░░ 62.5% (5/8 have ◐, 0 have ✓)
+L4 Accountability: ████░░░░ 50% (4/8 have ◐, 0 have ✓)
+L5 Forks:          ██░░░░░░ 25% (2/8 have ◐, 0 have ✓)
+
+ORP Target:        ████████ 100% (all 5 layers systematically addressed)
+```
+
+**Interpretation**: Existing standards collectively cover fragments of the constitutive layer (L1 well-covered, L2-L5 poorly covered). ORP is the first framework to systematically address **all five layers** with structured requirements, making data constitution transparent, accountable, and contestable.
+
+---
+
+## 7. Conclusion: Complementary, Not Competitive
+
+OpenReason Protocol is not a replacement for existing data governance frameworks. It is the missing constitutive layer on which adequate governance must rest.
+
+**What ORP does NOT do:**
+- Replace GDPR's access rights (ORP is silent on processing obligations)
+- Replace AI Act's risk categorization (ORP documents data, not model behavior)
+- Replace PROV's technical ontology (ORP extends provenance with decision reasoning)
+- Replace Datasheets' documentation (ORP adds accountability and contestability layers)
+
+**What ORP provides that no existing standard does:**
+- Transparent accountability for data constitution decisions
+- Documentation of funding relationships and incentive structures
+- Reasoning for exclusions and scope choices
+- Forward-looking consequence modeling
+- Systematic stakeholder identification (including absent stakeholders)
+- Contestability infrastructure (fork registry for alternatives)
+
+**Integration message:** Organizations can adopt ORP alongside existing compliance obligations. The same data production that generates GDPR records, AI Act documentation, or Datasheets can generate ORP documentation — the difference is **what information is captured** and **how decision-making is made transparent**.
+
+The constitutive problem is not addressed by any current standard. ORP addresses it. That is the gap this protocol fills.
+
+---
+
+## References
+
+All sources cited in this document are fully documented with primary source URLs. Complete research notes available in [`docs/analysis/sources/SOURCES.md`](./sources/SOURCES.md).
+
+### Regulations
+
+**European Parliament and Council.** (2016). *Regulation (EU) 2016/679 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation)*. *Official Journal of the European Union*, L 119/1. https://eur-lex.europa.eu/eli/reg/2016/679/oj
+
+**European Parliament and Council.** (2024). *Regulation (EU) 2024/1689 laying down harmonised rules on artificial intelligence (Artificial Intelligence Act)*. *Official Journal of the European Union*, L 1689/1. https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689
+
+### W3C Technical Standards
+
+**Lebo, T., Sahoo, S., McGuinness, D., Belhajjame, K., Cheney, J., Corsar, D., Garijo, D., Soiland-Reyes, S., Zednik, S., & Zhao, J.** (2013). *PROV-O: The PROV Ontology*. W3C Recommendation. World Wide Web Consortium. https://www.w3.org/TR/prov-o/
+
+**Moreau, L., & Missier, P. (Eds.).** (2013). *PROV-DM: The PROV Data Model*. W3C Recommendation. World Wide Web Consortium. https://www.w3.org/TR/prov-dm/
+
+### ISO Standards
+
+**International Organization for Standardization.** (2014). *ISO 19115-1:2014 Geographic information — Metadata — Part 1: Fundamentals*. ISO. https://www.iso.org/standard/53798.html
+
+**International Organization for Standardization.** (2019). *ISO 19115-2:2019 Geographic information — Metadata — Part 2: Extensions for acquisition and processing*. ISO. https://www.iso.org/standard/67039.html
+
+### Academic Papers
+
+**Mitchell, M., Wu, S., Zaldivar, A., Barnes, P., Vasserman, L., Hutchinson, B., Spitzer, E., Raji, I. D., & Gebru, T.** (2019). Model Cards for Model Reporting. *Proceedings of the Conference on Fairness, Accountability, and Transparency (FAT* '19)*, 220–229. https://doi.org/10.1145/3287560.3287596
+
+**Gebru, T., Morgenstern, J., Vecchione, B., Wortman Vaughan, J., Wallach, H., Daumé III, H., & Crawford, K.** (2021). Datasheets for Datasets. *Communications of the ACM*, *64*(12), 86–92. https://doi.org/10.1145/3458723
+- *Note: Originally presented at Workshop on Fairness, Accountability, and Transparency in Machine Learning (2018)*
+
+**Wilkinson, M. D., Dumontier, M., Aalbersberg, I. J., Appleton, G., Axton, M., Baak, A., Blomberg, N., Boiten, J.-W., da Silva Santos, L. B., Bourne, P. E., et al.** (2016). The FAIR Guiding Principles for scientific data management and stewardship. *Scientific Data*, *3*, 160018. https://doi.org/10.1038/sdata.2016.18
+
+### Policy Documents
+
+**Open Data Charter.** (2015, updated 2018). *International Open Data Charter Principles*. Open Data Charter. https://opendatacharter.net/principles/
+- *Note: Originally adopted at Open Government Partnership Global Summit (2015), revised 2018*
+
+### Secondary Literature (Context)
+
+**Bowker, G. C.** (2005). *Memory Practices in the Sciences*. MIT Press.
+- *Cited for: Historical analysis of data classification as political/social practice*
+
+**Gitelman, L. (Ed.).** (2013). *"Raw Data" Is an Oxymoron*. MIT Press.
+- *Cited for: Critique of "raw data" myth; all data is constituted*
+
+**D'Ignazio, C., & Klein, L. F.** (2020). *Data Feminism*. MIT Press. https://doi.org/10.7551/mitpress/11805.001.0001
+- *Cited for: Power dynamics in data science; "absent data" concept*
+
+**O'Neil, C.** (2016). *Weapons of Math Destruction: How Big Data Increases Inequality and Threatens Democracy*. Crown.
+- *Cited for: Opacity of algorithmic systems; feedback loops*
+
+### OpenReason Protocol Documentation
+
+**Public Reason Project.** (2026a). *OpenReason Protocol Specification v0.1*. https://docs.publicreasonproject.org/protocol/specification
+
+**Public Reason Project.** (2026b). *Rational, Empathy-Informed Ethics: The Philosophical Foundation of OpenReason*. https://docs.publicreasonproject.org/protocol/philosophy
+
+**Public Reason Project.** (2026c). *Danish Property Tax Reform 2024: An ORP-Full Worked Example*. https://docs.publicreasonproject.org/examples/danish-property-tax
+
+**Public Reason Project.** (2026d). *OpenReason Governance Model v0.1*. https://docs.publicreasonproject.org/governance
+
+---
+
+**Citation Style:** APA 7th edition (adapted for technical standards)
+**DOIs:** Provided where available for academic papers
+**URLs:** Primary source URLs included for all regulatory and technical standards (as of 2026-04-07)

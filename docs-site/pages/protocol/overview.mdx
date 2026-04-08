@@ -1,0 +1,104 @@
+# Protocol Overview
+
+The OpenReason Protocol (ORP) is a standard for transparent, reproducible, and accountable policy reasoning.
+
+## Purpose
+
+ORP provides a structured format for documenting:
+- **Where your data comes from** (provenance)
+- **How you model consequences** (simulation)
+- **Who is affected and how** (empathy mapping)
+- **Who decided what and why** (accountability)
+- **How proposals can be forked** (versioning)
+
+## Design Principles
+
+1. **Transparency First** - Every assumption, data source, and decision is documented
+2. **Fork-Friendly** - Anyone can fork a proposal and test alternative assumptions
+3. **Machine-Readable** - YAML/JSON format enables automated validation and comparison
+4. **Human-Readable** - Clear structure makes documents accessible to non-technical readers
+5. **Progressive Disclosure** - Three compliance levels (Basic → Standard → Full)
+
+## Core Concepts
+
+### Layers
+
+ORP documents have 5 layers:
+
+| Layer | Name | Purpose |
+|-------|------|---------|
+| **Header** | Metadata | Document ID, title, authors, version, compliance level |
+| **L1** | Data Provenance | Track all datasets: source, methodology, limitations |
+| **L2** | Consequence Simulation | Model policy outcomes with scenarios and assumptions |
+| **L3** | Empathy Mapping | Map stakeholders, test minority impacts, assess welfare |
+| **L4** | Accountability Ledger | Track decisions: who, what, when, why |
+| **L5** | Fork Registry | Track forks, enable comparisons, invite alternatives |
+
+### Compliance Levels
+
+- **ORP-Basic** (Layer 1 only) - Minimum viable transparency
+- **ORP-Standard** (Layers 1-3) - Include simulation and empathy mapping
+- **ORP-Full** (All 5 layers) - Complete protocol with accountability and forking
+
+See [Compliance Levels](/protocol/compliance-levels) for details.
+
+## Why ORP?
+
+### For Policy Makers
+
+- Document reasoning transparently
+- Enable stakeholder feedback on specific assumptions
+- Compare alternative scenarios systematically
+- Build credibility through transparency
+
+### For Researchers
+
+- Reproduce policy analysis
+- Test alternative assumptions
+- Compare proposals systematically
+- Build on existing work via forking
+
+### For Citizens
+
+- Understand policy reasoning
+- See what data informs decisions
+- Propose alternative assumptions
+- Hold decision-makers accountable
+
+## Example Use Cases
+
+- **Tax Reform** - Model revenue changes, map stakeholder impacts
+- **Infrastructure Projects** - Document cost-benefit analysis, track decisions
+- **Healthcare Policy** - Simulate coverage changes, test impacts on vulnerable groups
+- **Climate Policy** - Model emission reductions, map economic impacts
+- **Education Reform** - Simulate funding changes, track stakeholder effects
+
+## Protocol Versions
+
+- **Current:** ORP v0.1 (Released 2026-02)
+- **Status:** Production-ready with automated validation
+
+See [Specification](/protocol/specification) for full ORP v0.1 details.
+
+## Governance
+
+ORP is developed as an open standard by the Public Reason Project.
+
+- **Open Development** - All discussions happen in public
+- **Community Input** - Anyone can propose changes via GitLab issues
+- **Versioned Releases** - Semantic versioning ensures stability
+
+See [Governance](/community/governance) for decision-making process.
+
+## Get Started
+
+1. **[Install the validator](/getting-started/installation)** - `pip install orp-validator`
+2. **[Create your first document](/getting-started/first-document)** - Step-by-step guide
+3. **[See examples](/examples/overview)** - Real-world ORP documents
+4. **[Read the spec](/protocol/specification)** - Full ORP v0.1 specification
+
+## Further Reading
+
+- [Philosophy](/protocol/philosophy) - Reasoning, Empathy, Evaluation framework
+- [Compliance Levels](/protocol/compliance-levels) - Choosing the right level
+- [Contributing](/community/contributing) - Help improve the protocol

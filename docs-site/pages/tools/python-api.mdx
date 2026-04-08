@@ -1,0 +1,30 @@
+# Python API
+
+Use `orp-validator` in your Python applications.
+
+## Installation
+
+```bash
+pip install orp-validator
+```
+
+## Basic Usage
+
+```python
+from orp_validator import validate
+from pathlib import Path
+
+# Validate a file
+result = validate(Path("my-document.yaml"))
+
+print(f"Valid: {result.valid}")
+print(f"Compliance: {result.compliance_level}")
+```
+
+## API Reference
+
+### validate(path)
+
+Validates an ORP document and returns a ValidationResult object.
+
+See [CLI Reference](/tools/cli) for command-line usage.

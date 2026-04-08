@@ -1,0 +1,229 @@
+# Your First Document
+
+Let's create a complete ORP-Standard document step by step.
+
+## What we'll build
+
+A simple policy proposal with:
+- **Layer 1**: Data provenance (where the data comes from)
+- **Layer 2**: Consequence simulation (what happens if we implement this)
+- **Layer 3**: Empathy mapping (who is affected and how)
+
+This achieves **ORP-Standard** compliance.
+
+## Step 1: Create the document
+
+```bash
+orp new education-funding.yaml --compliance standard
+```
+
+This will ask you a series of questions. Here's an example session:
+
+```
+Document title: Education Funding Reform
+Domain (policy/research/business): policy
+Your name: Jane Doe
+Your role (author/contributor/reviewer): author
+Status (draft/review/final): draft
+```
+
+The tool creates `education-funding.yaml` with all required fields and helpful comments.
+
+## Step 2: Add your data (Layer 1)
+
+Open the file and fill in the `l1_data_provenance` section:
+
+```yaml
+l1_data_provenance:
+  - dataset_id: enrollment-2024
+    name: "School Enrollment Data 2024"
+    description: "Student enrollment numbers by school district"
+    source: "Ministry of Education Open Data Portal"
+    collection_method: "Administrative records from all public schools"
+    date_range: "2024-01-01 to 2024-12-31"
+    geographic_scope: "National"
+    
+    inclusion_criteria:
+      description: "All registered public school students"
+    
+    exclusion_criteria:
+      - "Private schools (data not available)"
+      - "Home-schooled students"
+    
+    cleaning_decisions:
+      - "Removed 23 duplicate entries"
+      - "Filled missing district codes using school postal codes"
+    
+    synthetic_elements:
+      present: false
+    
+    known_limitations:
+      - "Does not include dropout reasons"
+      - "Rural areas may be underreported"
+    
+    access:
+      public: true
+      url: "https://education.gov/opendata/enrollment"
+    
+    attested_by:
+      - name: "Jane Doe"
+        role: "author"
+        date: "2026-02-26"
+        statement: "I have reviewed this dataset description and confirm its accuracy"
+```
+
+## Step 3: Model the consequences (Layer 2)
+
+Define who is affected and what changes:
+
+```yaml
+l2_consequence_simulation:
+  affected_population:
+    description: "Public school students and their families"
+    size_estimate: "5.2 million students, approximately 12 million family members"
+  
+  variables:
+    independent:
+      - variable: "funding_increase_percentage"
+        description: "Percentage increase in per-student funding"
+        range: "0% to 30%"
+        default_value: "15%"
+    
+    dependent:
+      - variable: "class_size"
+        description: "Average students per classroom"
+        unit: "students"
+      
+      - variable: "teacher_salary"
+        description: "Average teacher salary"
+        unit: "USD"
+  
+  model:
+    type: "Linear regression based on historical funding changes 2010-2024"
+    assumptions:
+      - assumption: "Teacher hiring follows funding linearly"
+        basis: "Historical data shows 0.85 correlation"
+        sensitivity: "High - main driver of class size changes"
+  
+  scenarios:
+    - scenario_id: "baseline"
+      name: "Current Funding"
+      description: "No change from 2024 levels"
+      variable_values:
+        funding_increase_percentage: "0%"
+      outcomes:
+        class_size: "24.5"
+        teacher_salary: "58000"
+    
+    - scenario_id: "moderate"
+      name: "15% Increase"
+      description: "Proposed funding increase"
+      variable_values:
+        funding_increase_percentage: "15%"
+      outcomes:
+        class_size: "21.2"
+        teacher_salary: "63000"
+    
+    - scenario_id: "ambitious"
+      name: "30% Increase"
+      description: "Maximum feasible increase"
+      variable_values:
+        funding_increase_percentage: "30%"
+      outcomes:
+        class_size: "18.5"
+        teacher_salary: "68000"
+  
+  primary_scenario: "moderate"
+```
+
+## Step 4: Map stakeholder impacts (Layer 3)
+
+Identify who is affected:
+
+```yaml
+l3_empathy_mapping:
+  stakeholder_map:
+    - stakeholder: "Students"
+      description: "Primary beneficiaries of smaller class sizes"
+      estimated_population: "5.2 million"
+      relationship_to_proposal: "Direct positive impact through better learning conditions"
+      impacts_by_scenario:
+        - scenario_id: "moderate"
+          direction: "positive"
+          magnitude: "Moderate class size reduction improves learning outcomes"
+    
+    - stakeholder: "Teachers"
+      description: "Receive salary increases and better working conditions"
+      estimated_population: "350,000"
+      relationship_to_proposal: "Direct positive through salary and class size"
+      impacts_by_scenario:
+        - scenario_id: "moderate"
+          direction: "positive"
+          magnitude: "Salary increase and reduced class sizes"
+    
+    - stakeholder: "Taxpayers"
+      description: "Fund the increase through taxes"
+      estimated_population: "Adult population"
+      relationship_to_proposal: "Bear financial cost"
+      impacts_by_scenario:
+        - scenario_id: "moderate"
+          direction: "mixed"
+          magnitude: "Tax increase estimated at $120/year per taxpayer"
+  
+  minority_stress_test:
+    description: "Testing impacts on underrepresented groups"
+    groups_tested:
+      - group: "Rural school districts"
+        scenario_tested: "Moderate increase applied uniformly"
+        outcome: "May receive proportionally less benefit due to economies of scale"
+        mitigation: "Consider rural weighting factor in funding formula"
+  
+  unresolved_impacts:
+    - "Long-term economic effects on local businesses near schools"
+    - "Potential enrollment shifts between districts"
+  
+  net_welfare_assessment:
+    methodology: "Qualitative assessment based on stakeholder analysis"
+    conclusion: "Net positive welfare impact expected across all scenarios"
+    confidence: "medium"
+    confidence_basis: "Good data on direct impacts, less certain about second-order effects"
+```
+
+## Step 5: Validate your document
+
+```bash
+orp validate education-funding.yaml
+```
+
+Expected output:
+```
+Valid
+Compliance Level: ORP-Standard
+Layers Present: 3/5 (l1_data_provenance, l2_consequence_simulation, l3_empathy_mapping)
+
+Warnings:
+  - Consider adding Layer 4 (Accountability Ledger) to track decisions
+  - Consider adding Layer 5 (Fork Registry) to enable forking
+```
+
+## Step 6: Share and iterate
+
+Your document is now ready to:
+
+1. **Share** with stakeholders for feedback
+2. **Fork** for alternative scenarios
+3. **Compare** with other proposals using `orp diff`
+
+## Next steps
+
+- **Add Layer 4** (Accountability Ledger) - Track who made which decisions
+- **Add Layer 5** (Fork Registry) - Enable others to fork your proposal
+- **See the full example**: [Danish Property Tax Reform](/examples/danish-property-tax)
+- **Learn about compliance levels**: [Protocol Specification](/protocol/specification)
+
+## Tips
+
+- Start with ORP-Basic, then add layers as needed
+- Use `orp check` for quick validation during editing
+- Comments in the template explain each field
+- The JSON Schema will catch most errors automatically

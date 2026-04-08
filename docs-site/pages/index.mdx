@@ -1,0 +1,102 @@
+---
+title: OpenReason Protocol
+description: A standard for transparent, reproducible, and accountable policy reasoning
+---
+
+import { Database, Target, Users, FileText, GitFork, CheckCircle } from 'lucide-react'
+
+<div className="orp-hero">
+  <h1 className="orp-hero-title">
+    OpenReason <span>Protocol</span>
+  </h1>
+  <p className="orp-hero-subtitle">
+    A standard for transparent, reproducible, and accountable policy reasoning.
+    Document your data, simulate consequences, map stakeholder impacts, and create forkable policy proposals.
+  </p>
+</div>
+
+<div className="orp-section-label">Quick Start</div>
+
+```bash
+# Install the validator
+pip install orp-validator
+
+# Create your first document
+orp new my-policy.yaml --compliance basic
+
+# Validate it
+orp validate my-policy.yaml
+```
+
+<div className="orp-section-label">Why OpenReason?</div>
+
+<div className="orp-feature-grid">
+  <a href="/protocol/specification#layer-1-data-provenance" className="orp-feature-card">
+    <Database size={22} className="orp-feature-icon" />
+    <div className="orp-feature-name">Data Provenance</div>
+    <div className="orp-feature-desc">
+      Document every dataset with source, methodology, cleaning decisions, and known limitations.
+    </div>
+  </a>
+  <a href="/protocol/specification#layer-2-consequence-simulation" className="orp-feature-card">
+    <Target size={22} className="orp-feature-icon" />
+    <div className="orp-feature-name">Consequence Simulation</div>
+    <div className="orp-feature-desc">
+      Model policy outcomes with explicit assumptions, scenarios, and sensitivity analysis.
+    </div>
+  </a>
+  <a href="/protocol/specification#layer-3-empathy-mapping" className="orp-feature-card">
+    <Users size={22} className="orp-feature-icon" />
+    <div className="orp-feature-name">Empathy Mapping</div>
+    <div className="orp-feature-desc">
+      Map all stakeholders, test minority impacts, assess net welfare with confidence levels.
+    </div>
+  </a>
+  <a href="/protocol/specification#layer-4-accountability-ledger" className="orp-feature-card">
+    <FileText size={22} className="orp-feature-icon" />
+    <div className="orp-feature-name">Accountability Ledger</div>
+    <div className="orp-feature-desc">
+      Track every decision, who made it, when, why, and what sections were affected.
+    </div>
+  </a>
+  <a href="/protocol/specification#layer-5-fork-registry" className="orp-feature-card">
+    <GitFork size={22} className="orp-feature-icon" />
+    <div className="orp-feature-name">Fork Registry</div>
+    <div className="orp-feature-desc">
+      Fork proposals to test alternative assumptions. Track lineage and compare outcomes.
+    </div>
+  </a>
+  <a href="/tools/overview" className="orp-feature-card">
+    <CheckCircle size={22} className="orp-feature-icon" />
+    <div className="orp-feature-name">Validation Tools</div>
+    <div className="orp-feature-desc">
+      CLI, Python API, and REST API for validating documents. 96% test coverage.
+    </div>
+  </a>
+</div>
+
+<div className="orp-section-label">Compliance Levels</div>
+
+**ORP-Basic** (Layer 1 only)  
+Minimum viable transparency: data provenance tracking
+
+**ORP-Standard** (Layers 1-3)  
+Add consequence simulation and stakeholder mapping
+
+**ORP-Full** (All 5 layers)  
+Complete protocol: includes accountability ledger and fork registry
+
+<div className="orp-section-label">Get Involved</div>
+
+- **[Read the Specification](/protocol/specification)** — Full ORP v0.1 spec
+- **[View Examples](/examples/overview)** — Danish Property Tax Reform (ORP-Full)
+- **[Compare with Existing Standards](/analysis/comparison)** — How ORP complements GDPR, AI Act, PROV, and more
+- **[Install Tools](/getting-started/installation)** — CLI, Python, REST API
+- **[Contribute](/community/contributing)** — Help build the protocol
+- **[GitLab Repository](https://gitlab.com/publicreason/orp)** — Source code and issues
+
+---
+
+**Current Version:** ORP v0.1  
+**Tools Version:** v0.3.0 (on PyPI)  
+**Status:** Production-ready with 39 automated tests (96% coverage)

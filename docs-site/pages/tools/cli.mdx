@@ -1,0 +1,123 @@
+# CLI Reference
+
+Complete command reference for the `orp` command-line tool.
+
+## Installation
+
+```bash
+pip install orp-validator
+orp --version  # Verify installation
+```
+
+## Commands
+
+### `orp new`
+
+Create a new ORP document with interactive prompts or flags.
+
+```bash
+# Interactive mode
+orp new my-document.yaml
+
+# Non-interactive mode
+orp new doc.yaml --title "My Policy" --domain policy --author "Name" \
+  --compliance basic --non-interactive
+```
+
+**Options:**
+- `--title TEXT` - Document title
+- `--domain [policy|research|business]` - Document domain
+- `--author TEXT` - Author name
+- `--compliance [basic|standard|full]` - Compliance level
+- `--format [yaml|json]` - Output format (default: yaml)
+- `--non-interactive` - Skip prompts, use flags only
+- `--quiet` - Suppress output except errors
+
+### `orp validate`
+
+Validate document against ORP JSON Schema.
+
+```bash
+orp validate my-document.yaml
+orp validate doc.json --verbose
+orp validate doc.yaml --json  # Machine-readable output
+```
+
+**Options:**
+- `--verbose` - Show detailed validation report
+- `--json` - Output JSON format for automation
+
+**Exit Codes:**
+- `0` - Valid document
+- `1` - Invalid document
+- `2` - File not found or parse error
+
+### `orp check`
+
+Quick compliance level check without full validation.
+
+```bash
+orp check my-document.yaml
+orp check doc.yaml --json
+```
+
+Faster than `validate` for checking which layers are present.
+
+**Options:**
+- `--json` - Machine-readable output
+- `--quiet` - Only output compliance level
+
+**Exit Codes:**
+- `0` - ORP-Full
+- `1` - ORP-Standard
+- `2` - ORP-Basic
+- `3` - Non-compliant
+- `4` - Error
+
+### `orp diff`
+
+Compare two ORP documents.
+
+```bash
+orp diff original.yaml modified.yaml
+orp diff doc1.yaml doc2.yaml --filter-metadata
+orp diff doc1.yaml doc2.yaml --json
+```
+
+**Options:**
+- `--filter-metadata` - Exclude `last_modified` and `created` from comparison
+- `--json` - Machine-readable output
+
+**Output:**
+- Lists all differences with field paths
+- Detects fork relationships
+- Shows added, removed, and changed fields
+
+## Examples
+
+### Create and validate
+
+```bash
+# Create Basic document
+orp new policy.yaml --compliance basic --title "Education Funding" \
+  --domain policy --author "Jane Doe" --non-interactive
+
+# Validate it
+orp validate policy.yaml
+
+# Check compliance
+orp check policy.yaml
+```
+
+### Compare documents
+
+```bash
+# Create two versions
+orp new v1.yaml --title "Version 1" --non-interactive
+orp new v2.yaml --title "Version 2" --non-interactive
+
+# Compare them
+orp diff v1.yaml v2.yaml
+```
+
+See [Quick Start Guide](/getting-started/quickstart) for more examples.

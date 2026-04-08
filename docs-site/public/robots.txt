@@ -1,0 +1,6 @@
+# robots.txt for docs.publicreasonproject.org
+
+User-agent: *
+Allow: /
+
+Sitemap: https://docs.publicreasonproject.org/sitemap.xml

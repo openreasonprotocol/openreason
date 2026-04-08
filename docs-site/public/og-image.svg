@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+
+  <!-- Fork icon (large, centered-left) -->
+  <g transform="translate(150, 200)">
+    <!-- Main trunk -->
+    <line x1="80" y1="200" x2="80" y2="100" stroke="#1a5490" stroke-width="12" stroke-linecap="round"/>
+
+    <!-- Left branch -->
+    <path d="M 80 100 Q 40 70, 0 40" fill="none" stroke="#1a5490" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="0" cy="40" r="12" fill="#1a5490"/>
+
+    <!-- Right branch -->
+    <path d="M 80 100 Q 120 70, 160 40" fill="none" stroke="#1a5490" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="160" cy="40" r="12" fill="#1a5490"/>
+
+    <!-- Center continuation -->
+    <line x1="80" y1="100" x2="80" y2="0" stroke="#1a5490" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="80" cy="0" r="12" fill="#1a5490"/>
+
+    <!-- Fork point -->
+    <circle cx="80" cy="100" r="14" fill="#d97706"/>
+  </g>
+
+  <!-- Text content -->
+  <text x="450" y="250" font-family="'Inter', -apple-system, sans-serif" font-size="72" font-weight="700" fill="#1a1a1a">OpenReason Protocol</text>
+  <text x="450" y="330" font-family="'Inter', -apple-system, sans-serif" font-size="36" fill="#666666">A standard for transparent, reproducible, and</text>
+  <text x="450" y="380" font-family="'Inter', -apple-system, sans-serif" font-size="36" fill="#666666">accountable policy reasoning</text>
+
+  <!-- Bottom badge -->
+  <text x="450" y="480" font-family="'Inter', -apple-system, sans-serif" font-size="24" font-weight="600" fill="#1a5490">docs.publicreasonproject.org</text>
+</svg>

@@ -1,0 +1,343 @@
+---
+title: Online Validator
+description: Validate ORP documents directly in your browser
+---
+
+import { useState } from 'react'
+import { CheckCircle, XCircle, AlertTriangle, Loader2 } from 'lucide-react'
+
+export function ValidatorWidget() {
+  const [yaml, setYaml] = useState('')
+  const [result, setResult] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const exampleYaml = `orp_version: "0.1"
+document_id: "example-basic-001"
+title: "Example Policy Document"
+domain: "policy"
+authors:
+  - name: "Your Name"
+    role: "author"
+created: "2026-02-27"
+last_modified: "2026-02-27"
+status: "draft"
+forked_from: null
+compliance_level: "ORP-Basic"
+summary: |
+  A simple example document demonstrating ORP-Basic compliance.
+  This document shows the minimum required structure.
+
+l1_data_provenance:
+  - dataset_id: "example-data-001"
+    name: "Example Dataset"
+    description: "Demonstration dataset for example purposes"
+    source: "Example source"
+    collection_method: "Example method"
+    date_range: "2026"
+    geographic_scope: "Example region"
+    inclusion_criteria:
+      description: "All relevant data included"
+    exclusion_criteria: []
+    cleaning_decisions: []
+    synthetic_elements:
+      present: false
+    known_limitations:
+      - "This is an example, not real data"
+    access:
+      public: true
+      url: null
+      license: "CC-BY"
+    attested_by:
+      - name: "Your Name"
+        role: "author"
+        date: "2026-02-27"
+        statement: "I confirm this data description is accurate"`
+
+  const handleValidate = async () => {
+    if (!yaml.trim()) {
+      setError('Please enter YAML content to validate')
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+    setResult(null)
+
+    try {
+      const response = await fetch('https://api.publicreasonproject.org/api/v1/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ document: yaml })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setResult(data)
+      } else {
+        setError(data.detail || 'Validation failed')
+      }
+    } catch (err) {
+      setError('Network error: Could not reach validation API')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleLoadExample = () => {
+    setYaml(exampleYaml)
+    setResult(null)
+    setError(null)
+  }
+
+  const handleClear = () => {
+    setYaml('')
+    setResult(null)
+    setError(null)
+  }
+
+  const getComplianceBadgeColor = (level) => {
+    switch(level) {
+      case 'ORP-Full': return '#10b981'
+      case 'ORP-Standard': return '#3b82f6'
+      case 'ORP-Basic': return '#6366f1'
+      default: return '#6b7280'
+    }
+  }
+
+  return (
+    <div style={{ marginTop: '2rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+        <button
+          onClick={handleValidate}
+          disabled={loading}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: loading ? '#9ca3af' : '#0066cc',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            fontWeight: 500,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}
+        >
+          {loading && <Loader2 width={16} height={16} style={{ animation: 'spin 1s linear infinite' }} />}
+          {loading ? 'Validating...' : 'Validate'}
+        </button>
+        <button
+          onClick={handleLoadExample}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#f3f4f6',
+            color: '#374151',
+            border: '1px solid #d1d5db',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontWeight: 500
+          }}
+        >
+          Load Example
+        </button>
+        <button
+          onClick={handleClear}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#f3f4f6',
+            color: '#374151',
+            border: '1px solid #d1d5db',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontWeight: 500
+          }}
+        >
+          Clear
+        </button>
+      </div>
+
+      <textarea
+        value={yaml}
+        onChange={(e) => setYaml(e.target.value)}
+        placeholder="Paste your ORP YAML document here..."
+        style={{
+          width: '100%',
+          minHeight: '400px',
+          padding: '1rem',
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          border: '1px solid #d1d5db',
+          borderRadius: '8px',
+          resize: 'vertical',
+          marginBottom: '1rem'
+        }}
+      />
+
+      {error && (
+        <div style={{
+          padding: '1rem',
+          backgroundColor: '#fef2f2',
+          border: '1px solid #fecaca',
+          borderRadius: '8px',
+          marginBottom: '1rem',
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '0.75rem'
+        }}>
+          <XCircle width={20} height={20} style={{ color: '#dc2626', flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <div style={{ fontWeight: 600, color: '#991b1b', marginBottom: '0.25rem' }}>Error</div>
+            <div style={{ color: '#7f1d1d' }}>{error}</div>
+          </div>
+        </div>
+      )}
+
+      {result && (
+        <div style={{
+          padding: '1.5rem',
+          backgroundColor: result.valid ? '#f0fdf4' : '#fef2f2',
+          border: `1px solid ${result.valid ? '#bbf7d0' : '#fecaca'}`,
+          borderRadius: '8px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            {result.valid ? (
+              <CheckCircle width={24} height={24} style={{ color: '#16a34a' }} />
+            ) : (
+              <XCircle width={24} height={24} style={{ color: '#dc2626' }} />
+            )}
+            <div style={{ fontSize: '1.25rem', fontWeight: 600, color: result.valid ? '#166534' : '#991b1b' }}>
+              {result.valid ? 'Valid ORP Document' : 'Invalid Document'}
+            </div>
+          </div>
+
+          {result.valid && (
+            <>
+              <div style={{ marginBottom: '1rem' }}>
+                <span style={{ fontWeight: 500, color: '#374151' }}>Compliance Level: </span>
+                <span style={{
+                  display: 'inline-block',
+                  padding: '0.25rem 0.75rem',
+                  backgroundColor: getComplianceBadgeColor(result.compliance_level),
+                  color: 'white',
+                  borderRadius: '9999px',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  marginLeft: '0.5rem'
+                }}>
+                  {result.compliance_level}
+                </span>
+              </div>
+
+              <div style={{ marginBottom: '0.5rem', fontWeight: 500, color: '#374151' }}>Layers Present:</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                {[
+                  { key: 'l1_data_provenance', label: 'L1: Data Provenance' },
+                  { key: 'l2_consequence_simulation', label: 'L2: Consequence Simulation' },
+                  { key: 'l3_empathy_mapping', label: 'L3: Empathy Mapping' },
+                  { key: 'l4_accountability_ledger', label: 'L4: Accountability Ledger' },
+                  { key: 'l5_fork_registry', label: 'L5: Fork Registry' }
+                ].map(({ key, label }) => {
+                  const present = result.layers_present && result.layers_present[key] === true
+                  return (
+                    <div
+                      key={key}
+                      style={{
+                        padding: '0.5rem 0.75rem',
+                        backgroundColor: present ? '#dcfce7' : '#f3f4f6',
+                        border: `1px solid ${present ? '#86efac' : '#e5e7eb'}`,
+                        borderRadius: '6px',
+                        fontSize: '0.875rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      {present ? (
+                        <CheckCircle width={16} height={16} style={{ color: '#16a34a' }} />
+                      ) : (
+                        <span style={{ color: '#9ca3af' }}>○</span>
+                      )}
+                      {label}
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
+
+          {result.errors && result.errors.length > 0 && (
+            <div style={{ marginTop: '1rem' }}>
+              <div style={{ fontWeight: 500, color: '#991b1b', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <XCircle width={18} height={18} />
+                Errors ({result.errors.length})
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#7f1d1d' }}>
+                {result.errors.map((err, idx) => (
+                  <li key={idx} style={{ marginBottom: '0.25rem' }}>{err}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {result.warnings && result.warnings.length > 0 && (
+            <div style={{ marginTop: '1rem' }}>
+              <div style={{ fontWeight: 500, color: '#92400e', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <AlertTriangle width={18} height={18} />
+                Warnings ({result.warnings.length})
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#78350f' }}>
+                {result.warnings.map((warn, idx) => (
+                  <li key={idx} style={{ marginBottom: '0.25rem' }}>{warn}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+# Online Validator
+
+Validate your ORP documents directly in your browser using our REST API.
+
+<ValidatorWidget />
+
+## How It Works
+
+This validator:
+1. Sends your YAML document to the [REST API](/tools/rest-api) at `https://api.publicreasonproject.org`
+2. Validates against the ORP v0.1 JSON Schema
+3. Checks compliance level (Basic, Standard, or Full)
+4. Identifies which layers are present
+5. Returns detailed error messages if validation fails
+
+## What Gets Validated
+
+- **YAML syntax** - Must be valid YAML
+- **Required fields** - All mandatory fields for your compliance level
+- **Data types** - Strings, numbers, arrays, objects must match schema
+- **Compliance level** - Checks if document meets ORP-Basic, ORP-Standard, or ORP-Full requirements
+- **Layer completeness** - Verifies presence of L1-L5 based on compliance level
+
+## Privacy
+
+Your document is validated server-side but **not stored**. The API processes the validation request and immediately discards the content.
+
+## Alternative: Command Line
+
+For local validation without sending data to our API, use the [CLI tool](/tools/cli):
+
+```bash
+pip install orp-validator
+orp validate your-document.yaml
+```
+
+## API Documentation
+
+For programmatic access, see the [REST API documentation](/tools/rest-api).

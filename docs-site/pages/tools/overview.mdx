@@ -1,0 +1,102 @@
+# Tools Overview
+
+OpenReason Protocol provides three ways to validate and work with ORP documents:
+
+## 1. Command-Line Interface (CLI)
+
+**Best for:** Local development, shell scripts, CI/CD pipelines
+
+```bash
+pip install orp-validator
+orp validate my-document.yaml
+```
+
+**Features:**
+- Create new documents with interactive prompts
+- Validate against JSON Schema
+- Check compliance levels quickly
+- Compare documents (diff)
+- Offline operation
+
+[Full CLI Documentation →](/tools/cli)
+
+## 2. Python API
+
+**Best for:** Integration into Python applications, automated workflows
+
+```python
+from orp_validator import validate
+
+result = validate("my-document.yaml")
+print(f"Valid: {result.valid}")
+print(f"Compliance: {result.compliance_level}")
+```
+
+**Features:**
+- Programmatic validation
+- Integration with data pipelines
+- Custom error handling
+- Batch processing
+
+[Full Python API Documentation →](/tools/python-api)
+
+## 3. REST API
+
+**Best for:** Web applications, cross-platform integration, browser-based tools
+
+```bash
+curl -X POST https://api.publicreasonproject.org/api/v1/validate \
+  -H "Content-Type: application/json" \
+  -d '{"document": "orp_version: \"0.1\"\n..."}'
+```
+
+**Features:**
+- No installation required
+- Language-agnostic
+- Three endpoints: validate, check, diff
+- 60 requests/minute rate limit
+
+[Full REST API Documentation →](/tools/rest-api)
+
+## Which Tool Should I Use?
+
+| Use Case | Recommended Tool |
+|----------|------------------|
+| Writing ORP documents | CLI (`orp new`, `orp validate`) |
+| CI/CD validation | CLI in scripts |
+| Python data pipeline | Python API |
+| Web application | REST API |
+| Quick validation test | REST API or CLI |
+| Batch processing | Python API |
+
+## Installation
+
+### CLI & Python API
+
+```bash
+pip install orp-validator
+```
+
+Requires Python 3.9+. See [Installation Guide](/getting-started/installation) for details.
+
+### REST API
+
+No installation required. Available at:
+- **Base URL:** https://api.publicreasonproject.org
+- **Documentation:** https://api.publicreasonproject.org/docs
+
+## Version Compatibility
+
+All tools validate against **ORP v0.1** specification.
+
+| Tool | Version | ORP Support |
+|------|---------|-------------|
+| orp-validator (CLI/Python) | 0.3.0 | v0.1 |
+| REST API | v0.4.0 | v0.1 |
+
+## Next Steps
+
+- **[CLI Reference](/tools/cli)** - All commands and options
+- **[Python API](/tools/python-api)** - Integration guide
+- **[REST API](/tools/rest-api)** - HTTP endpoints
+- **[Quick Start](/getting-started/quickstart)** - Get up and running in 60 seconds

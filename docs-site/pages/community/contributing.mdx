@@ -1,0 +1,263 @@
+---
+title: Contributing to OpenReason
+description: How to contribute to the OpenReason Protocol
+---
+
+import { CheckCircle, XCircle } from 'lucide-react'
+
+# Contributing to OpenReason
+
+OpenReason is not a finished product seeking validation. It is a working hypothesis seeking stress-testing.
+
+## The Spirit of Contribution
+
+The most valuable contributions are not those that agree — they are those that **find the weaknesses, the contradictions, and the edge cases** the original authors missed.
+
+If you think something is wrong, say so clearly and show your reasoning. If you think something is missing, propose it specifically. If you think the whole framing is off, fork it and show us what better looks like.
+
+**The only contribution that is not welcome** is one that obscures rather than clarifies — that adds complexity without purpose, or asserts without reasoning.
+
+---
+
+## Ways to Contribute
+
+### 1. Critique an Existing Document
+
+The most important contribution is rigorous challenge.
+
+**A good critique includes:**
+- **The specific claim you're challenging** — reference the layer and field
+- **Why you believe it's wrong** — with reasoning and ideally evidence
+- **What the impact is** — how does it affect the conclusions
+- **What should be there instead** — or what questions need answering
+
+**How to submit:**
+- Open an issue on [GitLab](https://gitlab.com/publicreason/orp/-/issues)
+- Or create a formal response document in the original document's L5 Fork Registry
+
+---
+
+### 2. Fork a Document
+
+Forking is the core mechanic of OpenReason.
+
+If you disagree with assumptions in an existing document, **show what the document looks like with your assumptions instead.**
+
+#### Requirements for a Fork
+
+<div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div><strong>Must have:</strong></div>
+</div>
+
+- Reference original document's `document_id` in `forked_from` field
+- Same ORP compliance level as original (or higher)
+- Clear documentation in L5 of what changed and why
+- Honest diff — don't misrepresent the original
+
+<div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem', marginTop: '1rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div><strong>Does not require:</strong></div>
+</div>
+
+- Permission from original author
+- Justification for forking
+
+**Forking is an inherent right under the protocol.**
+
+#### How to Fork
+
+```bash
+# 1. Download the original document
+curl -O https://publicreasonproject.org/examples/danish_property_tax_reform.yaml
+
+# 2. Make your changes
+# Edit the YAML file with your alternative assumptions
+
+# 3. Update metadata
+# Set forked_from: "orp-dk-property-tax-001"
+# Update document_id to your own unique ID
+# Document changes in l5_fork_registry
+
+# 4. Validate your fork
+orp validate your-fork.yaml
+
+# 5. Publish
+# Push to your own repository or submit as an example
+```
+
+---
+
+### 3. Propose a Protocol Extension
+
+ORP v0.1 is intentionally minimal. Domain-specific extensions are welcome.
+
+**Good extension proposals:**
+- Identify the domain (AI training data, environmental impact, healthcare, etc.)
+- Explain what the core schema can't express
+- Define new fields using YAML schema conventions
+- Show backwards compatibility
+- Include at least one worked example
+
+**Examples of needed extensions:**
+- **ORP-AI** — AI training data provenance and synthetic data
+- **ORP-Econ** — Economic modeling with causal identification
+- **ORP-Env** — Environmental impact with intergenerational modeling
+- **ORP-Health** — Healthcare policy with equity analysis
+
+Extensions are reviewed by the working group. Rejected extensions can be published as community extensions.
+
+---
+
+### 4. Contribute a Worked Example
+
+The protocol is only credible if it can be applied to real cases.
+
+**We're looking for examples from:**
+- Different policy domains (healthcare, education, climate, housing)
+- Different geographic contexts (not just European/Western)
+- AI and data contexts (training data, model cards, data provenance)
+- Sub-national contexts (city-level, regional policy)
+
+**Requirements:**
+- Must validate as at least ORP-Standard
+- Must address a real policy or research question
+- Must be open for forking (preferably with explicit invitation)
+- Should demonstrate thoughtful use of each layer
+
+**How to submit:**
+1. Create your ORP document
+2. Validate it: `orp validate your-document.yaml`
+3. Open a merge request on [GitLab](https://gitlab.com/publicreason/orp)
+4. Include README explaining the example
+
+---
+
+### 5. Improve the Specification
+
+If you believe a core field is missing, a definition is ambiguous, or the structure could be improved — propose it.
+
+**Specification changes require:**
+- Clear statement of the problem
+- Proposed change with revised field definitions
+- Assessment of backwards compatibility
+- At least one example showing the change in practice
+
+**Where to propose:**
+Open an issue on [GitLab](https://gitlab.com/publicreason/orp/-/issues) with tag `spec-change`
+
+Breaking changes require broader consensus and are reserved for major version increments.
+
+---
+
+## What Makes a Good Contribution
+
+Good contributions share these qualities:
+
+### Specific
+
+<div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>"L1 does not adequately address the case where multiple datasets with conflicting coverage are merged"</div>
+</div>
+
+<div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+  <XCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#ef4444' }} />
+  <div>"The data section could be better"</div>
+</div>
+
+### Reasoned
+
+Explain **why**, not just **what**. The reasoning is more valuable than the conclusion because it can be challenged, improved, and generalised.
+
+### Honest About Uncertainty
+
+If you're not sure whether your critique is correct, say so. Tentative but specific is more valuable than confident but vague.
+
+### Constructive
+
+The goal is to improve the protocol, not to win an argument. If you can propose a solution alongside a critique, do so.
+
+---
+
+## Known Gaps in ORP v0.1
+
+Contributions addressing these are particularly welcome:
+
+- **Governance model** — How should protocol decisions be made?
+- **Automated validation** — What does machine-readable validation look like?
+- **Synthetic data standards** — L1 requires documentation but doesn't specify what "adequate" means
+- **Empathy mapping methodology** — L3 defines *what* to document, not *how* to conduct the analysis
+- **Non-Western policy contexts** — Current examples are European
+- **AI training data application** — Formal extension for AI/ML provenance
+
+---
+
+## Development Practices
+
+### For Code Contributors
+
+If you're contributing to the validator, CLI, or REST API:
+
+**Tech Stack:**
+- Python 3.9+ for core validator
+- FastAPI for REST API
+- Next.js + Nextra for documentation site
+- GitLab CI/CD for testing and deployment
+
+**Before submitting code:**
+
+```bash
+# 1. Run linters
+black --check orp_validator/ tests/
+ruff check orp_validator/ tests/
+mypy orp_validator/
+
+# 2. Run tests
+pytest tests/ -v --cov=orp_validator
+
+# 3. Validate examples
+orp validate examples/danish_property_tax_reform.yaml
+```
+
+**Expected results:**
+- All linters pass
+- 69+ tests passing with 93%+ coverage
+- Examples validate as ORP-Full
+
+**Python version compatibility:**
+We support Python 3.9+. See [Development Practices](https://gitlab.com/publicreason/orp/-/blob/main/docs/CONTRIBUTING.md#development-practices) for resource loading patterns.
+
+**CI/CD:**
+GitLab CI runs on all merge requests. Tests must pass before merging.
+
+---
+
+## Code of Conduct
+
+OpenReason exists to improve the quality of public reasoning. Contributions should reflect that purpose.
+
+**Challenge ideas, not people.**
+
+Disagree with reasoning, not with identity. Be specific, be honest, be direct — and be willing to be wrong.
+
+---
+
+## Getting Started
+
+1. Read the [Specification](/protocol/specification)
+2. Read the [Philosophy](/protocol/philosophy)
+3. Look at the [Danish Property Tax example](/examples/danish-property-tax)
+4. Identify where you want to contribute
+5. Open an issue or submit a merge request
+
+**Not sure if your contribution is appropriate?** Open a discussion before investing significant time. The goal is useful engagement, not gatekeeping.
+
+---
+
+## Resources
+
+- **Repository:** [gitlab.com/publicreason/orp](https://gitlab.com/publicreason/orp)
+- **Issue Tracker:** [gitlab.com/publicreason/orp/-/issues](https://gitlab.com/publicreason/orp/-/issues)
+- **Detailed Contributing Guide:** [CONTRIBUTING.md](https://gitlab.com/publicreason/orp/-/blob/main/docs/CONTRIBUTING.md)
+- **Governance:** [How decisions are made](/community/governance)

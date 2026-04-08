@@ -1,0 +1,83 @@
+# Installation
+
+The OpenReason Protocol validator is available as a Python package on PyPI.
+
+## Requirements
+
+- Python 3.9 or higher
+- pip (Python package installer)
+
+## Install via pip
+
+```bash
+pip install orp-validator
+```
+
+## Install from source
+
+```bash
+git clone https://gitlab.com/publicreason/orp.git
+cd orp
+pip install -e .
+```
+
+## Verify installation
+
+```bash
+orp --version
+```
+
+You should see:
+```
+orp-validator 0.3.0
+```
+
+## What gets installed
+
+The `orp-validator` package includes:
+
+- **CLI tool** (`orp`) - Command-line interface for all operations
+- **Python API** - Import and use in your Python code
+- **JSON Schema** - For ORP v0.1 validation
+- **Document templates** - For all three compliance levels
+
+## Next steps
+
+- [Quick Start Guide](/getting-started/quickstart) - Validate your first document in 60 seconds
+- [Create Your First Document](/getting-started/first-document) - Step-by-step guide
+- [CLI Reference](/tools/cli) - Full command reference
+
+## Troubleshooting
+
+### Python version too old
+
+If you get an error about Python version:
+
+```bash
+python --version  # Check your version
+python3.11 -m pip install orp-validator  # Use specific version
+```
+
+### Permission errors
+
+On Linux/Mac, you may need:
+
+```bash
+pip install --user orp-validator
+```
+
+Or use a virtual environment (recommended):
+
+```bash
+python -m venv orp-env
+source orp-env/bin/activate  # On Windows: orp-env\Scripts\activate
+pip install orp-validator
+```
+
+### Module not found
+
+Make sure pip installed to the correct Python:
+
+```bash
+python -m pip install orp-validator
+```

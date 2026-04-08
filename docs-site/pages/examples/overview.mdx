@@ -1,0 +1,114 @@
+---
+title: Examples Overview
+description: Real-world ORP documents showcasing the protocol in action
+---
+
+import { Home, CheckCircle } from 'lucide-react'
+
+# Examples Overview
+
+This section provides complete, validated ORP documents demonstrating how the protocol works in practice.
+
+## What Makes a Good Example?
+
+A strong ORP example document:
+
+1. **Addresses a real policy question** — Not a hypothetical exercise
+2. **Shows all layers** — Demonstrates how L1-L5 work together
+3. **Makes substantive claims** — Takes positions that can be debated and forked
+4. **Documents uncertainties** — Honest about data limitations and assumptions
+5. **Invites disagreement** — Explicitly encourages forking
+
+## Available Examples
+
+### Danish Property Tax Reform (ORP-Full)
+
+<div className="orp-card">
+  <div className="orp-card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <Home size={20} style={{ flexShrink: 0, color: 'var(--orp-blue-600)' }} />
+    <span>Danish Property Tax Reform: LVT + Smoothed Profit Tax</span>
+  </div>
+  <div className="orp-card-desc" style={{ marginTop: '0.5rem' }}>
+    A complete ORP-Full proposal replacing Denmark's current property tax system with a Land Value Tax (LVT) combined with a profit tax on gains at sale. Demonstrates all five layers with real economic modeling, stakeholder analysis, and transparent decision documentation.
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <strong>Compliance:</strong> ORP-Full (all 5 layers)<br />
+    <strong>Status:</strong> Open for comment<br />
+    <strong>Author:</strong> Asbjørn<br />
+    <strong>Domain:</strong> Policy — Tax reform
+  </div>
+  <div style={{ marginTop: '1rem' }}>
+    <a href="/examples/danish-property-tax" style={{ color: 'var(--orp-blue-600)', textDecoration: 'none', fontWeight: 500 }}>
+      Read the full walkthrough →
+    </a>
+  </div>
+</div>
+
+## How to Use These Examples
+
+### As a Learning Tool
+
+- **Start with the overview** — Understand what the proposal is trying to achieve
+- **Read layer by layer** — See how each layer builds on the previous one
+- **Study the YAML** — See the actual validated ORP document structure
+
+### As a Template
+
+- **Fork the document** — Download the YAML and modify it for your own policy
+- **Adapt the structure** — Use the same layer organization for your domain
+- **Keep what works** — Copy sections that apply to your use case
+
+### As a Debate
+
+- **Challenge the assumptions** — Fork and change the variables
+- **Test alternative scenarios** — Modify L2 to explore different outcomes
+- **Add stakeholders** — Expand L3 to include groups you think were missed
+- **Propose alternatives** — Fork the entire document with your preferred policy
+
+## Validating Examples
+
+All examples in this section are validated ORP documents. You can verify them yourself:
+
+```bash
+# Download the example
+curl -O https://publicreasonproject.org/examples/danish_property_tax_reform.yaml
+
+# Validate it
+orp validate danish_property_tax_reform.yaml
+
+# Check compliance level
+orp check danish_property_tax_reform.yaml
+```
+
+Expected output:
+```
+Valid ORP document
+Compliance Level: ORP-Full
+Layers Present: 5/5 (Header + L1-L5)
+```
+
+## Contributing Your Own Examples
+
+Have you created an ORP document you'd like to share? We welcome contributions!
+
+**Requirements:**
+- Must validate as at least ORP-Standard
+- Must address a real policy, research, or organizational question
+- Must be open for forking (preferably with explicit invitation)
+- Should demonstrate thoughtful use of each layer
+
+See our [Contributing Guide](/community/contributing) for how to submit your example.
+
+## Example Formats
+
+Examples are provided in multiple formats:
+
+- **This website** — Web-friendly walkthrough with explanations
+- **YAML** — The actual validated ORP document
+- **Source repository** — Raw file in the GitLab repo
+
+You can use whichever format is most helpful for your needs.
+
+---
+
+**Next:** [Danish Property Tax Reform →](/examples/danish-property-tax)

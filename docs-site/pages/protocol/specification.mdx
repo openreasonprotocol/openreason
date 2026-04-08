@@ -1,0 +1,300 @@
+# OpenReason Protocol Specification
+## ORP v0.1
+
+The OpenReason Protocol (ORP) is a standardized schema for documenting, sharing, and challenging the reasoning behind consequential decisions in policy, AI, and democratic governance.
+
+An ORP-compliant document is not a static report. It is a **simulatable object**: a structured representation of reasoning that any party can inspect, fork, and re-run with different assumptions to produce comparable outputs.
+
+## Design Principles
+
+- **Layered** — Each layer is independently useful and auditable
+- **Machine-readable** — Structured for both human reading and automated processing  
+- **Forkable** — Any compliant document can be forked, modified, and published as a derivative
+- **Diff-able** — Differences between original and fork are explicit and locatable
+- **Incomplete by design** — v0.1 defines the core schema; extensions expected through community contribution
+
+## Document Structure
+
+An ORP-compliant document consists of five layers plus a header block:
+
+```
+ORP Document
+├── Header (Required metadata)
+├── L1: Data Provenance (Required for all compliance levels)
+├── L2: Consequence Simulation (Standard and Full)
+├── L3: Empathy Mapping (Standard and Full)
+├── L4: Accountability Ledger (Full only)
+└── L5: Fork Registry (Full only)
+```
+
+## Header Block
+
+Every ORP document begins with structured metadata:
+
+```yaml
+orp_version: "0.1"
+document_id: "unique-identifier-001"
+title: "Human-Readable Policy Title"
+domain: "policy"  # or: research, business
+authors:
+  - name: "Author Name"
+    role: "author"  # or: contributor, reviewer
+created: "2026-01-01"
+last_modified: "2026-01-01"
+status: "draft"  # or: review, final
+compliance_level: "ORP-Full"  # or: ORP-Standard, ORP-Basic
+summary: |
+  Plain language description of what this document proposes,
+  in 3-5 sentences. Written for a general audience.
+```
+
+### Optional Header Fields
+
+```yaml
+forked_from: "parent-document-id"  # If this is a fork
+license: "CC-BY-4.0"  # Licensing terms
+contact: "email@example.com"  # Contact information
+```
+
+## Layer 1: Data Provenance
+
+**Purpose:** Document every dataset used in the reasoning, including how it was collected, cleaned, and what was excluded. Bias lives in data, not algorithms.
+
+### Required Fields Per Dataset
+
+```yaml
+l1_data_provenance:
+  - dataset_id: "enrollment-2024"
+    name: "School Enrollment Data 2024"
+    description: "What this dataset contains and why it was used"
+    source: "government | academic | commercial | synthetic"
+    collection_method: "How data was gathered"
+    date_range: "2024-01-01 to 2024-12-31"
+    geographic_scope: "Countries, regions, municipalities"
+    
+    inclusion_criteria:
+      description: "What was included and why"
+      
+    exclusion_criteria:
+      - "What was excluded and explicit justification"
+      
+    cleaning_decisions:
+      - "What was done, why, and what alternatives were considered"
+      
+    synthetic_elements:
+      present: false
+      # If true: what was synthesized, how, and with what assumptions
+      
+    known_limitations:
+      - "Explicit statement of what this dataset does not capture well"
+      
+    access:
+      public: true
+      url: "https://data.gov/dataset-id"  # if public
+      
+    attested_by:
+      - name: "Data Steward Name"
+        role: "data_manager"
+        date: "2026-01-15"
+        statement: "I attest this description is accurate"
+```
+
+**Key Principle:** Every exclusion must be justified. Every cleaning decision must explain alternatives considered. Every limitation must be explicit.
+
+## Layer 2: Consequence Simulation
+
+**Purpose:** Model policy outcomes with explicit assumptions, scenarios, and sensitivity analysis. Make the reasoning simulatable by others.
+
+### Structure
+
+```yaml
+l2_consequence_simulation:
+  affected_population:
+    description: "Who is affected by this proposal"
+    size_estimate: "Approximate number"
+  
+  variables:
+    independent:
+      - variable: "funding_increase_percent"
+        description: "What this variable represents"
+        range: "0% to 30%"
+        default_value: "15%"
+    
+    dependent:
+      - variable: "class_size"
+        description: "What we're measuring"
+        unit: "students per classroom"
+  
+  model:
+    type: "Linear regression | Agent-based | System dynamics"
+    assumptions:
+      - assumption: "Teacher hiring follows funding linearly"
+        basis: "Historical data 2010-2024"
+        sensitivity: "High - main driver of outcomes"
+  
+  scenarios:
+    - scenario_id: "baseline"
+      name: "Current Funding"
+      description: "No change from 2024 levels"
+      variable_values:
+        funding_increase_percent: "0%"
+      outcomes:
+        class_size: "24.5"
+    
+    - scenario_id: "moderate"
+      name: "15% Increase"
+      description: "Proposed funding increase"
+      variable_values:
+        funding_increase_percent: "15%"
+      outcomes:
+        class_size: "21.2"
+  
+  primary_scenario: "moderate"
+```
+
+**Key Principle:** All assumptions must be explicit and testable. Scenarios should span the range of plausible outcomes.
+
+## Layer 3: Empathy Mapping
+
+**Purpose:** Map all stakeholders, test impacts on minorities, assess net welfare with confidence levels. Make invisible groups visible.
+
+### Structure
+
+```yaml
+l3_empathy_mapping:
+  stakeholder_map:
+    - stakeholder: "Students"
+      description: "How they're affected"
+      estimated_population: "5.2 million"
+      relationship_to_proposal: "Primary beneficiaries"
+      impacts_by_scenario:
+        - scenario_id: "moderate"
+          direction: "positive | negative | mixed | neutral"
+          magnitude: "Description of impact"
+  
+  minority_stress_test:
+    description: "Testing impacts on underrepresented groups"
+    groups_tested:
+      - group: "Rural school districts"
+        scenario_tested: "Moderate increase with uniform distribution"
+        outcome: "Receives proportionally less benefit"
+        mitigation: "Consider rural weighting factor"
+  
+  unresolved_impacts:
+    - "Long-term effects we haven't modeled"
+    - "Second-order consequences we're uncertain about"
+  
+  net_welfare_assessment:
+    methodology: "How we assessed overall welfare"
+    conclusion: "Net positive across all scenarios"
+    confidence: "medium | high | low"
+    confidence_basis: "Why we have this confidence level"
+```
+
+**Key Principle:** No affected party is invisible. Minorities must be explicitly tested, not averaged away.
+
+## Layer 4: Accountability Ledger
+
+**Purpose:** Track every methodological decision. Who decided what, when, why, and what sections were affected.
+
+### Structure
+
+```yaml
+l4_accountability_ledger:
+  entries:
+    - timestamp: "2026-02-15T10:30:00Z"
+      decision: "Switched from linear to log model for income effects"
+      decision_maker: "Lead Analyst Name"
+      role: "senior_analyst"
+      basis: "Log model better fits historical data (R² = 0.89 vs 0.72)"
+      affected_sections: ["l2_consequence_simulation"]
+      
+    - timestamp: "2026-02-20T14:00:00Z"
+      decision: "Excluded private schools from dataset"
+      decision_maker: "Data Manager Name"
+      role: "data_steward"
+      basis: "Data not available from private institutions"
+      affected_sections: ["l1_data_provenance"]
+```
+
+**Key Principle:** Anonymous decisions are unaccountable decisions. Every choice that affects outcomes must have a name attached.
+
+## Layer 5: Fork Registry
+
+**Purpose:** Track document lineage, enable systematic comparison of alternatives, invite forking.
+
+### Structure
+
+```yaml
+l5_fork_registry:
+  this_document:
+    allows_forking: true
+    license: "CC-BY-4.0"
+    fork_invitation: "We encourage forking to test alternative assumptions"
+  
+  known_forks:
+    - fork_id: "alt-funding-model-001"
+      title: "Alternative Funding Model (Progressive)"
+      authors: ["Contributor Name"]
+      created: "2026-03-01"
+      key_differences:
+        - "Uses progressive rather than flat funding increase"
+        - "Models teacher retention effects"
+      url: "https://example.org/fork-001.yaml"
+  
+  responses_to_forks:
+    - fork_id: "alt-funding-model-001"
+      response_type: "acknowledged | adopted | rejected"
+      reasoning: "Interesting approach but requires data we don't have"
+      date: "2026-03-05"
+```
+
+**Key Principle:** Forking is not criticism—it's collaboration. The best proposals emerge from systematic comparison of alternatives.
+
+## Compliance Levels
+
+### ORP-Basic (Layer 1 only)
+Minimum viable transparency. Requires only data provenance. Useful for:
+- Initial documentation
+- Low-stakes decisions
+- Resource-constrained contexts
+
+### ORP-Standard (Layers 1-3)
+Adds consequence simulation and empathy mapping. Required for:
+- Policy proposals affecting >1000 people
+- Decisions with distributional impacts
+- AI training dataset documentation
+
+### ORP-Full (All 5 layers)
+Complete protocol with accountability and forking. Recommended for:
+- High-stakes policy decisions
+- Contested proposals with multiple alternatives
+- Long-term decisions affecting future generations
+
+## Validation
+
+All ORP documents must validate against the JSON Schema at `schemas/orp-v0.1.schema.json`.
+
+Validate using:
+```bash
+orp validate your-document.yaml
+```
+
+Or via REST API:
+```bash
+curl -X POST https://api.publicreasonproject.org/api/v1/validate \
+  -H "Content-Type: application/json" \
+  -d '{"document": "orp_version: 0.1\n..."}'
+```
+
+## Next Steps
+
+- **[See examples](/examples/overview)** - Real-world ORP documents
+- **[Read the philosophy](/protocol/philosophy)** - REE framework
+- **[Choose compliance level](/protocol/compliance-levels)** - Which level is right for you?
+- **[Get started](/getting-started/installation)** - Install the validator
+
+## Full Specification
+
+The complete, authoritative specification is maintained at:  
+[docs/specs/ORP_SPEC.md](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/ORP_SPEC.md)

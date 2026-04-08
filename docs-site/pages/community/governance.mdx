@@ -1,0 +1,329 @@
+---
+title: Governance Model
+description: How OpenReason makes decisions
+---
+
+import { CheckCircle, XCircle } from 'lucide-react'
+
+# OpenReason Governance Model v0.1
+
+> A transparency protocol that does not govern itself transparently would contradict its own principles.
+
+This document defines how OpenReason is governed — how decisions are made, who makes them, and how power is structured to prevent capture.
+
+---
+
+## Founding Principle
+
+OpenReason exists as a **public good**. It is not owned by its creator, by any company, or by any government.
+
+**The single most important design constraint:**
+
+**The protocol must be able to function, evolve, and be maintained without its founder.**
+
+Any governance structure that depends on the founder's continued involvement has failed.
+
+---
+
+## Current Status: Phase 0 Founder Stewardship
+
+**Active from:** Launch until first Stewardship Council is seated
+
+During Phase 0, the founder (Asbjørn) retains editorial control over the protocol specification for the sole purpose of incorporating community feedback and preparing v1.0 for ratification.
+
+### What the Founder Can Do
+
+- Publish changes to the protocol specification
+- Merge contributions to the core repository
+- Represent the project publicly
+- Invite contributors and working group members
+
+### What the Founder Cannot Do
+
+- Commercialise the protocol or its name without explicit community consent
+- Transfer governance rights to any private entity
+- Make irrevocable decisions about the protocol's direction
+- Extend Phase 0 indefinitely
+
+### Phase 0 Ends When
+
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>The Stewardship Council has been constituted (minimum 5 members from 3+ organisations)</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>The Council has formally ratified this governance document</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>The founder has formally transferred administrative rights to the Council</div>
+</div>
+
+**There is no time limit on Phase 0** — it ends when governance is genuinely ready, not on a calendar date.
+
+The founder commits to actively working toward Council formation within six months of the first public release.
+
+---
+
+## Permanent Governance Structure
+
+### The Stewardship Council
+
+The governing body of OpenReason. Responsible for ratifying protocol versions, managing the domain and trademarks, and ensuring the project remains a public good.
+
+#### Composition
+
+- **Size:** Minimum 5 members, maximum 11
+- **Organizational diversity:** No single organization may hold more than 2 seats
+- **Sector representation:**
+  - At least one academic/research institution
+  - At least one civil society/public interest organization
+  - At least one government/public sector body
+- **Founder status:** May hold a seat but has no special authority beyond one vote
+
+#### How Members Are Selected
+
+**Initial Council:**
+- Founder nominates candidates from active contributors
+- Nominees accepted by consensus of the initial group
+
+**Subsequent members:**
+- Nominated by existing Council members or by the contributor community
+- Approved by two-thirds Council vote
+- **Term:** Three years, renewable once
+- **Removal:** Two-thirds Council vote with documented reasons published under ORP
+
+#### What the Council Decides
+
+<div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div><strong>Requires Council approval:</strong></div>
+</div>
+
+- Protocol version ratification (two-thirds majority)
+- Governance document amendments (two-thirds majority)
+- Trademark and name usage policy
+- Formal partnerships with external organizations
+- Dissolution of the project (unanimous vote)
+
+<div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem', marginTop: '1rem' }}>
+  <XCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#ef4444' }} />
+  <div><strong>Does not require Council approval:</strong></div>
+</div>
+
+- Day-to-day repository management (delegated to Working Groups)
+- Technical implementation details (delegated to Working Groups)
+- Individual contribution acceptance (delegated to Working Groups)
+
+---
+
+### Working Groups
+
+Handle ongoing technical and community work. Operate autonomously within their defined scope.
+
+#### Standing Working Groups
+
+| Working Group | Scope | Min Members |
+|---------------|-------|-------------|
+| **Core Specification** | ORP spec, schema, validation | 3 |
+| **Tooling** | CLI, validator, SDK, API | 3 |
+| **Extensions** | Side protocols (ORP-AI, ORP-Econ) | 2 per extension |
+| **Education** | ORP-Edu, classroom tools, docs | 2 |
+| **Community** | Contributor experience, events | 2 |
+
+#### Working Group Principles
+
+- Any contributor with 2+ accepted contributions may join a Working Group
+- Working Groups elect their own leads by simple majority
+- Decisions made by rough consensus (no formal vote required)
+- Any member may escalate a decision to the full group or to the Council
+
+---
+
+### Contributors
+
+Anyone who submits an accepted pull request, published critique, or formal fork becomes a contributor.
+
+**Contributors have:**
+- Voice in Working Group discussions
+- The right to be nominated for Working Group membership
+- Recognition in the contributor record
+
+There are no tiers of contributor beyond Working Group membership and Council membership.
+
+---
+
+## Decision-Making Process
+
+### For Protocol Changes (Spec Amendments)
+
+1. **Proposal** — Any contributor may open a proposal as a GitLab issue
+2. **Discussion** — Minimum 30 days open for community comment
+3. **Working Group review** — Core Specification Working Group produces a recommendation
+4. **Council ratification** — Two-thirds majority vote
+5. **Publication** — New version published with full changelog and reasoning in L4
+
+### For Tooling and Implementation
+
+1. **Proposal** — Contributor opens issue or pull request
+2. **Review** — Tooling Working Group reviews within 14 days
+3. **Merge** — Working Group lead approves by rough consensus
+4. **No Council involvement required** unless change affects the spec
+
+### For Governance Amendments
+
+1. **Proposal** — Any Council member or 5 contributors acting together
+2. **Discussion** — Minimum 60 days open for community comment
+3. **Council vote** — Two-thirds majority required
+4. **Publication** — Amendments published with full reasoning
+
+### For Urgent Decisions
+
+If a security issue or urgent matter requires faster action:
+- Council may act by two-thirds vote without standard discussion period
+- Decision and reasoning must be published within 48 hours
+
+---
+
+## Versioning and Ratification
+
+OpenReason follows semantic versioning adapted for a protocol:
+
+- **Major versions (1.0, 2.0)** — Breaking changes. Require Council ratification and 60-day comment period.
+- **Minor versions (0.1, 0.2, 1.1)** — Backwards-compatible additions. Require Working Group approval and 30-day comment period.
+- **Patches (0.1.1)** — Corrections or clarifications. Require Working Group approval, no minimum comment period.
+
+**Ratification requirement:** A version is not ratified until there is at least one working implementation. This is the IETF principle of "rough consensus and running code."
+
+---
+
+## Funding and Commercialization
+
+### Prohibited
+
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <XCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#ef4444' }} />
+  <div>Selling the OpenReason name or protocol</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <XCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#ef4444' }} />
+  <div>Granting exclusive implementation rights</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <XCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#ef4444' }} />
+  <div>Accepting funding that conditions the protocol's direction</div>
+</div>
+
+### Permitted
+
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>Accepting donations for infrastructure (hosting, CI, domain)</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>Grants for development work (output must be public and open)</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>Working Group members employed by organizations building on ORP</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>Commercial tools implementing ORP (provided they don't misrepresent compliance)</div>
+</div>
+
+### Transparency Requirement
+
+**All funding received by the project — source, amount, and intended use — must be published publicly.**
+
+This is not optional.
+
+---
+
+## Founder Handover
+
+The founder commits to the following upon Council formation:
+
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>Transfer all administrative rights to the Council within 30 days</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>Transfer project domain and trademarks to the Council</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>Publish formal handover document in L4 accountability ledger</div>
+</div>
+<div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+  <CheckCircle size={18} style={{ flexShrink: 0, marginTop: '0.15rem', color: '#10b981' }} />
+  <div>Retain contributor status with no special authority</div>
+</div>
+
+The founder may participate as a Council member if nominated and elected through the standard process. If elected, the founder holds **one vote** — the same as any other member.
+
+### The Founder Explicitly Waives
+
+- Any right to veto Council decisions
+- Any claim to ownership of the protocol or its name after handover
+- Any right to unilateral changes after handover
+
+**This waiver is public and intended to be permanent.**
+
+---
+
+## Conflict of Interest
+
+Any Council member or Working Group lead must **declare a conflict of interest** when a decision could benefit their employer, their own work, or any affiliated organization.
+
+Declaration does not require recusal — it requires **transparency**. The community judges whether the conflict affected the decision.
+
+**Undisclosed conflicts are grounds for removal.**
+
+---
+
+## Protocol Dissolution
+
+If the Stewardship Council determines OpenReason should be dissolved:
+
+1. Unanimous Council vote required
+2. 90-day community comment period must precede dissolution
+3. All protocol documentation, tooling, and examples archived publicly in perpetuity
+4. No private entity may acquire exclusive rights upon dissolution
+
+**A dissolved protocol is better than a captured one.**
+
+---
+
+## Amendments to This Document
+
+This governance document is v0.1 and is **explicitly provisional**. It was written by the founder before any community exists.
+
+The founder's expectation is that the Council's first substantive act will be to **review and amend this document** based on the community's actual needs.
+
+What is not acceptable is a governance document that cannot be changed by the community it governs.
+
+---
+
+## Accountability
+
+This governance document is itself an ORP document. Its provenance, assumptions, and limitations are documented in [ORP_META.md](https://gitlab.com/publicreason/orp/-/blob/main/docs/governance/ORP_META.md).
+
+**The governance of the protocol is subject to the same transparency standards the protocol demands of everything else.**
+
+---
+
+## Full Governance Document
+
+For the complete governance model with additional details, see:
+
+**[GOVERNANCE.md on GitLab →](https://gitlab.com/publicreason/orp/-/blob/main/docs/governance/GOVERNANCE.md)**
+
+---
+
+*OpenReason Governance Model v0.1 — February 2026*
+*Written by the founder. Intended to be amended by the community.*
+***Fork it.***

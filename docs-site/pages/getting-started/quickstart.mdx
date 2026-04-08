@@ -1,0 +1,97 @@
+# Quick Start
+
+Get up and running with OpenReason Protocol in under 60 seconds.
+
+## 1. Install
+
+```bash
+pip install orp-validator
+```
+
+## 2. Create a document
+
+```bash
+orp new my-policy.yaml --compliance basic --title "My Policy" --domain policy --author "Your Name" --non-interactive
+```
+
+This creates a minimal ORP-Basic document with Layer 1 (Data Provenance).
+
+## 3. Validate it
+
+```bash
+orp validate my-policy.yaml
+```
+
+You should see:
+```
+Valid
+Compliance Level: ORP-Basic
+Layers Present: 1/5 (l1_data_provenance)
+```
+
+## 4. Check compliance level
+
+```bash
+orp check my-policy.yaml
+```
+
+Output:
+```
+Compliance Level: ORP-Basic
+Layers Present: L1 (Data Provenance)
+Next Steps: Add L2 (Consequence Simulation) and L3 (Empathy Mapping) for ORP-Standard
+```
+
+## Try the full example
+
+Want to see a complete ORP-Full document? Check out our Danish Property Tax Reform example:
+
+```bash
+# Download the example
+curl -O https://gitlab.com/publicreason/orp/-/raw/main/examples/danish_property_tax_reform.yaml
+
+# Validate it
+orp validate danish_property_tax_reform.yaml
+```
+
+## Next steps
+
+- **[Create Your First Document](/getting-started/first-document)** - Detailed walkthrough
+- **[View Examples](/examples/overview)** - Real-world policy documents
+- **[CLI Reference](/tools/cli)** - All commands and options
+- **[Protocol Specification](/protocol/specification)** - Full ORP v0.1 spec
+
+## Quick reference
+
+```bash
+# Create new document (interactive)
+orp new my-doc.yaml
+
+# Create with specific compliance level
+orp new my-doc.yaml --compliance full
+
+# Validate document
+orp validate my-doc.yaml
+
+# Check compliance level (fast, no validation)
+orp check my-doc.yaml
+
+# Compare two documents
+orp diff doc1.yaml doc2.yaml
+
+# Get help
+orp --help
+orp new --help
+```
+
+## Using the REST API
+
+Prefer to validate via HTTP? Use our public API:
+
+```bash
+curl -X POST https://api.publicreasonproject.org/api/v1/validate \
+  -H "Content-Type: application/json" \
+  -d '{"document": "orp_version: \"0.1\"\n..."}'
+```
+
+See [REST API documentation](/tools/rest-api) for full details.

@@ -101,7 +101,8 @@ class ORPValidator:
             extension_names: List of extension names (e.g., ["orp-ai-training-v1"])
 
         Note:
-            For v0.2, extensions are primarily documentation (additionalProperties: true allows them).
+            For v0.2, extensions are primarily documentation
+            (additionalProperties: true allows them).
             Future versions may enforce extension schema validation.
         """
         self.extensions_loaded = extension_names

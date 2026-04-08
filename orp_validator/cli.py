@@ -3,6 +3,7 @@
 import json
 import sys
 from pathlib import Path
+from typing import Optional
 
 import click
 
@@ -30,7 +31,7 @@ from orp_validator import ORPValidator, ValidationResult, __version__, validate
     help="ORP version to validate against (default: auto-detect from document)",
 )
 @click.version_option(version=__version__, prog_name="orp-validate")
-def main(document: Path, output_json: bool, verbose: bool, orp_version: str | None) -> None:
+def main(document: Path, output_json: bool, verbose: bool, orp_version: Optional[str]) -> None:
     """Validate an OpenReason Protocol (ORP) document.
 
     DOCUMENT: Path to the ORP document to validate (YAML, JSON, or Markdown with YAML frontmatter)

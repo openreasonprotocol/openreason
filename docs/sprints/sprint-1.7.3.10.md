@@ -409,18 +409,42 @@ curl -s https://docs.publicreasonproject.org/examples/ai-training-analysis
 
 **Total new content**: ~12,760 lines of MDX
 
+### Follow-Up Work (Comprehensive Docs Review)
+
+After deploying the AI training dataset examples, a comprehensive review of all docs site pages identified 5 critical pages needing ORP v0.2 updates:
+
+**Core Pages Updated**:
+1. **index.mdx** (Home Page): Added ORP-PostHoc to compliance levels, updated version to v0.2, tools to v0.4.0, tests to 43 (96.5% coverage)
+2. **protocol/compliance-levels.md**: Added comprehensive ORP-PostHoc section (80+ lines), overview table, differences from ORP-Basic, real examples
+3. **tools/overview.mdx**: Updated version compatibility table for v0.1 and v0.2 auto-detection support
+4. **tools/rest-api.mdx**: Added v0.2 support documentation, features list (auto-detection, PostHoc, extensions)
+5. **community/roadmap.mdx**: Marked Phase 1 COMPLETE (v0.6.0, April 2026), added comprehensive retrospective
+
+**Linting Fixes**:
+- Fixed ruff E501 error in `orp_validator/validator.py:104` (line too long)
+- Fixed mypy error in `orp_validator/cli.py:33` (Python 3.10 union syntax → Optional for 3.9 compatibility)
+
+**Commits**:
+- `79e2467`: docs(site): update core pages for ORP v0.2 support (5 files, 155 insertions, 31 deletions)
+- `a3a2b80`: fix(lint): resolve ruff and mypy linting errors (2 files, 4 insertions, 2 deletions)
+
+**All changes deployed**: https://docs.publicreasonproject.org
+
 ### Next Steps
 
 **Immediate**:
-- ✅ Sprint 1.7.3.10 complete
+- ✅ Sprint 1.7.3.10 complete (including core docs review)
+- ✅ All CI/CD linting checks passing
 
 **Future**:
 - Monitor page views for new examples
 - Consider adding more AI training dataset reconstructions
 - Potential blog posts highlighting these examples
+- Sprint 1.7.4 (JSON-LD machine-readable schema) or other Phase 2 work
 
 ---
 
 *Sprint created: 2026-04-08*
+*Sprint completed: 2026-04-08*
 *Sprint owner: Asbjørn*
-*Status: In Progress*
+*Status: ✅ COMPLETE*

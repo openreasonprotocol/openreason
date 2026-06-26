@@ -1,10 +1,10 @@
 # Sprint 1-8.0: Cloudflare Migration (DigitalOcean → Cloudflare)
 
 **Version:** `sprint-1.8.0`
-**Status:** In Progress
+**Status:** Completed
 **Start Date:** 2026-06-26
 **Target End Date:** 2026-07-03
-**Actual End Date:** TBD
+**Actual End Date:** 2026-06-26
 
 > **DEPLOYED & LIVE (2026-06-26):** Migration complete except the droplet soak/decommission.
 > - `https://api.publicreasonproject.org` → Worker `openreason-api` (SSL active, validate/check/diff verified live)
@@ -14,8 +14,9 @@
 >   plan only permits a 10s window, so this is the equivalent rate, not a literal 60/60s).
 > - Account: `085d6025...` (Asbjorn@bullrise.co). Cloudflare API token used for deploy
 >   is to be **rotated** by Asbjørn.
-> - **REMAINING (Task 5):** 48–72h soak with droplet as rollback, then decommission +
->   update CLAUDE.md. Droplet must stay live until then.
+> - **Task 5 DONE:** Droplet `orp-api-fra` (554628875 / 134.209.250.174) destroyed 2026-06-26
+>   at user request (hobby project, no soak). Both domains verified 200 post-destroy.
+>   CLAUDE.md updated. (Soak was waived by the user.)
 
 **Code Target Version:** `v0.4.1` (infrastructure only — no protocol changes)
 **Protocol Version Supported:** `0.2` (and `0.1` backward compatible)
@@ -230,7 +231,7 @@ methods `GET, POST, OPTIONS`, headers `Content-Type`, credentials off.
 
 ### Task 5: Verify, soak, decommission
 **Estimate:** Verification 2 h + 48–72 h soak
-**Status:** Verified live; soak in progress — droplet NOT yet decommissioned (awaiting confirmation)
+**Status:** ✅ DONE — droplet destroyed 2026-06-26 (soak waived by user); domains verified 200 post-destroy; CLAUDE.md updated
 
 **Description:**
 Run the full API test suite against the live Worker origin and smoke-test the docs

@@ -423,10 +423,19 @@ We'll know it's failing if:
   - `POST /api/v1/validate` - Full schema validation
   - `POST /api/v1/check` - Quick compliance check
   - `POST /api/v1/diff` - Document comparison
-- **Documentation:** https://api.publicreasonproject.org/docs (Swagger UI)
-- **Status:** Production-ready with 39 automated tests (96% coverage)
-- **Deployment:** DigitalOcean (134.209.250.174), Docker, nginx, SSL via Let's Encrypt
-- **CI/CD:** Automated testing on all commits via GitLab CI
+- **Documentation:** https://api.publicreasonproject.org/docs (Redoc) + `/openapi.json`
+- **Stack:** Cloudflare Worker (`openreason-api`), TypeScript (js-yaml + ajv). Source in `worker/`.
+- **Rate limiting:** Cloudflare WAF rule on `/api/v1/*` — 10 req/10s per IP (≈60/min).
+- **Note:** This is a parity-tested TS port of the original FastAPI service. The Python
+  app under `api/` is retained as the reference/spec oracle but is no longer deployed.
+
+### Docs Site
+- **URL:** https://docs.publicreasonproject.org
+- **Stack:** Cloudflare Pages (`openreason-docs`), Nextra static export from `docs-site/`.
+
+> **Hosting:** Migrated from DigitalOcean to Cloudflare's free tier on 2026-06-26
+> (sprint 1.8.0). The DO droplet `orp-api-fra` (134.209.250.174) was decommissioned.
+> Account: Cloudflare `085d6025...` (Asbjorn@bullrise.co). No more Docker/nginx/Let's Encrypt.
 
 ### Python Package
 - **PyPI:** https://pypi.org/project/orp-validator/

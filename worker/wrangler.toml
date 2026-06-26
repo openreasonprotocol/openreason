@@ -1,0 +1,22 @@
+# Cloudflare Worker config for the OpenReason validator API.
+# Deploy:  npx wrangler deploy   (after `npx wrangler login`)
+#
+# The custom domain api.publicreasonproject.org is attached AFTER first deploy,
+# either in the dashboard (Workers > this worker > Settings > Domains & Routes)
+# or by uncommenting the [[routes]] block below once the zone is on Cloudflare.
+
+name = "openreason-api"
+main = "src/index.ts"
+compatibility_date = "2026-06-01"
+
+# JSON schemas are imported directly from src/schemas/*.json and bundled by esbuild.
+# No KV/DO bindings needed — validation is stateless. Rate limiting is a WAF rule
+# (see worker/README.md), not application code.
+
+# Custom domain (uncomment after the zone is active on Cloudflare):
+# [[routes]]
+# pattern = "api.publicreasonproject.org"
+# custom_domain = true
+
+[observability]
+enabled = true

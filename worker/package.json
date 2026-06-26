@@ -1,0 +1,22 @@
+{
+  "name": "openreason-api-worker",
+  "version": "0.4.1",
+  "private": true,
+  "description": "OpenReason Protocol Validator API — Cloudflare Worker (TS port of the FastAPI service)",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "smoke": "node --experimental-strip-types scripts/smoke.ts"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240909.0",
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "^5.6.0",
+    "wrangler": "^4.0.0"
+  }
+}

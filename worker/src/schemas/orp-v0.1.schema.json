@@ -1,0 +1,919 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openreason.org/schemas/orp-v0.1.schema.json",
+  "title": "OpenReason Protocol v0.1",
+  "description": "JSON Schema for validating OpenReason Protocol (ORP) v0.1 documents",
+  "type": "object",
+  "required": ["orp_version", "document_id", "title", "domain", "authors", "created", "last_modified", "status", "summary"],
+  "properties": {
+    "orp_version": {
+      "type": "string",
+      "const": "0.1",
+      "description": "ORP specification version this document conforms to"
+    },
+    "document_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this document"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable title"
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["policy", "ai-training", "governance", "other"],
+      "description": "Domain this document addresses"
+    },
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "role"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name or pseudonym"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["author", "contributor", "reviewer"],
+            "description": "Contribution role"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "List of document authors and contributors"
+    },
+    "created": {
+      "type": "string",
+      "format": "date",
+      "description": "Creation date in ISO 8601 format"
+    },
+    "last_modified": {
+      "type": "string",
+      "format": "date",
+      "description": "Last modification date in ISO 8601 format"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "open-for-comment", "ratified", "superseded"],
+      "description": "Document status"
+    },
+    "forked_from": {
+      "type": ["string", "null"],
+      "description": "Parent document_id if this is a fork, null otherwise"
+    },
+    "compliance_level": {
+      "type": "string",
+      "enum": ["ORP-Basic", "ORP-Standard", "ORP-Full"],
+      "description": "Declared compliance level"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Plain language description (3-5 sentences) for general audience"
+    },
+    "l1_data_provenance": {
+      "type": "array",
+      "minItems": 1,
+      "description": "L1: Data Provenance - Document datasets used in reasoning",
+      "items": {
+        "type": "object",
+        "required": [
+          "dataset_id",
+          "name",
+          "description",
+          "source",
+          "collection_method",
+          "date_range",
+          "geographic_scope",
+          "inclusion_criteria",
+          "exclusion_criteria",
+          "cleaning_decisions",
+          "synthetic_elements",
+          "known_limitations",
+          "access",
+          "attested_by"
+        ],
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Unique identifier for this dataset"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Human-readable dataset name"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What this dataset contains and why it was used"
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Origin (government, academic, commercial, synthetic, etc.)"
+          },
+          "collection_method": {
+            "type": "string",
+            "minLength": 1,
+            "description": "How data was gathered"
+          },
+          "date_range": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Period covered by the data"
+          },
+          "geographic_scope": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Geographic coverage (countries, regions, municipalities)"
+          },
+          "inclusion_criteria": {
+            "type": "object",
+            "required": ["description"],
+            "properties": {
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What was included and why"
+              }
+            },
+            "additionalProperties": false
+          },
+          "exclusion_criteria": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["excluded", "reason", "potential_impact"],
+              "properties": {
+                "excluded": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "What was excluded"
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Explicit justification for exclusion"
+                },
+                "potential_impact": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "How exclusion may affect outcomes"
+                }
+              },
+              "additionalProperties": false
+            },
+            "description": "List of exclusions with justifications"
+          },
+          "cleaning_decisions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["decision", "reason", "alternatives_considered"],
+              "properties": {
+                "decision": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "What cleaning decision was made"
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Why this decision was made"
+                },
+                "alternatives_considered": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Other approaches that were considered"
+                }
+              },
+              "additionalProperties": false
+            },
+            "description": "Data cleaning decisions with reasoning"
+          },
+          "synthetic_elements": {
+            "type": "object",
+            "required": ["present"],
+            "properties": {
+              "present": {
+                "type": "boolean",
+                "description": "Whether synthetic data was used"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "description": "If true: what was synthesized, how, and with what assumptions"
+              }
+            },
+            "additionalProperties": false,
+            "if": {
+              "properties": { "present": { "const": true } }
+            },
+            "then": {
+              "required": ["present", "description"]
+            }
+          },
+          "known_limitations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Explicit statements of what this dataset does not capture well"
+          },
+          "access": {
+            "type": "object",
+            "required": ["public"],
+            "properties": {
+              "public": {
+                "type": "boolean",
+                "description": "Whether data is publicly accessible"
+              },
+              "url": {
+                "type": ["string", "null"],
+                "format": "uri",
+                "description": "Link if public"
+              },
+              "license": {
+                "type": "string",
+                "description": "Data license"
+              }
+            },
+            "additionalProperties": false
+          },
+          "attested_by": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["name", "role", "date", "statement"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Name of person attesting"
+                },
+                "role": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Role of person attesting"
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Attestation date in ISO 8601 format"
+                },
+                "statement": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Attestation statement"
+                }
+              },
+              "additionalProperties": false
+            },
+            "description": "Who attests to the accuracy of this documentation"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "l2_consequence_simulation": {
+      "type": "object",
+      "description": "L2: Consequence Simulation - Define affected population, variables, scenarios",
+      "required": ["affected_population", "variables", "model", "scenarios", "primary_scenario"],
+      "properties": {
+        "affected_population": {
+          "type": "object",
+          "required": ["description", "size_estimate"],
+          "properties": {
+            "description": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Who is affected by this proposal"
+            },
+            "size_estimate": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Approximate number of people or entities"
+            },
+            "segments": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["segment", "description", "estimated_size"],
+                "properties": {
+                  "segment": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Segment name"
+                  },
+                  "description": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Characteristics of this segment"
+                  },
+                  "estimated_size": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Number or percentage"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "variables": {
+          "type": "object",
+          "required": ["independent", "dependent"],
+          "properties": {
+            "independent": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["variable", "description", "range", "default_value"],
+                "properties": {
+                  "variable": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Variable name"
+                  },
+                  "description": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "What this variable represents"
+                  },
+                  "range": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Min to max or set of values"
+                  },
+                  "default_value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Value used in primary simulation"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "dependent": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["variable", "description", "unit"],
+                "properties": {
+                  "variable": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Variable name"
+                  },
+                  "description": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "What outcome this measures"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Unit of measurement"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "model": {
+          "type": "object",
+          "required": ["type", "assumptions"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Description of modelling approach"
+            },
+            "assumptions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["assumption", "basis", "sensitivity"],
+                "properties": {
+                  "assumption": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Explicit statement of assumption"
+                  },
+                  "basis": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Why this assumption was made"
+                  },
+                  "sensitivity": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "How much outcome changes if assumption is wrong"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "scenarios": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["scenario_id", "name", "description", "variable_values", "outcomes"],
+            "properties": {
+              "scenario_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Unique scenario identifier"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Human-readable scenario name"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What this scenario represents"
+              },
+              "variable_values": {
+                "type": "object",
+                "minProperties": 1,
+                "description": "Variable values for this scenario"
+              },
+              "outcomes": {
+                "type": "object",
+                "minProperties": 1,
+                "description": "Outcome results for this scenario"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "primary_scenario": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Scenario ID of the recommended or base case"
+        },
+        "model_code": {
+          "type": "object",
+          "required": ["available"],
+          "properties": {
+            "available": {
+              "type": "boolean",
+              "description": "Whether model code is available"
+            },
+            "repository": {
+              "type": ["string", "null"],
+              "format": "uri",
+              "description": "URL if available"
+            },
+            "language": {
+              "type": "string",
+              "description": "Programming language"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "l3_empathy_mapping": {
+      "type": "object",
+      "description": "L3: Empathy Mapping - Document stakeholder impacts and minority stress-testing",
+      "required": ["stakeholder_map", "minority_stress_test", "unresolved_impacts", "net_welfare_assessment"],
+      "properties": {
+        "stakeholder_map": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["stakeholder", "description", "estimated_population", "relationship_to_proposal", "impacts_by_scenario"],
+            "properties": {
+              "stakeholder": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Stakeholder name or category"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Who they are"
+              },
+              "estimated_population": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Size of this stakeholder group"
+              },
+              "relationship_to_proposal": {
+                "type": "string",
+                "minLength": 1,
+                "description": "How they interact with or are affected by this"
+              },
+              "impacts_by_scenario": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": ["scenario_id", "direction"],
+                  "properties": {
+                    "scenario_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Reference to L2 scenario"
+                    },
+                    "financial_impact": {
+                      "type": "string",
+                      "description": "Quantified if possible"
+                    },
+                    "quality_of_life_impact": {
+                      "type": "string",
+                      "description": "Qualitative description"
+                    },
+                    "direction": {
+                      "type": "string",
+                      "enum": ["benefits", "harmed", "neutral", "mixed"],
+                      "description": "Direction of impact"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "vulnerability_flags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Vulnerability indicators for this group"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "minority_stress_test": {
+          "type": "object",
+          "required": ["description", "groups_tested"],
+          "properties": {
+            "description": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Explicit account of how minority interests were tested"
+            },
+            "groups_tested": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["group", "scenario_tested", "outcome", "mitigation"],
+                "properties": {
+                  "group": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Minority group name"
+                  },
+                  "scenario_tested": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "What edge case or scenario was run"
+                  },
+                  "outcome": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "What happened"
+                  },
+                  "mitigation": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "If harmed, how is this addressed"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "unresolved_impacts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Stakeholder groups whose impacts could not be adequately modelled and why"
+        },
+        "net_welfare_assessment": {
+          "type": "object",
+          "required": ["methodology", "conclusion", "confidence", "confidence_basis"],
+          "properties": {
+            "methodology": {
+              "type": "string",
+              "minLength": 1,
+              "description": "How overall welfare impact was assessed"
+            },
+            "conclusion": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Plain language summary"
+            },
+            "confidence": {
+              "type": "string",
+              "enum": ["high", "medium", "low"],
+              "description": "Confidence level in assessment"
+            },
+            "confidence_basis": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Why this confidence level"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "l4_accountability_ledger": {
+      "type": "object",
+      "description": "L4: Accountability Ledger - Immutable log of decisions",
+      "required": ["entries"],
+      "properties": {
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["entry_id", "timestamp", "decision_type", "description", "decided_by", "basis"],
+            "properties": {
+              "entry_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Sequential identifier"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When decision was made (ISO 8601)"
+              },
+              "decision_type": {
+                "type": "string",
+                "enum": ["data", "methodology", "assumption", "exclusion", "framing", "other"],
+                "description": "Type of decision"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What was decided"
+              },
+              "decided_by": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": ["name"],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Name or role"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "description": "Who made this decision"
+              },
+              "basis": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What evidence or reasoning supported this decision"
+              },
+              "alternatives_considered": {
+                "type": "string",
+                "description": "Other options that were considered"
+              },
+              "dissenting_views": {
+                "type": ["string", "null"],
+                "description": "If any participant disagreed, summarize their position"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "review_history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["review_id", "date", "reviewer", "scope", "findings"],
+            "properties": {
+              "review_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Unique review identifier"
+              },
+              "date": {
+                "type": "string",
+                "format": "date",
+                "description": "Review date (ISO 8601)"
+              },
+              "reviewer": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Name or organization"
+              },
+              "scope": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What was reviewed"
+              },
+              "findings": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Summary of findings"
+              },
+              "changes_resulting": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Entry IDs of ledger entries created as a result"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "l5_fork_registry": {
+      "type": "object",
+      "description": "L5: Fork Registry - Track document lineage, forks, and responses",
+      "required": ["this_document"],
+      "properties": {
+        "this_document": {
+          "type": "object",
+          "required": ["document_id", "forked_from", "fork_reason", "key_differences"],
+          "properties": {
+            "document_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "This document's ID"
+            },
+            "forked_from": {
+              "type": ["string", "null"],
+              "description": "Parent document ID or null if original"
+            },
+            "fork_reason": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Why this fork was created"
+            },
+            "key_differences": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Plain language summary of what changed and why"
+            }
+          },
+          "additionalProperties": false
+        },
+        "known_forks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["document_id", "author", "created", "fork_reason", "key_differences", "url"],
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Fork's document ID"
+              },
+              "author": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Name or organization"
+              },
+              "created": {
+                "type": "string",
+                "format": "date",
+                "description": "When fork was created (ISO 8601)"
+              },
+              "fork_reason": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Why they forked"
+              },
+              "key_differences": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Plain language summary"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Where to find it"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "responses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["response_id", "type", "author", "date", "summary", "url"],
+            "properties": {
+              "response_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Unique response identifier"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["critique", "endorsement", "amendment-proposal", "question"],
+                "description": "Type of response"
+              },
+              "author": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Name or organization"
+              },
+              "date": {
+                "type": "string",
+                "format": "date",
+                "description": "Response date (ISO 8601)"
+              },
+              "summary": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Plain language summary"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Where to find the full response"
+              },
+              "resolution": {
+                "type": "string",
+                "description": "How the original document responded, if at all"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "compliance_level": { "const": "ORP-Basic" }
+        }
+      },
+      "then": {
+        "required": ["l1_data_provenance"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "compliance_level": { "const": "ORP-Standard" }
+        }
+      },
+      "then": {
+        "required": ["l1_data_provenance", "l2_consequence_simulation", "l3_empathy_mapping"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "compliance_level": { "const": "ORP-Full" }
+        }
+      },
+      "then": {
+        "required": ["l1_data_provenance", "l2_consequence_simulation", "l3_empathy_mapping", "l4_accountability_ledger", "l5_fork_registry"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

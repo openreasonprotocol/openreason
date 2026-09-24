@@ -26,7 +26,7 @@ Design principles kept from v0.2: explicit over implicit; limitations stated, no
 
 | # | Change | Layer | Breaking? |
 |---|---|---|---|
-| C1 | Cryptographic attestation: content hash, version chain, signature, key discovery | all | No (additive) |
+| C1 | Cryptographic attestation: content hash, version chain, detached-JWS signature, purpose-constrained short-lived keys, key discovery — aligned with AdCP #4441 | all | No (additive) |
 | C2 | Legal provenance fields | L1 | No (new required fields in profiles only) |
 | C3 | Usage policy as a new section (`usage_policy`), ODRL profile | L1 or new L6 | No |
 | C4 | Layer 5 becomes a derivation graph with constraint inheritance | L5 | Yes for L5 semantics; v0.2 forks map to one derivation kind |
@@ -47,7 +47,7 @@ Sections 2 to 9 give each change in detail. Section 10 lists implementation task
 
 ### 2.2 Proposal
 
-Add a top-level `attestation` block to every ORP document and, in profiles, to every dataset entry:
+Add a top-level `attestation` block to every ORP document and, in profiles, to every dataset entry. This is deliberately the **same shape as an AdCP signed provenance claim** (AdCP RFC #4441): a detached signature over an RFC 8785-canonicalised object, with a purpose-constrained key. An AdCP provenance key and an ORP attestation key are then the same kind of object, discoverable the same way, so a rail that already verifies AdCP provenance verifies ORP attestations with no new machinery.
 
 ```yaml
 attestation:
@@ -57,9 +57,12 @@ attestation:
   signatures:
     - kid: "did:web:example.org#key-1"   # or a JWKS-resolvable key id
       alg: "Ed25519"
-      sig: "base64url..."
+      use: "orp-attestation"    # key-purpose constraint (mirrors AdCP `adcp_use: provenance-claim`);
+                                #   a key MUST NOT be accepted for a purpose it is not marked for
+      sig: "base64url..."       # detached JWS over the RFC 8785 canonical form (see 2.3)
       role: "data_steward"      # who this key speaks for
       signed_at: "2026-09-24T12:00:00Z"
+      key_expires: "2026-10-24T12:00:00Z"   # short-lived; see 2.4
   tier: "attested"              # see C7
 ```
 
@@ -67,11 +70,17 @@ attestation:
 
 ### 2.3 Canonicalisation
 
-Use JSON Canonicalization Scheme (RFC 8785) over the JSON-LD form of the attested content, excluding the `attestation` block itself. The validator MUST recompute the hash and MUST verify every signature against a key resolved from `kid` (DID document, or a `/.well-known/jwks.json` on the `kid`'s host). Verification MUST work offline given the key.
+Use JSON Canonicalization Scheme (RFC 8785) over the JSON-LD form of the attested content, excluding the `attestation` block itself; the signature is a **detached JWS** over those canonical bytes (identical construction to AdCP #4441, so one implementation covers both). The validator MUST recompute the hash and MUST verify every signature against a key resolved from `kid` (DID document, or a `/.well-known/jwks.json` on the `kid`'s host), and MUST reject a key whose `use` is not `orp-attestation`. Verification MUST work offline given the key.
 
-### 2.4 Effect on the validator
+### 2.4 Effect on the validator; key lifetime
 
-New checks: hash recomputes; every signature verifies; `previous_hash` resolves to a known prior version or is null; `version` increments. Failures are errors, not warnings.
+New checks: hash recomputes; every signature verifies; the signing key's `use` is `orp-attestation`; `previous_hash` resolves to a known prior version or is null; `version` increments. Failures are errors, not warnings.
+
+**Short-lived keys over revocation lists.** Following AdCP #4441, keys SHOULD be short-lived (weeks, not years) and rotated, rather than long-lived with a revocation list. A validator MUST reject a signature whose `key_expires` is in the past (with reasonable clock skew) and MUST re-resolve the publisher's key set rather than trusting a cached key past its lifetime. This removes the need for a global revocation infrastructure: a compromised key simply expires, and a re-attestation under a fresh key supersedes it via `previous_hash`/`version`.
+
+### 2.5 Alignment with AdCP #4441 (normative intent)
+
+ORP does not define its own key-discovery or signing envelope; it reuses AdCP's. Concretely: same canonicalisation (RFC 8785), same algorithm posture (Ed25519), same detached-JWS envelope, same key-purpose-constraint pattern (`use`/`adcp_use`), same short-lived-key posture, same discovery (JWKS at a well-known URL, or `did:web`/`did:key`). The only difference is the value of the purpose constraint (`orp-attestation` vs `provenance-claim`) and the object being signed (an ORP passport vs an AdCP creative-provenance object). This is what lets the ORP passport be proposed as the provenance object for AdCP *signals* (see the companion proposal) without either side inventing new crypto.
 
 ---
 
@@ -276,7 +285,7 @@ Publish the schemas as JSON Schema (draft 2020-12) alongside the YAML validator,
 
 ## 10. Implementation tasks for the ORP repo
 
-- **R1** Add `attestation` to the spec and validator; implement JCS canonicalisation, hash recomputation, signature verification with JWKS and `did:web` resolution. Tests: tampered document fails; unknown key fails; offline verification with a supplied key passes.
+- **R1** Add `attestation` to the spec and validator, **aligned with AdCP #4441**: JCS (RFC 8785) canonicalisation, hash recomputation, detached-JWS signature verification with JWKS and `did:web`/`did:key` resolution, key-purpose constraint (`use: orp-attestation`), and short-lived-key handling (reject expired `key_expires`; re-resolve rather than cache past lifetime). Tests: tampered document fails; unknown key fails; wrong-`use` key fails; expired key fails; offline verification with a supplied unexpired key passes.
 - **R2** Add the C2 legal provenance fields and the C8 identifier, access, freshness, reach changes to Layer 1; update the JSON-LD context.
 - **R3** Add Layer 6 `usage_policy` with the ODRL profile, the purpose taxonomy, and a reference evaluator (pure function) plus fixtures.
 - **R4** Rewrite Layer 5 as `lineage` with `forks` and `derivations`; implement the inheritance walk in the reference evaluator.

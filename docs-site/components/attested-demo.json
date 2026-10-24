@@ -1,0 +1,58 @@
+{
+  "orp_version": "0.3",
+  "document_id": "orp:openreason:demo:dk-env-law-provenance:2026-10",
+  "title": "Provenance passport \u2014 Danish Environmental Protection Act \u00a733 (EU IED transposition)",
+  "profile": "ORP-Policy",
+  "attested_by": {
+    "name": "OpenReason demo steward",
+    "role": "data_steward"
+  },
+  "l1_data_provenance": {
+    "sources": [
+      {
+        "name": "Retsinformation \u2014 Milj\u00f8beskyttelsesloven (LBK nr 5 af 03/01/2023)",
+        "url": "https://www.retsinformation.dk/eli/lta/2023/5",
+        "accessed": "2026-10-20"
+      },
+      {
+        "name": "EU Directive 2010/75/EU (Industrial Emissions Directive)",
+        "url": "https://eur-lex.europa.eu/eli/dir/2010/75/oj",
+        "accessed": "2026-10-20"
+      }
+    ],
+    "collection_method": "Official-gazette text, hash-pinned at access time",
+    "known_exclusions": [
+      "Executive orders (bekendtg\u00f8relser) issued under \u00a733 are not included"
+    ],
+    "limitations": [
+      "Translation to English is machine-assisted and unofficial"
+    ]
+  },
+  "l4_accountability_ledger": {
+    "decisions": [
+      {
+        "who": "OpenReason demo steward",
+        "what": "Published provenance passport for \u00a733 transposition chain",
+        "when": "2026-10-25T00:00:00Z",
+        "why": "Demonstrate a verifiable, neutral who-said-what-when record \u2014 no verdict on the law itself"
+      }
+    ]
+  },
+  "attestation": {
+    "hash": "sha256:6aeae224eca961e0e59df93320107b62cbdbef8b3e75a8b6b96d7cf7ac62dee7",
+    "version": 1,
+    "previous_hash": null,
+    "tier": "attested",
+    "signatures": [
+      {
+        "kid": "did:key:z6MkkBamoGmcEvqFMnWuaAUwy4j9rjHNkF2RboD18ji7o9N2",
+        "alg": "Ed25519",
+        "use": "orp-attestation",
+        "sig": "2Wzp6Jm2_OGe3RpYYx-97M3mxizm_SHOSr8jO8mN-JBcXTxcgKmsBwmVHKvrm9SkKv1BNCWhJGAUm-CL7X_XDA",
+        "role": "data_steward",
+        "signed_at": "2026-10-25T00:00:00Z",
+        "key_expires": "2028-01-01T00:00:00Z"
+      }
+    ]
+  }
+}

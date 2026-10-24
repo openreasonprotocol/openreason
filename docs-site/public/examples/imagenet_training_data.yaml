@@ -1,0 +1,1516 @@
+orp_version: '0.2'
+post_hoc: true
+extensions:
+  - orp-ai-training-v1
+document_id: orp-ai-imagenet-001
+title: 'ImageNet ILSVRC-2012: Constitution of a Foundation AI Training Dataset'
+domain: ai-training
+authors:
+- name: Asbjørn
+  role: analyst
+  affiliation: Public Reason Project
+created: '2026-04-07'
+last_modified: '2026-04-08'
+status: open-for-comment
+forked_from: null
+summary: |
+  ImageNet ILSVRC-2012 (ImageNet-1K) is the most influential training dataset in
+  AI history, enabling the deep learning revolution following AlexNet's 2012
+  breakthrough. Created 2009-2012 at Princeton and Stanford under Fei-Fei Li's
+  leadership, the dataset contains ~1.2 million training images across 1,000 object
+  categories, annotated by 49,000 Amazon Mechanical Turk workers from 167 countries.
+
+  This document applies ORP's five-layer framework to ImageNet's constitution—not to
+  critique the creators (who made principled decisions within 2009 constraints) but to
+  demonstrate how constitutive-layer decisions shape AI systems for a decade. Key
+  findings: (1) WordNet taxonomy selection embedded English-language Western
+  categorization; (2) Web scraping produced 80%+ North American/European images;
+  (3) AMT workers had no governance voice despite shaping annotations; (4) 54% of
+  person categories later found offensive; (5) Downstream model biases trace to
+  dataset constitution, not just training algorithms.
+
+  This is POST-HOC RECONSTRUCTION from published sources, not real-time governance.
+  Demonstrates what ORP would capture if applied prospectively to dataset creation.
+
+l1_data_provenance:
+- dataset_id: imagenet-ilsvrc-2012-train
+  name: ImageNet ILSVRC-2012 Training Set (ImageNet-1K)
+  description: |
+    The canonical ImageNet training dataset used in the ImageNet Large Scale Visual
+    Recognition Challenge (ILSVRC) 2012 and subsequent years. Contains approximately
+    1.2 million training images across 1,000 object categories selected from the
+    WordNet hierarchy. This is the dataset that enabled AlexNet's breakthrough and
+    sparked the deep learning revolution in computer vision.
+
+    This provenance entry documents the CONSTITUTION of this dataset—how it was
+    created, what was included/excluded, who made decisions, and what limitations
+    were known or discovered later.
+  source: |
+    Primary: Web image scraping (Google Images, Flickr, other search engines) using
+    WordNet synset terms as query keywords (2009-2012). Images scraped from public
+    web, predominantly English-language platforms.
+
+    Secondary: WordNet 3.0 noun hierarchy (Princeton University) provided category
+    taxonomy. Created by linguists (Fellbaum et al.) as English-language semantic
+    network, not specifically for computer vision.
+  collection_method: |
+    Three-phase pipeline:
+
+    1. CATEGORY SELECTION (2007-2009): Selected 1,000 synsets from WordNet's 80,000+
+       noun synsets based on "visual recognizability" criterion. Chose concrete,
+       photographable objects over abstract concepts. Final 1,000 categories span
+       WordNet subtrees (animals, plants, objects, scenes).
+
+    2. CANDIDATE IMAGE COLLECTION (2009-2012): For each synset, queried multiple
+       search engines using synset terms and synonyms. Collected 500-1,000+ candidate
+       images per category. Over 160 million candidate images gathered.
+
+    3. ANNOTATION VIA AMAZON MECHANICAL TURK (July 2008 - April 2010): 49,000 workers
+       from 167 countries performed "Contains" task: shown class description (with
+       Wikipedia link) and grid of candidate images, asked to select all images
+       containing that object class. Multiple workers per image; only images receiving
+       "convincing majority" vote included. Explicit instruction: "photos only, no
+       paintings, no drawings."
+
+    Quality control: 80 synsets randomly sampled across mammal and vehicle subtrees,
+    independent verification achieved 99.7% precision (Deng et al. 2009).
+  date_range: 2009-2012 (primary collection and annotation period)
+  geographic_scope: |
+    Global web scraping in principle, but structurally biased:
+    - 80%+ of images from North America and Europe (documented in bias research)
+    - English-language queries on Western-dominated platforms (Google, Flickr 2009-2012)
+    - Non-Western geographies systematically under-represented
+    - Result: Dataset reflects visual culture of English-speaking web, late 2000s/early 2010s
+  inclusion_criteria:
+    description: |
+      DOCUMENTED CRITERIA (from Deng et al. 2009, Russakovsky et al. 2015):
+      - Images must contain object from specified WordNet synset
+      - "Full resolution" images preferred (minimum resolution threshold not specified)
+      - "Photos only" — paintings, drawings, graphics explicitly excluded
+      - Multiple annotator agreement required ("convincing majority" threshold)
+      - Images must be publicly scrapable from web
+
+      STRUCTURAL CRITERIA (implicit, from later analysis):
+      - English-language searchable (WordNet terms as queries)
+      - Available on public web platforms 2009-2012
+      - Culturally familiar to Western AMT annotators (affects annotation accuracy)
+      - Visually clear, unambiguous depictions preferred
+  exclusion_criteria:
+  - excluded: Non-visual WordNet synsets (abstract concepts, emotions, processes)
+    reason: |
+      Not all WordNet categories are photographable. Selected subset focused on
+      concrete objects with clear visual representation.
+    potential_impact: |
+      Medium — limits dataset to concrete objects, excludes abstract/relational concepts.
+      Affects what kinds of recognition tasks models can learn.
+  - excluded: Images below minimum resolution threshold
+    reason: Training neural networks requires sufficient pixel information
+    potential_impact: |
+      Low — standard quality control. May exclude historical photos or low-quality web images.
+  - excluded: Paintings, drawings, artistic renditions
+    reason: |
+      Explicit instruction to annotators: "photos only, no paintings, no drawings."
+      Goal was photographic object recognition, not artistic style recognition.
+    potential_impact: |
+      High — later ImageNet-R dataset created specifically to test robustness to this
+      exclusion. Models trained on photographic ImageNet perform poorly on artwork
+      (Hendrycks et al. 2021). This exclusion reveals texture bias in CNNs.
+  - excluded: NSFW content (filtered "to extent possible")
+    reason: Ethical content moderation attempt
+    potential_impact: |
+      Medium — filtering was imperfect. Prabhu & Birhane (2021) found verifiably
+      pornographic images remained in dataset. Demonstrates difficulty of content
+      moderation at scale via crowdsourcing.
+  - excluded: Copyrighted images (some filtering attempted)
+    reason: Legal risk mitigation, though comprehensive copyright checking infeasible
+    potential_impact: |
+      Low for research use (fair use doctrine). High for commercial deployment
+      (unclear copyright status of many images).
+  - excluded: Non-Western cultural artifacts, practices, objects (STRUCTURAL exclusion)
+    reason: |
+      NOT INTENTIONAL, but structural consequence of:
+      (1) English-language WordNet taxonomy reflects Western categorization
+      (2) English-language queries on Western-dominated web platforms
+      (3) Western AMT annotators more familiar with Western objects
+    potential_impact: |
+      VERY HIGH — systematic geographic/cultural bias. Models trained on ImageNet:
+      - Perform worse on non-Western contexts (documented in multiple studies)
+      - Reflect Western object distribution (e.g., "wedding" = white Western wedding)
+      - Miss objects common in Global South but rare in Western web images
+      - Encode Western visual culture as "universal" object recognition
+  - excluded: Non-English language categories/concepts
+    reason: WordNet is English-language semantic network
+    potential_impact: |
+      High — concepts without English equivalent not represented. Language diversity
+      lost. Example: objects with culture-specific names but no direct English translation.
+  - excluded: Images not available on public web 2009-2012
+    reason: Collection methodology limited to scrapable public web content
+    potential_impact: |
+      Medium — temporal snapshot of late 2000s/early 2010s web. Historical objects,
+      obsolete technologies under-represented. Future objects (by definition) absent.
+  - excluded: 1,593 person categories (54% of 2,832 person categories) — REMOVED POST-PUBLICATION 2019
+    reason: |
+      Following Crawford & Paglen's "Excavating AI" exposure (Sept 2019), ImageNet team
+      reviewed person categories and identified 438 "unsafe/offensive" + 1,155 "sensitive"
+      labels. Removed approximately 600,000 images (half of person category images).
+    potential_impact: |
+      CRITICAL — reveals that original dataset contained racist, sexist, derogatory
+      labels inherited from WordNet. Examples: racial slurs, "slut," "failure," "loser."
+      Demonstrates that constitutive decisions (WordNet as source) can embed bias
+      requiring costly post-hoc remediation. This exclusion happened 7 years after
+      initial publication, after millions of models already trained on offensive labels.
+  cleaning_decisions:
+  - decision: Label verification via multi-annotator majority vote
+    reason: |
+      Balance annotation accuracy and cost. Single annotator error rate too high;
+      expert annotation too expensive. Multiple workers with voting provides
+      cost-effective quality control.
+    alternatives_considered: |
+      Expert annotators (rejected: too expensive/slow). Fully automated image classification
+      (rejected: insufficient accuracy in 2009). Single AMT worker per image (rejected:
+      too error-prone).
+  - decision: Image deduplication (exact duplicates removed)
+    reason: Training neural networks on duplicate images wastes compute and can skew learning
+    alternatives_considered: Near-duplicate detection (not implemented in 2009 due to computational cost)
+  - decision: Broken link removal (images no longer accessible excluded)
+    reason: Cannot annotate images that cannot be downloaded
+    alternatives_considered: None — this is necessary data cleaning
+  - decision: Per-class agreement threshold tuning
+    reason: |
+      Different object categories have different inherent ambiguity. Threshold estimated
+      using pilot study, then applied per-class.
+    alternatives_considered: Uniform threshold across all categories (would miss class-specific difficulty)
+  - decision: Offensive person category removal (2019, POST-PUBLICATION)
+    reason: |
+      Ethical response to public criticism following ImageNet Roulette art project
+      exposure. 1,593 problematic categories identified (54% of person categories),
+      approximately 600,000 images removed.
+    alternatives_considered: |
+      Full dataset reconstruction with community input (too resource-intensive). Do nothing
+      (ethically untenable after public exposure). Label replacement without removal
+      (chosen approach: removal, as many labels fundamentally problematic not just mislabeled).
+  synthetic_elements:
+    present: false
+    description: |
+      All images are real photographs scraped from public web. No synthetic, generated,
+      or simulated images in original ILSVRC-2012 dataset.
+
+      Note: Later work (e.g., ImageNet-D) adds synthetic test sets, but those are
+      separate datasets not part of original training set documented here.
+  known_limitations:
+  - |
+    CLASS IMBALANCE: Some categories over-represented, others under-represented.
+    Not all categories achieved target of 500-1,000 images. Imbalance affects model
+    learning (overrepresented classes learned better).
+  - |
+    LABEL NOISE: Creators acknowledged ~5-10% annotation error rate. Later research
+    (Northcutt et al. 2021) identified 6% errors in validation set (2,916 of 50,000
+    images). Errors include: wrong class, multiple valid classes, genuinely ambiguous images.
+  - |
+    SINGLE-LABEL LIMITATION: Many images contain multiple objects, but labeled with
+    only primary object. Example: photo of person holding dog labeled "dog" ignores person.
+    Later work (multi-object annotation) addresses this, but ILSVRC-2012 is single-label.
+  - |
+    GEOGRAPHIC/CULTURAL BIAS: Not quantified initially by creators. Later research
+    documented 80%+ images from North America/Europe. Non-Western contexts, objects,
+    cultural practices systematically under-represented. Models trained on ImageNet
+    show measurable performance degradation on non-Western image test sets.
+  - |
+    DEMOGRAPHIC BIAS IN PERSON CATEGORIES: Dark-skinned people, women, adults over 40
+    under-represented (Yang et al. 2020). Western appearance norms dominate. Example:
+    "groom" category shows predominantly white people. Bias traced to web scraping
+    (reflects web image distribution) and AMT annotator demographics.
+  - |
+    OFFENSIVE LABELS: 54% of person categories (1,593 of 2,832) later identified as
+    problematic. Inherited from WordNet which includes derogatory, racist, sexist terms.
+    Not caught during 2009-2012 creation. Required large-scale removal in 2019 after
+    public exposure via Crawford & Paglen's art project.
+  - |
+    CONSENT/PRIVACY ISSUES: Images scraped without explicit consent from depicted
+    individuals. Faces included without knowledge or opt-out mechanism (initially).
+    No compensation or credit to people depicted. Privacy concerns especially acute
+    for person categories.
+  - |
+    SOCIOECONOMIC BIAS: Objects common in higher-income Western contexts over-represented.
+    Luxury goods, Western consumer products prominent. Objects from lower-income contexts
+    and Global South under-represented. Reflects economic and infrastructure bias of
+    who publishes images to English-language web.
+  - |
+    TEMPORAL SNAPSHOT: Images scraped 2009-2012 reflect late 2000s/early 2010s visual
+    culture. Historical objects, obsolete technologies under-represented. Dataset does
+    not represent earlier or later time periods. Technology evolution (smartphones,
+    modern cars) not captured in earlier dataset.
+  - |
+    WESTERN TAXONOMY: WordNet created by Princeton linguists for English-language
+    semantic network. Reflects Western philosophical tradition of categorization.
+    Categories that don't map to English nouns are absent. Example: kinship terms,
+    culturally-specific object categories, non-Western organizational schemes.
+  access:
+    public: true
+    url: https://www.image-net.org/
+    license: |
+      Non-commercial research use only. Registration required. Users must agree to
+      terms of service: no redistribution, no commercial use without separate licensing,
+      must cite original papers (Deng et al. 2009, Russakovsky et al. 2015).
+    registration_required: true
+    registration_reason: |
+      Track research usage and impact. Mitigate copyright concerns. Provide mechanism
+      for communication to users (e.g., notification of offensive category removal).
+      Alternative of fully open release rejected due to copyright/ethical concerns.
+  attested_by:
+  - name: Asbjørn
+    role: analyst
+    date: '2026-04-07'
+    statement: |
+      I confirm this provenance documentation is reconstructed from published sources
+      (Deng et al. 2009; Russakovsky et al. 2015; Crawford & Paglen 2021; Prabhu &
+      Birhane 2021; Yang et al. 2020; Northcutt et al. 2021; news coverage of 2019
+      controversy). This is POST-HOC ANALYSIS, not real-time governance. I am not
+      an ImageNet creator and cannot verify unpublished internal decision processes.
+
+      This document aims to demonstrate ORP's application to AI training data constitution,
+      not to critique individuals who made principled decisions within 2009 constraints.
+
+l2_consequence_simulation:
+  affected_population:
+    description: |
+      PRIMARY: AI researchers and practitioners who train computer vision models on
+      ImageNet (thousands of institutions globally, 2012-present).
+
+      SECONDARY: Downstream users and subjects of ImageNet-trained models—anyone
+      encountering AI systems for object recognition, facial recognition, image search,
+      content moderation, autonomous vehicles, medical imaging, etc. (billions globally).
+
+      TERTIARY: People depicted in ImageNet images without consent (millions of individuals).
+      Amazon Mechanical Turk workers who annotated images (49,000 workers, 167 countries).
+    size_estimate: |
+      Primary: ~10,000+ research institutions, ~100,000+ AI researchers
+      Secondary: Billions of people encountering ImageNet-trained vision systems
+      Tertiary: Millions depicted in images + 49,000 AMT workers
+    segments:
+    - segment: AI researchers training models on ImageNet
+      description: |
+        Computer vision researchers using ImageNet as pretraining data for object
+        recognition models. Enabled deep learning revolution (AlexNet 2012 onward).
+      estimated_size: ~100,000+ researchers globally
+    - segment: Commercial AI developers deploying ImageNet-trained models
+      description: |
+        Companies using ImageNet-pretrained models in products: facial recognition,
+        autonomous vehicles, content moderation, medical imaging, retail, security.
+      estimated_size: Thousands of companies, millions of deployed systems
+    - segment: People encountering biased vision systems
+      description: |
+        Individuals affected by ImageNet-trained models that exhibit geographic,
+        cultural, or demographic bias. Disproportionately affects non-Western populations,
+        people of color, women, elderly.
+      estimated_size: Billions, but unequally distributed (non-Western populations face higher error rates)
+    - segment: People depicted in ImageNet without consent
+      description: |
+        Individuals whose faces/images scraped from public web and included in dataset
+        without explicit consent or compensation. No mechanism to opt out initially.
+      estimated_size: Millions of unique individuals across ~1.2M training images
+    - segment: Amazon Mechanical Turk workers
+      description: |
+        49,000 workers from 167 countries who annotated ImageNet (2008-2010). Paid
+        per task (~$0.01-$0.10). No academic credit, no ownership, no voice in decisions.
+      estimated_size: 49,000 workers
+  variables:
+    independent:
+    - variable: category_taxonomy_source
+      description: |
+        Choice of taxonomy source for object categories. Actual: WordNet 3.0 (English).
+        Alternative: multilingual taxonomy, community-defined categories, culture-specific ontologies.
+      range: [WordNet, Custom Multilingual, Community Participatory, Domain-Specific]
+      actual_value: WordNet 3.0 (English-language noun hierarchy)
+    - variable: image_source_geographic_distribution
+      description: |
+        Geographic origin of scraped web images. Actual: 80%+ North America/Europe.
+        Alternative: proportional global sampling, targeted Global South collection.
+      range: 0-100% North American/European
+      actual_value: 80-85% (estimated from bias research)
+    - variable: annotator_governance_participation
+      description: |
+        Degree to which AMT workers participate in dataset governance decisions (category
+        selection, quality standards, dispute resolution). Actual: zero participation.
+        Alternative: worker councils, feedback mechanisms, co-governance.
+      range: [None, Consultative, Co-governance, Worker-Led]
+      actual_value: None
+    - variable: consent_mechanism_for_depicted_individuals
+      description: |
+        Whether individuals depicted in images provide informed consent. Actual: none
+        (public web scraping). Alternative: opt-in only, notification + opt-out, compensation.
+      range: [None, Opt-out, Opt-in, Compensated Opt-in]
+      actual_value: None (no consent process 2009-2012)
+    - variable: offensive_label_review_timing
+      description: |
+        When person category labels reviewed for offensive content. Actual: post-publication
+        (2019, after public exposure). Alternative: pre-publication community review.
+      range: [Pre-publication, Post-publication]
+      actual_value: Post-publication (7 years after initial release)
+    dependent:
+    - variable: downstream_model_geographic_bias
+      description: |
+        Performance gap of ImageNet-trained models on Western vs non-Western test sets.
+        Measured as accuracy percentage point difference.
+      unit: percentage points (pp)
+      observed_value: 10-20pp lower accuracy on non-Western images (multiple studies)
+    - variable: demographic_bias_in_person_classification
+      description: |
+        Error rate disparity for person classification by race/gender/age. Darker skin,
+        female, elderly have higher error rates.
+      unit: percentage points (pp) error rate difference
+      observed_value: Documented in multiple bias audits (exact magnitude varies by model)
+    - variable: number_of_models_trained_on_offensive_labels
+      description: |
+        How many models trained on ImageNet before offensive labels removed (2009-2019).
+      unit: models
+      observed_value: Millions (ImageNet was standard pretrain dataset 2012-2019)
+  model:
+    type: |
+      Retrospective causal pathway analysis. This is NOT prospective simulation (ImageNet
+      already created and effects observable). Model reconstructs: constitutive decision
+      → dataset properties → model training outcomes → downstream impacts.
+
+      Example pathway: WordNet (English) selection → Western category bias →
+      web scraping favors Western images → AMT annotation filters through Western
+      familiarity → trained models encode Western visual norms as "universal" →
+      deployed systems fail on non-Western contexts → real-world harm to Global South users.
+    assumptions:
+    - assumption: Geographic bias in images propagates to model representations
+      confidence: high
+      basis: |
+        Multiple studies show ImageNet-trained models perform 10-20pp worse on non-Western
+        test sets (de Vries et al. 2019, Shankar et al. 2017). Causal mechanism: models
+        learn statistical patterns from training data; if data is geographically skewed,
+        learned representations are skewed.
+    - assumption: Offensive labels affect model behavior even after removal
+      confidence: medium-high
+      basis: |
+        Models trained 2012-2019 learned associations from offensive labels (e.g., race
+        correlated with derogatory terms). Even after labels removed from dataset,
+        previously-trained models retain learned associations. Millions of models deployed
+        before 2019 removal. Retraining all downstream models infeasible.
+    - assumption: Taxonomy choice (WordNet) shapes what concepts models can learn
+      confidence: high
+      basis: |
+        Object recognition models learn categories defined by training data. If WordNet
+        excludes non-English concepts, models cannot learn those concepts. Example:
+        culture-specific objects without English names are unrecognizable.
+    - assumption: AMT worker demographics affect annotation quality
+      confidence: medium
+      basis: |
+        Crawford & Paglen (2021) argue annotator cultural background affects category
+        judgments. Workers more familiar with Western objects annotate those more
+        accurately. However, direct causal evidence is limited (no controlled study).
+    - assumption: Consent absence creates privacy harm for depicted individuals
+      confidence: medium
+      basis: |
+        Ethical principle: people should control use of their images, especially in
+        influential datasets. However, magnitude of harm is unclear (images already
+        public on web; dataset use is research not commercial; faces often not identifiable).
+    limitations:
+    - |
+      COUNTERFACTUAL UNOBSERVABLE: Cannot know what ImageNet with different constitutive
+      decisions would produce. Example: "ImageNet with proportional global sampling"
+      was never created, so downstream effects are hypothetical not empirical.
+    - |
+      COMPOUND CAUSATION: Downstream model bias has multiple causes (dataset, architecture,
+      training procedure, deployment context). Isolating dataset constitution's effect
+      is difficult. Some bias may be unavoidable even with perfect dataset.
+    - |
+      TEMPORAL CONFOUND: Dataset created 2009-2012. AI capabilities, ethical standards,
+      and web demographics have changed. Critiquing 2009 decisions with 2026 standards
+      may be anachronistic.
+    - |
+      POSITIVE EXTERNALITIES HARD TO QUANTIFY: ImageNet enabled enormous AI progress
+      (medical imaging, accessibility tools, scientific research). Quantifying benefits
+      vs harms is ethically complex and context-dependent.
+  scenarios:
+    - scenario_id: S1_actual_constitution
+      name: Actual ImageNet Constitution (as built)
+      description: |
+        WordNet taxonomy + English-language web scraping + AMT annotation without
+        worker governance + no consent from depicted individuals + offensive labels
+        present until 2019 removal.
+      parameter_values:
+        category_taxonomy_source: WordNet 3.0 (English)
+        image_source_geographic_distribution: 80-85% North America/Europe
+        annotator_governance_participation: None
+        consent_mechanism: None
+        offensive_label_review_timing: Post-publication (2019)
+      outcomes:
+        - outcome: |
+            Enabled deep learning revolution. AlexNet (2012), VGG (2014), ResNet (2015),
+            countless subsequent models. ImageNet pretraining became standard practice,
+            dramatically improved object recognition accuracy across all applications.
+          magnitude: Transformative (positive)
+          confidence: very high
+          evidence: |
+            ImageNet Challenge results 2012-2017: error rates dropped from 25% (2012)
+            to <5% (2017). ImageNet most-cited dataset in computer vision. Enabled
+            applications in medicine, accessibility, science, industry.
+        - outcome: |
+            Models trained on ImageNet exhibit geographic bias: 10-20pp lower accuracy
+            on non-Western test sets. Affects deployed systems (facial recognition,
+            autonomous vehicles, content moderation) which fail more often for non-Western users.
+          magnitude: Significant harm to Global South populations
+          confidence: high
+          evidence: |
+            de Vries et al. 2019, Shankar et al. 2017, multiple bias audits document
+            geographic performance gaps. Real-world failures in facial recognition
+            systems (higher false positive rates for people of color) partially traced
+            to training data bias.
+        - outcome: |
+            Models trained 2012-2019 learned associations from offensive person category
+            labels (e.g., race correlated with derogatory terms). Even after 2019 removal,
+            previously-trained models retain offensive associations. Retraining millions
+            of deployed models infeasible.
+          magnitude: Significant, difficult to remediate
+          confidence: medium-high
+          evidence: |
+            Crawford & Paglen 2021 documented offensive labels. ImageNet team removed
+            1,593 categories (54% of person categories) in 2019. However, standard practice
+            is to pretrain on ImageNet then fine-tune for specific tasks. Fine-tuned
+            models deployed 2012-2019 learned from offensive labels; removing labels
+            from source dataset does not fix already-deployed models.
+        - outcome: |
+            49,000 AMT workers paid low wages (~$0.01-$0.10 per task), received no
+            academic credit, had no voice in dataset governance despite shaping annotations.
+            Reflects broader digital labor exploitation in crowdsourced AI training data.
+          magnitude: Moderate labor justice concern
+          confidence: high
+          evidence: |
+            AMT wage data public. ImageNet papers credit creators and institutions,
+            not individual annotators. No mechanism for worker input on quality standards
+            or dispute resolution. Mirrors broader pattern in AI data work (Crawford 2021).
+        - outcome: |
+            Millions of individuals depicted in ImageNet images without explicit consent.
+            Privacy concern, though images already public on web. No compensation or
+            opt-out mechanism initially (later added after criticism).
+          magnitude: Moderate privacy/consent concern
+          confidence: medium
+          evidence: |
+            Web scraping methodology documented in Deng et al. 2009. No consent process
+            described. Images scraped from Flickr, Google Images (public but not explicitly
+            consented to research use). Later criticism led to opt-out mechanism, but
+            post-hoc after years of use.
+      uncertainties:
+        - |
+          Magnitude of geographic bias harm: depends on deployment context. Bias in
+          medical imaging has different consequences than bias in photo organization app.
+        - |
+          Counterfactual: would alternative taxonomy reduce bias or just shift it?
+          "Perfect" geographic representation may be impossible (world is diverse).
+        - |
+          Positive externalities: medical breakthroughs, accessibility tools enabled
+          by ImageNet. Hard to weigh against harms.
+
+    - scenario_id: S2_alternative_global_representative_sampling
+      name: Alternative — Global Representative Sampling
+      description: |
+        HYPOTHETICAL: If ImageNet had intentionally sampled images proportionally
+        from global web (not just English-language Western platforms), used multilingual
+        taxonomy incorporating non-English categories, and included non-Western annotators
+        in governance decisions.
+      parameter_values:
+        category_taxonomy_source: Multilingual community-defined taxonomy
+        image_source_geographic_distribution: Proportional to global population (~20% North America/Europe)
+        annotator_governance_participation: Consultative (worker feedback on categories/quality)
+        consent_mechanism: Opt-out mechanism from start
+        offensive_label_review_timing: Pre-publication community review
+      outcomes:
+        - outcome: |
+            EXPECTED: Reduced geographic bias in trained models. Models would perform
+            more evenly across Western and non-Western test sets (predicted 5-10pp gap
+            instead of 10-20pp). Deployed systems would fail less often for Global South users.
+          magnitude: Significant harm reduction
+          confidence: medium (no empirical test, but plausible based on bias research)
+          evidence: |
+            Theoretical: models learn from data distribution. More geographically
+            representative data should produce more geographically robust models.
+            Analogous smaller-scale studies (domain-specific balanced datasets) show
+            bias reduction. However, no one has built "Global Representative ImageNet"
+            so this is extrapolation not observation.
+        - outcome: |
+            EXPECTED: Slower initial dataset creation. Multilingual taxonomy construction
+            requires cross-cultural consensus. Global web scraping requires non-English
+            query infrastructure. Potentially 2-3 years additional development time.
+            May have delayed AlexNet breakthrough from 2012 to 2014-2015.
+          magnitude: Temporal cost (delayed AI progress)
+          confidence: low-medium (speculative)
+          evidence: |
+            WordNet took decades to build for English alone. Extending to multilingual
+            would be substantial undertaking. However, parallel efforts (multilingual
+            Wikipedia, Open Images with geographic diversity) show feasibility. Uncertain
+            whether delay would be 1 year or 5+ years.
+        - outcome: |
+            EXPECTED: Offensive labels caught earlier via pre-publication community review.
+            Would avoid 2019 controversy and remove of 600,000 images after millions
+            of models already trained. Proactive inclusion better than reactive removal.
+          magnitude: Significant ethical improvement
+          confidence: medium-high
+          evidence: |
+            Participatory design processes in other domains (community-driven datasets)
+            catch ethical issues earlier. Diverse reviewers more likely to flag culture-specific
+            offense. However, no guarantee (offensive content may still slip through).
+      uncertainties:
+        - |
+          COUNTERFACTUAL UNKNOWABLE: This scenario was never implemented, so outcomes
+          are hypothetical. May be optimistic (global sampling could introduce new biases,
+          multilingual taxonomy could be incoherent across languages, AMT global workforce
+          may not reduce bias if higher-income workers still over-represented).
+        - |
+          Feasibility in 2009: Multilingual NLP tools less mature in 2009. Global web
+          scraping infrastructure more limited. Technical barriers may have been prohibitive.
+        - |
+          Funding: Global representative sampling likely more expensive (broader scraping,
+          more diverse annotation). NSF/corporate funders may not have supported.
+
+    - scenario_id: S3_alternative_worker_governance
+      name: Alternative — AMT Worker Co-Governance
+      description: |
+        HYPOTHETICAL: If 49,000 AMT workers had participatory role in dataset governance—feedback
+        on category definitions, dispute resolution for ambiguous images, profit-sharing
+        or authorship credit.
+      parameter_values:
+        category_taxonomy_source: WordNet (same as actual)
+        image_source_geographic_distribution: 80-85% North America/Europe (same as actual)
+        annotator_governance_participation: Co-governance (worker councils, feedback mechanisms)
+        consent_mechanism: None (same as actual)
+        offensive_label_review_timing: Pre-publication with worker input
+      outcomes:
+        - outcome: |
+            EXPECTED: Higher annotation quality via worker expertise. Workers doing
+            thousands of annotations develop domain knowledge; giving them voice in
+            quality standards and category definitions would improve consistency.
+          magnitude: Moderate quality improvement
+          confidence: medium
+          evidence: |
+            Analogous: Wikipedia editors (volunteers with governance voice) produce
+            higher quality than top-down curated content in many domains. However,
+            ImageNet already achieved 99.7% precision, so improvement may be marginal.
+        - outcome: |
+            EXPECTED: Earlier identification of offensive person categories. Workers
+            from diverse backgrounds more likely to flag derogatory labels than academic
+            research team. Could avoid 2019 controversy.
+          magnitude: Significant ethical improvement
+          confidence: medium-high
+          evidence: |
+            Diverse review processes catch more edge cases. 49,000 workers from 167
+            countries brings broader perspective than Princeton/Stanford research team.
+            However, offensive labels inherited from WordNet; workers may not have
+            authority to override taxonomy source.
+        - outcome: |
+            EXPECTED: Increased cost and complexity. Worker governance requires infrastructure:
+            communication platforms, voting mechanisms, dispute resolution processes,
+            potentially profit-sharing. May add 20-40% to project cost and timeline.
+          magnitude: Moderate cost increase
+          confidence: medium
+          evidence: |
+            Cooperative/participatory projects have higher governance overhead than
+            top-down structures. However, scale may enable efficiency (digital governance
+            tools, distributed decision-making). Exact cost depends on governance model design.
+        - outcome: |
+            EXPECTED: Fairer labor practice sets precedent for AI industry. Demonstrates
+            that crowdsourced data work can be structured ethically (credit, voice,
+            compensation). May shift norms for subsequent datasets.
+          magnitude: Significant positive spillover to broader AI data labor
+          confidence: low-medium
+          evidence: |
+            Precedent-setting: ImageNet's influence means its practices shape field norms.
+            If ImageNet had worker governance, subsequent datasets may follow. However,
+            economic pressure toward low-cost crowdsourcing strong; unclear if ethical
+            practices would diffuse or remain exception.
+      uncertainties:
+        - |
+          Worker coordination challenge: 49,000 workers across 167 countries, many doing
+          short-term micro-tasks. Building sustained governance community may be infeasible.
+        - |
+          Authority structure: Academic researchers control funding and publication.
+          Workers may lack effective leverage even with formal consultative voice.
+        - |
+          Selection bias: Workers who participate in governance likely not representative
+          of full worker population (more engaged, higher English proficiency).
+
+    - scenario_id: S4_alternative_consent_based
+      name: Alternative — Consent-Based Image Collection
+      description: |
+        HYPOTHETICAL: If ImageNet used only images with explicit informed consent from
+        depicted individuals (opt-in model) or at minimum provided notification and opt-out
+        mechanism before publication.
+      parameter_values:
+        category_taxonomy_source: WordNet (same as actual)
+        image_source_geographic_distribution: 80-85% North America/Europe (same as actual)
+        annotator_governance_participation: None (same as actual)
+        consent_mechanism: Opt-in required from depicted individuals
+        offensive_label_review_timing: Post-publication (same as actual)
+      outcomes:
+        - outcome: |
+            EXPECTED: Dramatically reduced dataset size. Obtaining explicit opt-in consent
+            from millions of depicted individuals likely infeasible. May reduce dataset
+            from 1.2M images to <100K images if strict opt-in required.
+          magnitude: Severe reduction in dataset utility
+          confidence: high
+          evidence: |
+            Web scraping enabled ImageNet's scale. Opt-in consent requires contacting
+            each depicted individual (often identity unknown). Analogous: datasets built
+            via opt-in recruitment (medical imaging, genomics) are orders of magnitude
+            smaller than web-scraped datasets. 100K images may be insufficient for
+            deep learning breakthrough in 2012.
+        - outcome: |
+            EXPECTED: Selection bias toward consenting individuals. People who consent
+            to research use may differ systematically from general population (more
+            educated, higher income, Western). Could introduce new biases even while
+            addressing consent concern.
+          magnitude: Moderate bias shift
+          confidence: medium
+          evidence: |
+            Selection bias common in opt-in studies. However, direction of bias depends
+            on recruitment method. If opt-in via social media, may skew young. If via
+            institutions, may skew educated. Unclear if resulting bias better or worse
+            than scraping bias.
+        - outcome: |
+            EXPECTED: Delayed or prevented deep learning revolution. If opt-in consent
+            reduces dataset to <100K images, insufficient for training AlexNet-scale
+            models in 2012. Breakthrough may be delayed 5-10 years until alternative
+            data sources (synthetic data, simulation, smaller-scale methods) mature.
+          magnitude: Major temporal cost (years of delayed AI progress)
+          confidence: medium (speculative, depends on alternative paths to breakthrough)
+          evidence: |
+            AlexNet's success partially attributed to ImageNet's scale (1.2M images).
+            Prior datasets (Caltech-101, PASCAL VOC) were smaller and insufficient.
+            However, subsequent work shows self-supervised learning and data-efficient
+            methods can work with less data. Unclear if breakthrough would be impossible
+            or merely delayed with smaller dataset.
+        - outcome: |
+            EXPECTED: Stronger ethical foundation for AI. Consent-based dataset demonstrates
+            respect for individual autonomy. Sets positive precedent for AI industry.
+            May increase public trust in AI research.
+          magnitude: Significant ethical improvement and trust-building
+          confidence: medium
+          evidence: |
+            Consent is foundational principle in research ethics (Belmont Report, Helsinki
+            Declaration). Respecting consent aligns AI with medical/social research
+            standards. However, public trust is multi-factored; dataset consent alone
+            may not shift trust if AI deployed unethically downstream.
+      uncertainties:
+        - |
+          Feasibility: Identifying and contacting depicted individuals in web images
+          may be technically impossible (faces often not identifiable, no contact info).
+          Opt-in may be theoretically superior but practically infeasible.
+        - |
+          Legal status: Images already public on web. Fair use doctrine may permit
+          research use without additional consent. Legal vs ethical consent obligation unclear.
+        - |
+          Trade-off quantification: How much AI progress delay is acceptable for ethical
+          improvement? Society lacks framework for making this trade-off explicit.
+
+l3_empathy_mapping:
+  stakeholder_groups:
+  - stakeholder: Dataset Creators (Fei-Fei Li, Jia Deng, et al.)
+    description: |
+      Academic researchers at Princeton (2007-2009) and Stanford (2009-present) who
+      conceived, funded, and directed ImageNet creation. Approximately 10-20 core team
+      members plus collaborators. Fei-Fei Li (PI), Jia Deng (lead PhD student),
+      Kai Li, and others named in papers.
+    estimated_population: ~10-20 core researchers
+    relationship_to_proposal: |
+      Full decision-making authority over dataset constitution. Controlled taxonomy
+      selection, collection methodology, annotation protocols, quality standards, access
+      policies. Made principled decisions within 2009 constraints and norms.
+    impacts_by_scenario:
+    - scenario_id: S1_actual
+      financial_impact: |
+        Positive — NSF/corporate funding for research. Academic credit (most-cited
+        dataset in computer vision). Career advancement (Li became prominent AI leader).
+      quality_of_life_impact: |
+        Massively positive — enabled deep learning revolution, field transformation.
+        Also negative — later criticism over offensive labels and bias (2019) created
+        reputational challenge and remediation burden.
+      direction: net_benefits
+    vulnerability_flags:
+    - |
+      Criticism risk: Leaders of influential projects face intense scrutiny. 2019
+      controversy required public response, dataset cleanup, potential reputational harm.
+    - |
+      Retrospective judgment: Creating dataset under 2009 norms, judged by 2026 standards.
+      Ethical landscape shifted; what was acceptable in 2009 (web scraping, no consent)
+      now questioned. Creators face anachronistic critique.
+
+  - stakeholder: Funding Organizations (NSF, Google, Intel, Microsoft, Yahoo!)
+    description: |
+      Government and corporate funders who provided financial support for ImageNet
+      creation. NSF provided federal research grants. Tech companies (Google, Intel,
+      Microsoft, Yahoo!) provided additional funding and compute resources.
+    estimated_population: 5 organizations (aggregated)
+    relationship_to_proposal: |
+      Moderate influence — funded project but did not direct day-to-day decisions.
+      NSF grant proposals would have outlined goals/methods. Corporate funders may
+      have had strategic interest in advancing computer vision research.
+    impacts_by_scenario:
+    - scenario_id: S1_actual
+      financial_impact: |
+        Positive — enormous ROI on research investment. ImageNet enabled AI industry
+        worth billions. NSF funding produced transformative scientific outcome.
+      quality_of_life_impact: Indirect — advanced field, enabled applications
+      direction: benefits
+    vulnerability_flags: []
+
+  - stakeholder: AI Researchers Using ImageNet for Training
+    description: |
+      Computer vision researchers at universities, national labs, and companies who
+      use ImageNet as pretraining data. Thousands of institutions globally. Examples:
+      AlexNet team (Toronto), VGG (Oxford), ResNet (Microsoft Research), countless others.
+    estimated_population: ~100,000+ researchers at ~10,000+ institutions (2012-present)
+    relationship_to_proposal: |
+      High representation via ILSVRC challenge and research community feedback.
+      ImageNet Challenge (2010-2017) created dialogue between dataset creators and
+      model developers. Community influenced validation set updates, error corrections.
+    impacts_by_scenario:
+    - scenario_id: S1_actual
+      financial_impact: |
+        Massively positive — free access to high-quality training data. Enabled
+        research publications, career advancement, commercial applications worth billions.
+      quality_of_life_impact: Positive — dataset accelerated research, reduced data collection burden
+      direction: strong_benefits
+    vulnerability_flags:
+    - |
+      Replication risk: Reliance on single dataset creates fragility. If ImageNet
+      removed or restricted, years of research dependent on it may become irreproducible.
+    - |
+      Bias inheritance: Researchers unaware of dataset bias may train models that
+      inherit and amplify geographic/demographic skew. Bias becomes embedded in
+      published models, difficult to remediate later.
+
+  - stakeholder: Amazon Mechanical Turk Workers (Annotators)
+    description: |
+      49,000 workers from 167 countries who performed annotation tasks (July 2008-April 2010).
+      Workers showed images and asked to verify object presence. Paid per task (~$0.01-$0.10
+      per image grid). Average worker annotated 50 images per minute (2012 report).
+      No academic credit, no ownership stake, no voice in dataset governance.
+    estimated_population: 49,000 workers (documented in Li biography sources)
+    relationship_to_proposal: |
+      ABSENT NODE — Zero representation in dataset governance despite shaping annotations.
+      Workers had no input on:
+      - Category definitions (often ambiguous)
+      - Quality standards (what constitutes "convincing majority")
+      - Dispute resolution for difficult images
+      - Compensation rates
+      - Offensive label identification
+
+      Workers are INVISIBLE in published papers (credited collectively as "Amazon
+      Mechanical Turk" not individually). Names not recorded. No mechanism for worker
+      feedback to influence dataset evolution.
+    impacts_by_scenario:
+    - scenario_id: S1_actual
+      financial_impact: |
+        Negative — Low wages (~$0.01-$0.10 per task) typical of crowdsourced micro-work.
+        No profit-sharing despite dataset enabling billion-dollar AI industry. Total
+        compensation likely <$1M for 49,000 workers annotating 160M+ candidates
+        (rough estimate, exact figure not published).
+      quality_of_life_impact: |
+        Mixed — Provided employment opportunity (some workers in countries with limited
+        alternatives). But work is repetitive, cognitively demanding, no career pathway,
+        no credit. Reflects broader digital labor exploitation in AI supply chain.
+      direction: net_harm
+    vulnerability_flags:
+    - |
+      CRITICAL ABSENT NODE: Workers' cultural backgrounds, language skills, and familiarity
+      with Western objects shaped annotation quality, but workers had no voice in
+      recognizing or addressing this. Example: Non-Western workers may have misidentified
+      Western-specific objects, contributing to label noise.
+    - |
+      No recourse: If worker disputed task design or payment, no mechanism for appeal.
+      AMT platform power imbalance favors requesters (Princeton/Stanford) over workers.
+    - |
+      Invisible labor: AI researchers train models on "ImageNet" without awareness
+      of 49,000 humans whose judgments constitute the labels. Labor rendered invisible
+      by aggregation and platform intermediation.
+
+  - stakeholder: People Depicted in ImageNet Images
+    description: |
+      Millions of unique individuals whose faces, bodies, or identifiable features
+      appear in ~1.2M training images. Scraped from public web (Flickr, Google Images)
+      without explicit consent or compensation. Many unaware their images are in dataset.
+      Depicted in object categories (person categories) and as incidental figures in
+      scene images.
+    estimated_population: Millions (exact number unknown, depends on how many images contain identifiable people)
+    relationship_to_proposal: |
+      ABSENT NODE — Zero representation. Individuals depicted had no:
+      - Notice that their images would be used in research dataset
+      - Consent process (opt-in or opt-out until post-2019 mechanism added)
+      - Compensation
+      - Mechanism to dispute offensive labels applied to their images
+      - Voice in dataset governance
+
+      Some individuals discovered they were in ImageNet only via Crawford & Paglen's
+      ImageNet Roulette art project (2019), years after publication. Some found
+      themselves labeled with offensive terms (racist, sexist, derogatory labels).
+    impacts_by_scenario:
+    - scenario_id: S1_actual
+      financial_impact: |
+        None — no compensation. Meanwhile, dataset enabled billion-dollar AI industry.
+        Extracted value from their images without sharing economic benefits.
+      quality_of_life_impact: |
+        Negative potential:
+        - Privacy violation (images used without knowledge)
+        - Dignity harm (offensive labels applied to some individuals, especially in
+          person categories removed in 2019)
+        - Surveillance risk (facial recognition models trained on ImageNet could
+          identify them in other contexts without consent)
+        - No control over downstream use (models trained on their images deployed
+          in applications they may object to: military, police, corporate surveillance)
+      direction: net_harm
+    vulnerability_flags:
+    - |
+      CRITICAL ABSENT NODE: Depicted individuals are SUBJECTS of the dataset but
+      have no voice. This is classic research ethics violation (subjects must provide
+      informed consent). ImageNet's web scraping approach bypassed consent entirely.
+    - |
+      Disproportionate harm to minorities: Offensive labels disproportionately applied
+      to people of color (Crawford & Paglen 2021). Privacy harms from facial recognition
+      disproportionately affect marginalized communities (police surveillance).
+    - |
+      Irreversible: Once images published in dataset and distributed, cannot be
+      "unpublished." Even if removed from future versions, previously distributed
+      copies remain. Individual harm difficult to remediate.
+
+  - stakeholder: Non-Western Communities and Global South Populations
+    description: |
+      Billions of people outside North America and Europe whose cultural contexts,
+      objects, visual practices are systematically under-represented in ImageNet.
+      Not a discrete population but geographic/cultural grouping. Includes sub-Saharan
+      Africa, South Asia, Southeast Asia, Latin America, Middle East, Pacific Islands,
+      Indigenous communities globally.
+    estimated_population: ~5-6 billion people in under-represented geographies
+    relationship_to_proposal: |
+      ABSENT NODE — Zero representation in dataset governance. ImageNet taxonomy
+      (WordNet) and image collection (English-language web scraping) reflect Western
+      visual culture without input from non-Western communities. Result:
+      - Objects common in Global South but rare in West are absent or under-represented
+      - Visual contexts specific to non-Western cultures (housing, clothing, food,
+        practices) are rare
+      - Models trained on ImageNet perform worse (10-20pp accuracy drop) on non-Western
+        test images
+      - "Universal" object recognition is actually Western object recognition generalized poorly
+    impacts_by_scenario:
+    - scenario_id: S1_actual
+      financial_impact: |
+        Indirect negative — AI systems trained on ImageNet deployed globally, but
+        optimized for Western contexts. Non-Western users experience higher error
+        rates in applications: search engines, content moderation, accessibility tools,
+        autonomous vehicles. Opportunity cost: better-performing systems possible
+        with representative data.
+      quality_of_life_impact: |
+        Negative — Deployed ImageNet-trained systems:
+        - Facial recognition higher false positive rates for people of color
+        - Image search misclassifies non-Western objects/scenes
+        - Autonomous vehicles less safe in non-Western driving contexts
+        - Content moderation over-censors or under-censors non-Western content
+        - Accessibility tools (image description for blind users) less accurate for
+          non-Western images
+      direction: net_harm
+    vulnerability_flags:
+    - |
+      CRITICAL ABSENT NODE: Non-Western communities are "absent nodes" in experiential
+      graph. Their visual culture not represented, their feedback not solicited, their
+      error experiences not centered in dataset evaluation.
+    - |
+      Compound marginalization: Geographic bias in training data compounds with
+      deployment bias (AI systems deployed in West first, Global South second), economic
+      bias (less resources to develop alternative datasets), and power bias (Western
+      institutions control AI research agenda).
+    - |
+      "Digital colonialism" critique: Western institutions extract web data globally
+      (including from Global South) but produce datasets optimized for Western contexts.
+      Mirrors historical colonial extraction of resources.
+
+  - stakeholder: Demographic Minority Groups (Within ImageNet Geography)
+    description: |
+      People of color, women, elderly, non-Western appearance norms—within North America/Europe
+      geography but demographically under-represented in ImageNet. Includes African
+      Americans, Latinos, Indigenous peoples in North America; ethnic minorities in
+      Europe; women and elderly across all geographies.
+    estimated_population: Hundreds of millions (demographic minorities within Western geography)
+    relationship_to_proposal: |
+      ABSENT NODE — No representation in dataset governance. Demographic bias not
+      measured during initial creation (2009-2012). Only identified via later research
+      (Yang et al. 2020, Prabhu & Birhane 2021). Groups affected:
+      - Dark-skinned people: under-represented, higher error rates in facial recognition
+      - Women: under-represented, especially in professional/technical categories
+      - Elderly: under-represented, age recognition less accurate
+      - Offline example: "groom" category shows mostly white people; "bride" similarly skewed
+    impacts_by_scenario:
+    - scenario_id: S1_actual
+      financial_impact: Indirect negative (worse-performing AI systems, opportunity cost)
+      quality_of_life_impact: |
+        Negative:
+        - Facial recognition false positive rates 2-5x higher for Black women than white men
+        - Image search/tagging less accurate
+        - Offensive labels in person categories disproportionately applied to people of color
+        - Surveillance harm: biased facial recognition used by police/security disproportionately
+          misidentifies people of color, leading to false arrests (documented cases)
+      direction: net_harm
+    vulnerability_flags:
+    - |
+      CRITICAL ABSENT NODE: Demographic minorities systematically excluded from
+      dataset representation despite being within scraping geography. Reflects web
+      publication bias (white Western users more likely to publish images to Flickr/etc)
+      and selection bias (AMT annotators may have Western familiarity bias).
+    - |
+      Amplification downstream: Small bias in training data amplified by deployment
+      context. Example: facial recognition trained on biased ImageNet, then deployed
+      by police, produces racially disparate false arrests. Training data bias becomes
+      civil rights harm.
+
+  - stakeholder: Downstream Users of ImageNet-Trained Systems
+    description: |
+      Billions of people encountering AI systems incorporating ImageNet-trained models:
+      smartphone photo apps, social media content moderation, accessibility tools
+      (image captioning for blind users), medical imaging diagnosis, autonomous vehicles,
+      security/surveillance, hiring AI (resume photo analysis), retail (visual search).
+      Vast majority unaware ImageNet is in supply chain.
+    estimated_population: Billions (global AI system user base)
+    relationship_to_proposal: |
+      ABSENT NODE — Downstream impacts not considered during dataset constitution (2009-2012).
+      Deployers of ImageNet-trained models (companies, governments) are intermediaries,
+      not ImageNet creators. However, dataset decisions propagate through supply chain
+      to end users who have no voice in dataset governance.
+    impacts_by_scenario:
+    - scenario_id: S1_actual
+      financial_impact: |
+        Mixed — beneficial AI applications (photo organization, accessibility, medical
+        diagnosis) improve quality of life. But biased AI imposes costs on minorities
+        (facial recognition errors, content moderation mistakes, hiring discrimination).
+      quality_of_life_impact: |
+        Highly variable by demographic:
+        - Western users: mostly positive (better-performing AI)
+        - Non-Western users: mixed (functional AI but higher error rates)
+        - Minorities: mixed to negative (biased systems impose errors and surveillance harms)
+        - Disabled users: positive (image captioning) but quality varies by image context
+      direction: mixed
+    vulnerability_flags:
+    - |
+      ABSENT NODE: End users have no awareness of ImageNet in supply chain. Cannot
+      meaningfully consent to or contest training data decisions that affect them.
+    - |
+      Compounding: Multiple biased datasets (not just ImageNet) in typical AI supply
+      chain. Isolating ImageNet's impact on end user experience difficult.
+    - |
+      Power asymmetry: Users can avoid specific AI products but cannot avoid AI-mediated
+      systems (social media moderation, hiring, credit decisions, surveillance).
+      Opt-out infeasible.
+
+  - stakeholder: AI Ethics Researchers and Critics
+    description: |
+      Researchers studying bias, fairness, accountability in AI systems. Includes
+      Crawford & Paglen (Excavating AI), Prabhu & Birhane (dataset critique), Gebru
+      et al. (Datasheets for Datasets), Mitchell et al. (Model Cards), algorithmic
+      justice scholars. Small population but influential.
+    estimated_population: Hundreds of researchers globally
+    relationship_to_proposal: |
+      Post-hoc critics, not participants in original constitution. Gained voice through
+      publication and public advocacy. Crawford & Paglen's 2019 art project created
+      public pressure that led to ImageNet's offensive category removal. Demonstrates
+      power of external critique to force dataset remediation.
+    impacts_by_scenario:
+    - scenario_id: S1_actual
+      financial_impact: Neutral (researchers not directly financially affected)
+      quality_of_life_impact: |
+        Mixed — ethical concerns addressed via critique and pressure, but post-hoc
+        remediation more costly than proactive inclusion. Researchers gained platform
+        but faced pushback from parts of AI community.
+      direction: mixed
+    vulnerability_flags:
+    - |
+      External critics face barriers: no standing in dataset governance, must rely
+      on public pressure or institutional willingness to change. ImageNet team responded
+      positively to criticism (removed offensive categories), but not all dataset
+      creators do.
+
+  minority_stress_test:
+    description: |
+      Three minority groups explicitly tested for disproportionate harm from ImageNet's
+      constitutive decisions.
+    groups_tested:
+    - group: Black Women (Intersection of Race and Gender)
+      scenario_tested: |
+        Facial recognition models trained on ImageNet-pretrained features tested on
+        Black female faces vs white male faces (Gender Shades study by Buolamwini & Gebru 2018).
+      outcome: |
+        Black women face 2-5x higher false positive rates than white men in commercial
+        facial recognition systems (exact ratio varies by vendor). Error rate for
+        Black women: 20-35%. Error rate for white men: 1-5%. Disparity partially
+        traced to training data bias (ImageNet under-represents dark-skinned faces).
+      mitigation: |
+        POST-HOC: ImageNet team released bias mitigation tool (Yang et al. 2020) allowing
+        users to construct balanced subsets. However, tool requires awareness of bias
+        and effort to use; default dataset remains biased. PROACTIVE mitigation would
+        require representative sampling during initial collection.
+    - group: Global South Populations (Geographic Minority)
+      scenario_tested: |
+        Object recognition models trained on ImageNet tested on geographically diverse
+        image sets from Africa, Asia, Latin America (de Vries et al. 2019, Shankar et al. 2017).
+      outcome: |
+        Accuracy drops 10-20 percentage points on non-Western test sets compared to
+        Western test sets. Example: Model achieves 80% accuracy on North American
+        images, drops to 60-70% on African images. Error types: misclassifies unfamiliar
+        objects, fails on non-Western contexts (housing, clothing, scenes).
+      mitigation: |
+        POST-HOC: Some efforts to create geographically diverse datasets (Open Images
+        with geographic metadata, Dollar Street dataset). However, ImageNet remains
+        default pretrain dataset; bias persists in most deployed models. PROACTIVE
+        mitigation would require global representative sampling from start.
+    - group: People Labeled with Offensive Terms (Person Categories Pre-2019)
+      scenario_tested: |
+        Individuals depicted in ImageNet person categories labeled with racist, sexist,
+        derogatory terms (exposed by Crawford & Paglen 2019).
+      outcome: |
+        1,593 person categories (54% of 2,832 person categories) identified as offensive.
+        Examples documented: racial slurs, "slut," "failure," "loser," derogatory terms
+        for professions, body types, ages. Some individuals discovered they were labeled
+        with offensive terms only via ImageNet Roulette viral art project (2019).
+        Dignity harm, privacy harm, potential for models trained on these labels to
+        perpetuate stereotypes.
+      mitigation: |
+        POST-HOC: ImageNet team removed 1,593 offensive categories and ~600,000 images
+        in 2019-2020. However, millions of models already trained on offensive labels
+        (2012-2019). Retraining all downstream models infeasible. Harm irreversible
+        for already-deployed systems. PROACTIVE mitigation would require pre-publication
+        community review of person categories, especially with diverse reviewers who
+        could flag culture-specific offense.
+
+  net_welfare_assessment:
+    methodology: |
+      Qualitative assessment across stakeholder groups. Weighted by: (1) population
+      size, (2) magnitude of impact, (3) vulnerability (absent nodes weighted more
+      heavily as their harms are systematic not incidental). No formal welfare function.
+      Acknowledges incommensurability: transformative AI benefits hard to weigh against
+      dignity harms, privacy violations, bias-induced errors.
+    conclusion: |
+      ImageNet produced TRANSFORMATIVE NET BENEFITS for AI research and many beneficial
+      applications (medicine, accessibility, science). However, benefits distributed
+      unequally:
+      - STRONG BENEFICIARIES: AI researchers, Western users, tech companies, dataset creators
+      - WEAK/MIXED BENEFICIARIES: General public (better AI but uneven quality), Global South users (functional AI but higher errors)
+      - CLEAR HARM: AMT workers (exploited labor), depicted individuals (privacy/dignity violations), demographic minorities (biased systems), non-Western populations (systematic under-representation)
+
+      ABSENT NODES (no voice in governance) disproportionately harmed:
+      - AMT workers: invisible labor, no credit, low wages
+      - Depicted individuals: no consent, some offensive labels
+      - Non-Western communities: systematic exclusion, worse-performing systems
+      - Demographic minorities: biased representations, downstream discrimination
+
+      PROACTIVE INCLUSION of absent nodes during constitution (2009) would have:
+      - Caught offensive labels earlier (avoiding 2019 crisis)
+      - Identified geographic bias (enabling mitigation)
+      - Improved annotation quality (worker expertise valued)
+      - Respected consent/privacy (ethical foundation)
+
+      POST-HOC REMEDIATION (2019-2020) addresses some harms but cannot undo:
+      - Millions of models trained on offensive labels (2012-2019)
+      - Decade of biased systems deployed globally
+      - Extracted labor from 49,000 workers without recognition
+      - Privacy violations for millions of depicted individuals
+
+      CONCLUSION: ImageNet demonstrates both AI's transformative potential AND the
+      costs of constitutive decisions made without inclusive governance. ORP's Layer 3
+      (Empathy Mapping) makes absent nodes visible, enabling proactive mitigation.
+    confidence: medium-high
+    confidence_basis: |
+      High confidence in directional assessment (transformative benefits, unequal distribution, absent nodes harmed). Medium confidence in magnitude (hard to quantify incommensurable harms/benefits). Some claims based on documented research (bias studies, wage data, paper citations), others on ethical principles (consent, labor justice).
+
+l4_accountability_ledger:
+  entries:
+  - entry_id: '001'
+    timestamp: '2007'
+    decision_type: taxonomy_source
+    description: |
+      Decision to use WordNet 3.0 noun hierarchy as source taxonomy for ImageNet
+      object categories. WordNet is English-language semantic network created by
+      Princeton linguists (Fellbaum et al.).
+    decided_by:
+    - name: Fei-Fei Li (PI)
+    - name: In consultation with Christiane Fellbaum (WordNet co-creator, Princeton)
+    basis: |
+      WordNet is comprehensive (80,000+ synsets), hierarchical (enables scalable
+      organization), well-established linguistic resource. Provides structured taxonomy
+      without requiring custom category design. WordNet already used in computational
+      linguistics; natural choice for computer vision dataset.
+    alternatives_considered: |
+      Custom taxonomy designed for visual recognition (rejected: too resource-intensive,
+      no guarantee of being better than WordNet). Domain-specific taxonomies like
+      biological classification for animals (rejected: ImageNet scope broader than
+      single domain).
+    dissenting_views: null
+    consequences: |
+      POSITIVE: Enabled rapid category selection, hierarchical structure useful for
+      model evaluation, established taxonomy aids reproducibility.
+
+      NEGATIVE: WordNet is English-language, Western-biased. Inherited biases:
+      (1) Categories without English equivalents absent.
+      (2) Derogatory terms in WordNet (especially person synsets) became ImageNet labels.
+      (3) Western cultural categorization assumed universal.
+      (4) Non-visual WordNet synsets excluded, limiting what "object recognition" means.
+
+      54% of person categories (1,593 of 2,832) later found offensive and removed (2019).
+      This decision in 2007 shaped dataset bias for 12+ years.
+    source: Deng et al. (2009) Section 3; Li biography sources document 2007 meeting with Fellbaum
+
+  - entry_id: '002'
+    timestamp: '2008'
+    decision_type: annotation_method
+    description: |
+      Decision to use Amazon Mechanical Turk for crowdsourced image annotation at
+      scale. 49,000 workers from 167 countries annotated 160M+ candidate images
+      (July 2008-April 2010).
+    decided_by:
+    - name: ImageNet team (Li, Deng, et al.)
+    basis: |
+      Scalability: AMT enables annotation of millions of images, infeasible with
+      expert annotators. Cost-effectiveness: ~$0.01-$0.10 per task, affordable on
+      academic/corporate grants. Proven: AMT successfully used for similar tasks
+      (LabelMe dataset, crowdsourced NLP annotation).
+
+      Quality control: Multiple annotators per image, majority vote ensures accuracy.
+      Verification study achieved 99.7% precision on sampled synsets.
+    alternatives_considered: |
+      Expert annotators (e.g., graduate students, domain experts) — rejected: too
+      expensive and slow for 160M candidates. Fully automated image classification
+      (computer vision algorithms) — rejected: insufficient accuracy in 2009, defeating
+      purpose of creating training data.
+    dissenting_views: null
+    consequences: |
+      POSITIVE: Enabled ImageNet's unprecedented scale (1.2M training images). Crowdsourcing
+      model later adopted widely in AI (data annotation as industry).
+
+      NEGATIVE: Labor exploitation — workers paid low wages (~$0.01-$0.10 per task),
+      no academic credit, no voice in governance, invisible in publications. 49,000
+      workers rendered as collective "Amazon Mechanical Turk" not individuals. Reflects
+      broader digital labor issues in AI supply chain (Crawford 2021).
+
+      Annotation quality shaped by worker demographics: Western annotators more familiar
+      with Western objects, potentially contributing to bias. No mechanism for worker
+      expertise (developed after thousands of annotations) to feed back into category
+      definitions or quality standards.
+    source: Deng et al. (2009) Section 4; ImageNet biography sources document AMT use
+
+  - entry_id: '003'
+    timestamp: '2009'
+    decision_type: quality_control
+    description: |
+      Decision to require "convincing majority" agreement among multiple AMT annotators
+      before including image in dataset. Per-class thresholds estimated using pilot study.
+    decided_by:
+    - name: ImageNet team
+    basis: |
+      Balance accuracy and cost. Single annotator too error-prone (~10-20% error rate
+      on ambiguous images). Multiple annotators with voting significantly improves
+      precision (validation study: 99.7%). Per-class thresholds account for varying
+      difficulty across categories.
+    alternatives_considered: |
+      Uniform threshold across all categories (rejected: misses class-specific ambiguity).
+      Higher threshold requiring near-unanimous agreement (rejected: too expensive,
+      excludes many valid images). Lower threshold or single annotator (rejected:
+      insufficient quality).
+    dissenting_views: null
+    consequences: |
+      POSITIVE: Achieved high annotation quality (99.7% precision on validation set).
+      Became model for crowdsourced dataset annotation.
+
+      NEGATIVE: Even with quality control, ~5-10% label noise persisted (acknowledged
+      by creators). Later research (Northcutt et al. 2021) identified 6% errors in
+      validation set using confident learning. Some errors systematic (ambiguous
+      categories, cultural unfamiliarity), not just random noise.
+    source: Deng et al. (2009) annotation protocol; Russakovsky et al. (2015)
+
+  - entry_id: '004'
+    timestamp: '2009-2010'
+    decision_type: access_policy
+    description: |
+      Decision to make ImageNet publicly available for research via registration
+      (free access, non-commercial license). Users must create account, agree to
+      terms of service: no redistribution, no commercial use without separate licensing,
+      must cite original papers.
+    decided_by:
+    - name: ImageNet team (Li, Deng, et al.)
+    basis: |
+      Maximize research impact (open access enables adoption). Track usage (registration
+      allows communication with user base, impact measurement). Mitigate legal/ethical
+      risks (terms of service addresses copyright, prevents unauthorized commercial use).
+    alternatives_considered: |
+      Fully open (no registration) — rejected: lose ability to track usage, communicate
+      updates (e.g., notify users of offensive category removal 2019), mitigate copyright
+      concerns. Closed/restricted access (invite-only) — rejected: reduces research
+      impact, defeats purpose of creating large-scale public dataset.
+    dissenting_views: null
+    consequences: |
+      POSITIVE: Wide adoption (ImageNet became standard pretrain dataset 2012-present).
+      Registration enabled 2019 communication about offensive category removal.
+
+      NEGATIVE: Terms of service initially lacked consent mechanism for depicted
+      individuals. Copyright status of some images unclear (scraped from web, fair
+      use for research but murky for commercial deployment). Non-commercial restriction
+      limits some beneficial applications.
+    source: Deng et al. (2009); ImageNet website terms of service
+
+  - entry_id: '005'
+    timestamp: '2010'
+    decision_type: scope
+    description: |
+      Decision to create ILSVRC subset: 1,000 categories, ~1.2M training images for
+      ImageNet Large Scale Visual Recognition Challenge. Selected from broader ImageNet
+      (which grew to 22K categories, 14M+ images).
+    decided_by:
+    - name: ILSVRC organizers (Russakovsky, Deng, Li, et al.)
+    basis: |
+      Computational tractability for competition (1,000 categories feasible for annual
+      challenge, 22K too large). Broad coverage (1,000 spans WordNet subtrees: animals,
+      plants, objects, scenes). Balance across categories (avoid dominance by single
+      subtree like animals).
+    alternatives_considered: |
+      Use full 22K ImageNet (rejected: too large for competition, compute-prohibitive
+      in 2010). Fewer categories like 100 (rejected: insufficient to demonstrate "large-scale"
+      visual recognition). Different category selection (e.g., focus on animals) —
+      rejected: goal is general object recognition not domain-specific.
+    dissenting_views: null
+    consequences: |
+      POSITIVE: ILSVRC-2012 (1,000 categories) became canonical benchmark. Enabled
+      deep learning breakthrough (AlexNet 2012). Standard pretrain dataset for computer
+      vision research.
+
+      NEUTRAL: Full 22K ImageNet less used. 1,000-category subset is "ImageNet" in
+      common parlance, even though larger version exists. Some research uses 22K
+      (e.g., self-supervised learning), but 1K dominant.
+    source: Russakovsky et al. (2015), Section 2
+
+  - entry_id: '006'
+    timestamp: '2019-09-19'
+    decision_type: ethical_remediation
+    description: |
+      Decision to remove offensive and problematic person category labels from ImageNet
+      following public exposure via Crawford & Paglen's "Excavating AI" and ImageNet
+      Roulette art project (viral in September 2019). ImageNet team reviewed all
+      person categories, identified 438 "unsafe/offensive" + 1,155 "sensitive" labels.
+      Removed 1,593 categories (54% of 2,832 person categories), approximately 600,000 images.
+    decided_by:
+    - name: ImageNet team (Deng, Li, et al.)
+    basis: |
+      Ethical response to public criticism. Offensive labels (racist, sexist, derogatory
+      terms inherited from WordNet) violated ethical standards. Public exposure via
+      viral art project created reputational crisis and moral imperative to act.
+
+      Team reviewed person categories with community feedback, identified problematic
+      labels, removed categories and images. Prioritized thoroughness over speed
+      (took several months, completed 2019-2020).
+    alternatives_considered: |
+      Do nothing (rejected: ethically untenable after public exposure, reputational
+      harm to creators and institutions). Replace labels without removing images
+      (rejected: many labels fundamentally problematic not just mislabeled, removal
+      necessary). Full dataset reconstruction with community governance (rejected:
+      too resource-intensive, would delay remediation).
+    dissenting_views: |
+      Some in AI community argued removal "censors" dataset, harms reproducibility
+      (models trained on pre-2019 ImageNet no longer matchable). ImageNet team prioritized
+      ethics over reproducibility: old versions archived for replication, but new
+      downloads exclude offensive categories.
+    consequences: |
+      POSITIVE: Addressed most egregious ethical violations (offensive labels removed).
+      Demonstrated responsiveness to criticism. Set precedent for dataset remediation.
+
+      NEGATIVE: POST-HOC remediation cannot undo past harm:
+      - Millions of models trained on offensive labels 2012-2019 already deployed
+      - Depicted individuals already exposed to offensive labeling (dignity harm irreversible)
+      - Researchers who trained models 2012-2019 cannot reproduce results with new dataset version
+      - ~600,000 images removed reduces dataset utility for person classification tasks
+
+      LESSON: Proactive ethical review (pre-publication) far better than reactive
+      remediation. This decision in 2019 should have been made in 2009 before publication.
+      ORP Layer 3 (Empathy Mapping) + Layer 4 (Accountability Ledger) would have
+      made offensive labels visible earlier via diverse stakeholder input.
+    source: |
+      Crawford & Paglen (2021); news coverage (The Art Newspaper, Artsy, VentureBeat
+      2019); ImageNet team public statements
+
+l5_fork_registry:
+  this_document:
+    document_id: orp-ai-imagenet-001
+    forked_from: null
+    fork_reason: Original ORP documentation of ImageNet ILSVRC-2012 constitution
+    key_differences: N/A — this is the original ORP document for this dataset
+  known_forks:
+  - fork_id: imagenet-v2-recht-2019
+    document_id: null
+    name: ImageNet-V2 (Test Set Revision)
+    fork_type: Evaluation methodology fork (not constitution fork)
+    created_by: Recht, Roelofs, Schmidt, Shankar
+    created_date: '2019'
+    rationale: |
+      Test whether ImageNet classifiers generalize to new test set collected 10 years
+      later (2019 vs 2009-2012). Suspected that original test set may be overfit
+      (models trained and tested on same distribution).
+    key_differences: |
+      SAME: 1,000 categories (ILSVRC-2012), WordNet taxonomy, AMT annotation, quality control
+      DIFFERENT: New images collected 2019 (temporal distribution shift), three test
+      sets with different collection variants (Threshold0.7, MatchedFrequency, TopImages).
+      10,000 images per test set.
+    outcomes: |
+      Models trained on original ImageNet show 11-14% accuracy DROP on ImageNet-V2.
+      Suggests models learned dataset-specific patterns, don't fully generalize.
+      Highlights overfitting risk with single benchmark dataset. However, improvements
+      on original test set do translate to improvements on V2 (rank order mostly preserved).
+    relationship: Sibling dataset — same categories, different image distribution for testing
+    citation: |
+      Recht, B., Roelofs, R., Schmidt, L., & Shankar, V. (2019). Do ImageNet classifiers
+      generalize to ImageNet? Proceedings of the 36th International Conference on
+      Machine Learning, 5389-5400. arXiv:1902.10811
+    orp_documentation: null
+
+  - fork_id: imagenet-r-hendrycks-2021
+    document_id: null
+    name: ImageNet-R (ImageNet-Renditions, Robustness Benchmark)
+    fork_type: Distribution shift derivative
+    created_by: Hendrycks et al.
+    created_date: '2021'
+    rationale: |
+      Test model robustness to naturally occurring distribution shifts. Original ImageNet
+      instruction: "photos only, no paintings, no drawings." ImageNet-R does OPPOSITE:
+      artistic renditions only (art, cartoons, sketches, sculptures, video game graphics, etc.).
+    key_differences: |
+      SAME: 200 ImageNet categories (subset of 1,000), WordNet taxonomy basis
+      DIFFERENT: Image types are non-photographic artistic renditions. 30,000 images.
+      Collection explicitly excludes photographs. Image sources: art databases, deviantart,
+      video games, embroidery, origami, toys, etc.
+    outcomes: |
+      Models trained on photographic ImageNet perform POORLY on ImageNet-R (large
+      accuracy drop). Demonstrates texture bias in CNNs: models overly rely on photographic
+      textures rather than object shapes/structures. Robustness benchmark highlights
+      brittleness of ImageNet-trained models to style shift.
+    relationship: Derivative dataset — same categories, radically different image modalities
+    citation: |
+      Hendrycks, D., Basart, S., Mu, N., et al. (2021). The many faces of robustness:
+      A critical analysis of out-of-distribution generalization. Proceedings of the
+      International Conference on Computer Vision (ICCV). GitHub: https://github.com/hendrycks/imagenet-r
+    orp_documentation: null
+
+  - fork_id: imagenet-cleaned-labels-northcutt-2021
+    document_id: null
+    name: ImageNet with Cleaned Labels (Label Correction)
+    fork_type: L1 provenance improvement — fixing known limitation (annotation errors)
+    created_by: Northcutt, Athalye, Mueller
+    created_date: '2021'
+    rationale: |
+      Original ImageNet acknowledged ~5-10% annotation error rate. This fork uses
+      confident learning algorithms to identify likely errors, then human-validates
+      flagged images via crowdsourcing. Corrects mislabeled images in validation set.
+    key_differences: |
+      SAME: Images, categories, train/test split
+      DIFFERENT: Corrected labels for 2,916 images in validation set (6% of 50,000).
+      Errors include wrong class, multiple valid classes, genuinely ambiguous images.
+      Corrected labels made publicly available.
+    outcomes: |
+      Benchmark stability improves (corrected labels reduce noise). However, reveals
+      that higher-capacity models (e.g., NASNet) reflect label errors more than smaller
+      models (e.g., ResNet-18). Correcting labels changes relative model rankings
+      slightly. Demonstrates pervasive label errors destabilize machine learning benchmarks.
+    relationship: Revision fork — same images, corrected labels addressing known L1 limitation
+    citation: |
+      Northcutt, C. G., Athalye, A., & Mueller, J. (2021). Pervasive label errors
+      in test sets destabilize machine learning benchmarks. Advances in Neural Information
+      Processing Systems, 34, 2259-2270. arXiv:2103.14749. Website: https://labelerrors.com
+    orp_documentation: null
+
+  - fork_id: imagenet-removed-person-categories-2019
+    document_id: null
+    name: ImageNet with Removed Person Categories (Ethical Cleaning)
+    fork_type: L1 provenance revision — ethical exclusion criteria update
+    created_by: ImageNet team (Deng, Li, et al.)
+    created_date: '2019-2020'
+    rationale: |
+      Following Crawford & Paglen exposure (Sept 2019), ImageNet team reviewed all
+      person categories and identified 1,593 as offensive/problematic (54% of 2,832
+      person categories). Removed categories and associated images (~600,000 images) to
+      address ethical violations (racist, sexist, derogatory labels).
+    key_differences: |
+      SAME: Non-person categories (animals, objects, scenes) unchanged
+      DIFFERENT: 1,593 person categories removed, ~600,000 images removed. Remaining
+      person categories retained but under review. Offensive labels inherited from
+      WordNet eliminated. Download terms of service updated to note person category changes.
+    outcomes: |
+      Addresses most egregious ethical violations. However, POST-HOC remediation cannot
+      undo models trained 2012-2019 on offensive labels. Millions of models already
+      deployed with learned offensive associations. Researchers using pre-2019 ImageNet
+      cannot replicate results with post-2019 version (reproducibility tension).
+    relationship: Major revision — ethical content moderation changing dataset constitution
+    citation: |
+      Crawford, K., & Paglen, T. (2021). Excavating AI. AI & Society, 36, 1-28.
+      News coverage: The Art Newspaper, Artsy, VentureBeat (Sept-Dec 2019).
+    orp_documentation: This ORP document (documents pre-2019 version in L1, notes 2019 removal in exclusion_criteria and L4 entry 006)
+
+  potential_forks:
+  - potential_fork_idea: Global Representative ImageNet
+    description: |
+      HYPOTHETICAL: ImageNet with proportional global geographic sampling (not 80%
+      Western). Use multilingual taxonomy (not just English WordNet). Include non-Western
+      annotators in governance. Expected outcome: reduced geographic bias in trained
+      models (5-10pp gap instead of 10-20pp). CHALLENGE: multilingual taxonomy consensus,
+      global web scraping infrastructure, funding for broader collection.
+    enabled_by_orp: |
+      ORP Layer 1 (Data Provenance) makes geographic exclusion explicit (currently
+      undocumented structural bias). Layer 3 (Empathy Mapping) identifies non-Western
+      communities as absent nodes. Layer 5 (Fork Registry) enables someone to propose
+      this alternative, show different exclusion criteria, and demonstrate improved outcomes.
+
+  - potential_fork_idea: Consent-Based ImageNet
+    description: |
+      HYPOTHETICAL: ImageNet using only images with explicit informed consent from
+      depicted individuals (opt-in). Expected outcome: smaller dataset (maybe 10-20%
+      of current size), selection bias toward consenting individuals, but stronger
+      ethical foundation (respect for autonomy, privacy). CHALLENGE: identifying and
+      contacting depicted individuals may be infeasible; drastically reduced dataset
+      size may delay AI progress.
+    enabled_by_orp: |
+      ORP Layer 1 (Data Provenance) makes absence of consent explicit in exclusion
+      criteria. Layer 3 (Empathy Mapping) identifies depicted individuals as absent
+      nodes. Layer 5 enables someone to propose consent-based alternative, quantify
+      trade-offs (ethics vs scale), make trade-off legible for public debate.
+
+  - potential_fork_idea: Worker Co-Governed ImageNet
+    description: |
+      HYPOTHETICAL: ImageNet where 49,000 AMT workers have participatory governance
+      role (feedback on category definitions, quality standards, dispute resolution,
+      profit-sharing or authorship credit). Expected outcome: higher annotation quality
+      (worker expertise valued), earlier identification of offensive labels (diverse
+      reviewers), fairer labor practice (credit and voice). CHALLENGE: coordinating
+      49,000 micro-task workers across 167 countries may be infeasible.
+    enabled_by_orp: |
+      ORP Layer 3 (Empathy Mapping) identifies AMT workers as absent node. Layer 4
+      (Accountability Ledger) makes annotation method decision explicit, showing
+      alternatives considered. Layer 5 enables someone to propose worker co-governance
+      model, fork with different governance structure, demonstrate improved outcomes or feasibility challenges.
+
+  # Invitation to fork:
+  # ImageNet is the most influential AI training dataset in history. Applying ORP
+  # to its constitution reveals both transformative benefits and systematic harms
+  # from exclusion of absent nodes (AMT workers, depicted individuals, non-Western
+  # communities, demographic minorities). This document is POST-HOC RECONSTRUCTION
+  # (ImageNet created 2009-2012, before ORP existed), demonstrating what Layer 4
+  # (Accountability Ledger) and Layer 3 (Empathy Mapping) would capture prospectively.
+  #
+  # If you believe:
+  # - Different taxonomy source (not WordNet) would reduce bias
+  # - Geographic sampling should be adjusted (not 80% Western)
+  # - AMT workers should have governance voice
+  # - Consent from depicted individuals should be required
+  # - Offensive label review should have happened pre-publication
+  # - Alternative dataset constitution would better balance ethics and AI progress
+  #
+  # FORK THIS DOCUMENT. Change L1 (exclusion criteria), L2 (scenarios), L3 (stakeholder
+  # assessment), L4 (decisions), show your alternative. The diff between your fork
+  # and this document makes your proposal explicit and debatable.
+  #
+  # ORP's purpose: make constitutive decisions LEGIBLE, CONTESTABLE, FORKABLE.
+  # ImageNet's history shows cost of constitutive decisions made without inclusive
+  # governance. ORP applied prospectively (next generation of datasets) can make
+  # absent nodes visible BEFORE publication, enabling proactive inclusion not
+  # post-hoc remediation.

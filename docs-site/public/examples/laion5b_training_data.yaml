@@ -1,0 +1,2165 @@
+orp_version: "0.2"
+post_hoc: true
+extensions:
+  - orp-ai-training-v1
+document_id: laion5b-training-data-2024-001
+title: "LAION-5B Training Dataset Constitution"
+domain: ai-training
+authors:
+  - name: Asbjørn Ras
+    role: analyst
+    affiliation: Public Reason Project
+created: "2026-04-07"
+last_modified: "2026-04-08"
+status: draft
+summary: |
+  Post-hoc reconstruction of LAION-5B (5.85 billion image-text pairs, March 2022) dataset constitution,
+  documenting constitutive decisions that led to systematic safety failures including 3,226 CSAM URLs,
+  medical privacy violations, and non-consensual intimate imagery. Analysis demonstrates how absence of
+  safety filtering at design time resulted in 12+ months of federal crime distribution (18 U.S.C. § 2252)
+  before Stanford Internet Observatory discovery (December 2023). Document argues prospective ORP Layer 3
+  empathy mapping would have identified CSAM victims as vulnerable population requiring absolute protection,
+  triggering hash-matching remediation (cost: $50-100K, 2-3 months delay) preventing Tier 1 harm.
+
+# =============================================================================
+# LAYER 1: DATA PROVENANCE
+# =============================================================================
+l1_data_provenance:
+
+  # ---------------------------------------------------------------------------
+  # Primary Dataset Information
+  # ---------------------------------------------------------------------------
+  - dataset_id: laion5b-full
+    name: LAION-5B (Large-scale Artificial Intelligence Open Network - 5 Billion)
+    description: |
+      5.85 billion image-text pairs filtered from Common Crawl (Dec 2020 - Mar 2021 crawls) using OpenAI's
+      CLIP model for image-text similarity. Dataset consists of URLs + alt-text/captions, not hosted images
+      (federated structure). Intended as open-source alternative to proprietary datasets (Google's JFT-300M,
+      OpenAI's WebImageText) for training large-scale vision-language models. Used to train Stable Diffusion
+      (Aug 2022), DALL-E 2 reproductions, and other generative AI models.
+
+    source: |
+      Primary: Common Crawl web archives (December 2020 - March 2021, 4 monthly snapshots)
+      Secondary: CLIP ViT-B/32 and ViT-L/14 models (OpenAI) for filtering
+      Tertiary: LAION-400M (predecessor dataset, Sep 2021) methodology
+
+    collection_method: |
+      1. Download Common Crawl WAT files (Web Archive Transformation format, metadata only)
+      2. Extract all <img> tags with alt text, captions, or surrounding text
+      3. Download image URLs (sample for CLIP processing, not full retrieval)
+      4. Filter image-text pairs using CLIP similarity threshold (cosine similarity > 0.28 for ViT-B/32)
+      5. De-duplicate using URL matching
+      6. Distribute as parquet files containing (URL, text, metadata) tuples
+
+      Key technical details:
+      - Processing: Scraped 50+ billion candidate image-text pairs, filtered to 5.85B using CLIP
+      - Compute: Estimated 10,000-20,000 GPU hours for CLIP filtering (A100 equivalents)
+      - Storage: ~250 TB for URLs + metadata (parquet format), 0 TB for images (federated)
+      - Language filtering: Detected using fastText language classifier, English-heavy (2.32B English pairs)
+      - NSFW filtering: Minimal (only extremely explicit content filtered using CLIP-based NSFW classifier)
+
+    date_range: |
+      Source data: December 2020 - March 2021 (Common Crawl snapshots)
+      Collection: September 2021 - March 2022 (LAION processing)
+      Publication: March 2022 (LAION-5B released)
+      Takedown: December 2023 (CSAM discovered, dataset taken offline)
+      Re-release: August 2024 (Re-LAION-5B with 2,236 URLs removed)
+
+    geographic_scope: |
+      Global (Common Crawl includes websites from all countries), but heavily Western-skewed:
+      - English-language pairs: 2.32B (39.7% of total)
+      - Western European languages (German, French, Spanish): ~1.5B (25%)
+      - Asian languages (Chinese, Japanese, Korean): ~500M (8.5%)
+      - All other languages: ~1.5B (25%)
+      Geographic bias inherited from Common Crawl (English-language web over-represented) and CLIP
+      (OpenAI's CLIP trained on English captions, reducing similarity scores for non-English text).
+
+    inclusion_criteria:
+      description: |
+        Image-text pairs included if:
+        1. URL found in Common Crawl WAT files (Dec 2020 - Mar 2021)
+        2. Image downloadable at time of processing (Sep 2021 - Mar 2022)
+        3. Alt text or caption present (minimum 2 characters)
+        4. CLIP similarity score > 0.28 (ViT-B/32) or > 0.32 (ViT-L/14)
+        5. Not duplicate URL (exact match de-duplication)
+        6. Passed minimal NSFW filter (only hardcore pornography removed, ~5% filtered)
+
+      rationale: |
+        CLIP similarity threshold (0.28) chosen to maximize dataset size while maintaining image-text
+        relevance. Lower thresholds include noise (unrelated text), higher thresholds exclude valid pairs.
+        Threshold calibrated on LAION-400M predecessor (Sep 2021), optimized for downstream model performance
+        (e.g., CLIP-based retrieval benchmarks).
+
+    exclusion_criteria:
+      - criterion: "Duplicate URLs"
+        rationale: "Reduce dataset size, avoid overweighting popular images"
+        method: "Exact URL string matching (no perceptual hashing, so different URLs to same image included)"
+        affected_count: "UNKNOWN (not reported in LAION papers)"
+
+      - criterion: "Hardcore pornography"
+        rationale: "Avoid legal issues with sexually explicit content distribution"
+        method: "CLIP-based NSFW classifier (threshold not publicly documented)"
+        affected_count: "~2.5-5 billion pairs filtered (estimated 50-85% removal rate from 50B+ candidates)"
+        limitations: "NSFW classifier trained on adult content, NOT on CSAM or non-consensual imagery"
+
+      - criterion: "Low CLIP similarity (<0.28)"
+        rationale: "Exclude image-text pairs where caption unrelated to image (noise reduction)"
+        method: "Cosine similarity between CLIP image embedding and text embedding"
+        affected_count: "~45 billion pairs excluded (50B candidates → 5.85B final)"
+        limitations: "CLIP similarity biased toward English, Western cultural contexts"
+
+    critical_undocumented_exclusions:
+      - exclusion_gap: "NO CSAM (Child Sexual Abuse Material) PRE-PUBLICATION FILTERING"
+        description: |
+          LAION-5B released March 2022 WITHOUT any child sexual abuse material (CSAM) detection or
+          removal process. Despite processing 50+ billion candidate images and having compute resources
+          for CLIP filtering, NO hash matching against known CSAM databases (PhotoDNA, CSAI Match, NCMEC)
+          was performed before publication.
+
+          Result: 3,226 CSAM URLs distributed to public (Stanford Internet Observatory report, Dec 2023),
+          with 1,008 externally validated as confirmed CSAM. Dataset remained online for 21 months
+          (March 2022 - December 2023) distributing federal crime material (18 U.S.C. § 2252).
+
+        tools_not_used:
+          - "Microsoft PhotoDNA (hash matching for known CSAM)"
+          - "CSAI Match (Canadian Centre for Child Protection database)"
+          - "NCMEC hash database (US National Center for Missing & Exploited Children)"
+          - "Google's Content Safety API (includes CSAM detection)"
+
+        rationale_for_omission: UNKNOWN (not documented in LAION papers or blog posts)
+
+        consequences:
+          - "TIER 1 HARM (Criminal/Safety): 1,008 validated CSAM victims re-victimized through AI training data distribution"
+          - "TIER 2 HARM (Legal): LAION team potentially liable under 18 U.S.C. § 2252 (CSAM distribution, strict liability)"
+          - "TIER 3 HARM (Ethical): Stable Diffusion and other models trained on LAION-5B reproduced CSAM-adjacent imagery"
+          - "Dataset takedown December 2023 (21-month delay from publication to remediation)"
+
+        severity: "TIER 1 - CRIMINAL/SAFETY HARM (child protection absolute priority, federal crime)"
+
+      - exclusion_gap: "NO MEDICAL PRIVACY FILTERING (HIPAA-protected imagery)"
+        description: |
+          No filtering for medical imagery scraped from telemedicine websites, patient forums, medical
+          education sites, or other sources containing HIPAA-protected health information (PHI). Common
+          Crawl includes URLs from healthcare domains, patient support groups, medical case studies.
+
+        tools_not_used:
+          - "Domain blocklisting (exclude healthcare .gov, .edu, telemedicine domains)"
+          - "Medical image classification (detect X-rays, MRIs, surgical photos)"
+          - "PHI detection (redact patient names, dates, medical record numbers in captions)"
+
+        rationale_for_omission: UNKNOWN (medical privacy not discussed in LAION documentation)
+
+        consequences:
+          - "TIER 2 HARM (Legal): Potential HIPAA violations (medical imagery distributed without patient consent)"
+          - "TIER 3 HARM (Ethical): Patient privacy violated (medical conditions exposed in training data)"
+
+        severity: "TIER 2 - LEGAL HARM (HIPAA), TIER 3 - ETHICAL HARM (privacy)"
+
+      - exclusion_gap: "NO CONSENT MECHANISM (non-consensual intimate imagery, depicted individuals)"
+        description: |
+          No verification that individuals depicted in images consented to:
+          (a) Image being posted publicly (vs. stolen, hacked, revenge porn)
+          (b) Image being used for AI training (vs. personal/artistic use only)
+
+          Common Crawl scrapes assume "publicly accessible URL" = "consented to all uses," which is false
+          for revenge porn, non-consensual intimate imagery (NCII), leaked private photos, deepfakes, etc.
+
+        tools_not_used:
+          - "Consent verification (check uploader = depicted person or has license)"
+          - "NCII detection (hash matching against known revenge porn databases)"
+          - "Face recognition + opt-out (detect individuals, allow removal requests)"
+
+        rationale_for_omission: UNKNOWN (consent not discussed in LAION documentation)
+
+        consequences:
+          - "TIER 3 HARM (Ethical): Non-consensual intimate imagery (NCII) included in training data"
+          - "TIER 3 HARM (Ethical): Billions of depicted individuals become training data without knowledge or consent"
+          - "TIER 2 HARM (Legal): Potential violations of state NCII laws (many US states criminalize revenge porn distribution)"
+
+        severity: "TIER 3 - ETHICAL HARM (consent, dignity), TIER 2 - LEGAL HARM (state NCII laws)"
+
+    cleaning_decisions:
+      - decision: "URL-only distribution (federated dataset structure)"
+        method: "Store URLs + metadata, not images themselves"
+        rationale: |
+          Legal/practical: Avoids hosting copyrighted images (reduces DMCA liability), saves storage costs
+          ($10-50M for 5.85B images vs. <$1M for parquet files), enables distributed downloads (users fetch
+          images themselves, reducing bandwidth).
+        affected_scale: "100% of dataset (all 5.85B pairs distributed as URLs)"
+        limitations: |
+          CRITICAL LIMITATION: Federated structure makes post-hoc remediation nearly impossible. When CSAM
+          discovered (Dec 2023), LAION could remove URLs from distribution, but could NOT:
+          (a) Retrieve images already downloaded by users (Sep 2021 - Dec 2023, 27 months)
+          (b) Remove images from trained models (Stable Diffusion weights frozen Aug 2022)
+          (c) Notify CSAM victims (identifying victims would require viewing illegal content)
+
+          This architectural choice prioritized cost/legal convenience over safety remediation capability.
+
+      - decision: "Minimal NSFW filtering (only hardcore pornography removed)"
+        method: "CLIP-based NSFW classifier (threshold undocumented)"
+        rationale: |
+          Preserve dataset utility for artistic/scientific purposes (medical imagery, classical art nudes,
+          cultural content). Avoid over-filtering (false positives removing legitimate content).
+        affected_scale: "~2.5-5 billion pairs filtered from 50B+ candidates (50-85% removal rate)"
+        limitations: |
+          NSFW classifier designed to detect adult pornography, NOT:
+          (a) CSAM (child exploitation material visually different from adult content)
+          (b) NCII (non-consensual intimate imagery of adults, indistinguishable from consensual)
+          (c) Medical imagery (nudity present but not sexual)
+
+          Classifier cannot distinguish consent (consensual nude vs. revenge porn) or age (adult vs. minor).
+
+      - decision: "No human review (100% automated pipeline)"
+        method: "CLIP filtering + NSFW classifier, zero manual inspection"
+        rationale: |
+          Infeasible to manually review 50+ billion candidates or even 5.85 billion final pairs. Human
+          review at 10 seconds/image would require 1,850 person-years for full dataset.
+        affected_scale: "0% human review (100% automated)"
+        limitations: |
+          Automated classifiers miss edge cases:
+          (a) CSAM not flagged if visually similar to adult content (CLIP cannot detect age)
+          (b) Medical imagery not flagged if similar to non-medical nudity
+          (c) NCII not flagged if indistinguishable from consensual content
+
+          Industry standard: 0.01-0.1% sampling for dataset validation (50K-500K images for LAION-5B scale),
+          cost ~$100K-500K. LAION did not perform sampling, likely due to budget constraints.
+
+    synthetic_elements:
+      present: false
+      description: "LAION-5B contains only scraped web images, no synthetic/generated content"
+
+    known_limitations:
+      - limitation: "Temporal decay (link rot)"
+        description: |
+          URLs become unavailable over time as websites shut down, images deleted, paywalls added. Estimated
+          50% of URLs inaccessible within 2 years of publication (March 2022 - March 2024).
+        mitigation: "None (federated structure prevents caching)"
+        impact: "Dataset utility degrades over time, reproducibility suffers"
+
+      - limitation: "Geographic/linguistic bias (Western-skewed)"
+        description: |
+          Common Crawl over-represents English/Western web (server locations, crawling infrastructure, Google
+          indexing). CLIP filtering amplifies bias (OpenAI CLIP trained on English captions). Result: 2.32B
+          English pairs (40%) despite English speakers being 20% of global population.
+        mitigation: "None (LAION documented bias but did not correct)"
+        impact: "Models trained on LAION-5B perform worse on non-Western cultural contexts"
+
+      - limitation: "CLIP similarity as quality proxy"
+        description: |
+          CLIP score measures image-text similarity, not caption accuracy, safety, or consent. High CLIP
+          scores include CSAM (if caption describes content), misinformation (if text matches misleading image),
+          stereotypes (if text reflects biased associations).
+        mitigation: "None (CLIP used as sole filtering criterion beyond NSFW)"
+        impact: "Dataset includes high-similarity but harmful content (CSAM, stereotypes, misinfo)"
+
+      - limitation: "No ground truth for scale (true denominator unknown)"
+        description: |
+          LAION reports 50B+ candidates filtered to 5.85B, but "50B" is estimate (Common Crawl size varies,
+          not all URLs downloadable). True exclusion rate unknowable, making bias analysis difficult.
+        mitigation: "None (LAION did not publish detailed filtering statistics)"
+        impact: "Cannot assess whether exclusions (NSFW, low CLIP) disproportionately affect subgroups"
+
+    access:
+      public: true (March 2022 - December 2023), false (Dec 2023 - Aug 2024, taken offline), true (Aug 2024 - present, Re-LAION-5B)
+      license: "Creative Commons CC-BY 4.0 (metadata), No License (images follow original copyright)"
+      availability: |
+        - Original LAION-5B: Taken offline December 2023 (CSAM discovered)
+        - Re-LAION-5B: Released August 2024 (2,236 URLs removed, 5.85B → 5.847B pairs)
+        - Access: Download via LAION website (parquet files, ~240 GB compressed)
+      restrictions: |
+        Legal: Users responsible for complying with copyright law (images not licensed by LAION)
+        Ethical: LAION removed CSAM URLs but cannot remove cached images or trained models
+        Technical: URLs may be dead (link rot), requires bandwidth to download images
+
+    attested_by:
+      - name: Asbjørn Ras
+        role: analyst
+        affiliation: Public Reason Project
+        date: "2026-04-07"
+        statement: |
+          This Layer 1 provenance is reconstructed from public sources (Schuhmann et al. 2022, Thiel 2023,
+          LAION blog posts) and represents post-hoc analysis, not original dataset documentation. LAION team
+          did not publish detailed exclusion criteria, NSFW thresholds, or safety filtering rationale. Gaps
+          marked as "UNKNOWN" indicate undocumented decisions where internal deliberations not public.
+
+# =============================================================================
+# LAYER 2: CONSEQUENCE SIMULATION
+# =============================================================================
+l2_consequence_simulation:
+
+  # ---------------------------------------------------------------------------
+  # Affected Population
+  # ---------------------------------------------------------------------------
+  affected_population:
+    total: "Billions (5.85B image-text pairs → estimated 1-2B unique depicted individuals + billions of AI system users)"
+    breakdown:
+      - group: "Individuals depicted in images"
+        count: "1-2 billion (estimated unique individuals across 5.85B images)"
+      - group: "CSAM victims (children in abuse imagery)"
+        count: "1,008 confirmed (Stanford validation), 3,226 total flagged (LAION internal review)"
+      - group: "Medical patients (HIPAA-protected imagery)"
+        count: "UNKNOWN (no systematic audit performed)"
+      - group: "NCII victims (non-consensual intimate imagery)"
+        count: "UNKNOWN (no systematic audit, but likely millions given web scraping of adult content)"
+      - group: "Copyright holders (artists, photographers, stock photo companies)"
+        count: "Millions (billions of copyrighted images in dataset)"
+      - group: "AI researchers using LAION-5B"
+        count: "Thousands (2,000+ citations as of 2024)"
+      - group: "Commercial AI companies (Stability AI, etc.)"
+        count: "10-20 major companies"
+      - group: "Generative AI end users (Stable Diffusion, etc.)"
+        count: "10+ million (Stable Diffusion downloads by end of 2022)"
+
+  # ---------------------------------------------------------------------------
+  # Key Variables
+  # ---------------------------------------------------------------------------
+  variables:
+    - variable_id: VAR1_csam_filtering
+      name: "CSAM_filtering_methodology"
+      type: categorical
+      actual_value: "none"
+      alternatives:
+        - "hash_only (PhotoDNA/NCMEC hash matching)"
+        - "hash_ml_combined (hash + ML classifier + human review sample)"
+        - "comprehensive_safety (hash + ML + domain blocking + human review)"
+      rationale_for_actual: |
+        UNKNOWN - LAION did not document why CSAM filtering was omitted. Possible reasons (speculative):
+        (a) Cost: PhotoDNA API costs ~$0.001/image → $5.85M for full dataset
+        (b) Compute: Hash matching requires downloading images, not just metadata (storage/bandwidth)
+        (c) Legal: Accessing CSAM for filtering may violate 18 U.S.C. § 2252 (possession)
+        (d) Ignorance: LAION team may not have considered CSAM risk (academic researchers, not safety experts)
+      sensitivity: |
+        EXTREME - changing from "none" to "hash_only" prevents 2,236 CSAM URLs (Tier 1 harm, federal crime)
+        at cost of $50-100K (PhotoDNA nonprofit rate) + 2-3 months delay. Small input change → massive harm reduction.
+
+    - variable_id: VAR2_medical_privacy
+      name: "Medical_privacy_filtering"
+      type: categorical
+      actual_value: "none"
+      alternatives:
+        - "domain_blocking (exclude .gov, .edu, telemedicine domains)"
+        - "ml_detection (classify medical imagery, remove)"
+        - "comprehensive (domain blocking + ML + PHI redaction)"
+      rationale_for_actual: |
+        UNKNOWN - LAION did not document medical privacy considerations. Likely omitted because:
+        (a) Medical imagery small % of dataset (estimated <1%, 50-100M pairs)
+        (b) No clear legal requirement (HIPAA applies to covered entities, not web scrapers)
+        (c) False positives (medical education content, artistic anatomy, breastfeeding images)
+      sensitivity: |
+        MODERATE - medical imagery <1% of dataset, but HIPAA violations serious (Tier 2 legal harm).
+        Filtering cost: $100-500K (ML classifier + domain blocking). Benefit: prevent legal/ethical harm to patients.
+
+    - variable_id: VAR3_consent_mechanism
+      name: "Consent_mechanism"
+      type: categorical
+      actual_value: "none (opt-out only, post-publication)"
+      alternatives:
+        - "opt_out_prepublication (allow removal requests before March 2022 release)"
+        - "opt_in (only include images with explicit consent for AI training)"
+        - "tiered_consent (opt-in for sensitive content, opt-out for general)"
+      rationale_for_actual: |
+        UNKNOWN - LAION did not document consent rationale. Likely assumptions:
+        (a) "Publicly accessible URL" = "consented to all uses" (false, legally and ethically)
+        (b) Opt-in infeasible (would require contacting billions of individuals)
+        (c) Opt-out sufficient (follows GDPR "legitimate interest" logic, though GDPR untested for AI training)
+      sensitivity: |
+        RADICAL - opt-in consent would reduce dataset size 95%+ (most web users unaware, wouldn't opt in).
+        Unclear if 95% smaller dataset trains comparable models (untested empirical question). Could be:
+        (a) Minor impact (quality > quantity, 250M high-quality consented images sufficient)
+        (b) Catastrophic (long-tail diversity critical for generative models, 95% loss breaks performance)
+
+    - variable_id: VAR4_human_review
+      name: "Human_review_percentage"
+      type: continuous
+      actual_value: "0"
+      units: "percentage of dataset manually inspected"
+      alternatives:
+        - "0.01 (50,000 images, industry minimum for validation)"
+        - "0.1 (500,000 images, robust sampling)"
+        - "1.0 (5.85M images, comprehensive audit)"
+      rationale_for_actual: |
+        Cost/feasibility - manual review at 10 seconds/image costs:
+        - 0.01%: $100K (50K images × $2/image labor cost)
+        - 0.1%: $1M (500K images)
+        - 1.0%: $10M (5.85M images)
+        LAION budget estimated $1-5M total (compute, storage, labor), likely could not afford >0.01% review.
+      sensitivity: |
+        MODERATE - 0.01% review (50K images) would catch obvious CSAM, medical, NCII issues before publication,
+        providing feedback to improve automated classifiers. Cost: $100K. Benefit: detect systematic failures
+        (e.g., NSFW classifier missing CSAM) before distributing 5.85B pairs.
+
+    - variable_id: VAR5_distribution_structure
+      name: "Distribution_structure"
+      type: categorical
+      actual_value: "federated (URLs only, no image hosting)"
+      alternatives:
+        - "hosted_images (download and serve images directly)"
+        - "hybrid (cache subset of images, URLs for rest)"
+      rationale_for_actual: |
+        Cost/legal - hosting 5.85B images costs:
+        (a) Storage: ~50-100 PB raw (assuming avg 10 MB/image) = $10-50M/year cloud storage
+        (b) Bandwidth: ~100-500 PB downloads (1,000s researchers × 5.85B images) = $10-50M bandwidth
+        (c) DMCA: Hosting copyrighted images increases legal liability vs. URLs (takedown burden on LAION)
+        Federated saves $20-100M but sacrifices remediation capability (can't remove cached images).
+      sensitivity: |
+        LOW for prevention (CSAM harm occurs whether hosted or federated), HIGH for remediation (hosted enables
+        deletion post-discovery, federated does not). Trade-off: upfront cost ($20-100M) vs. remediation capability.
+
+  # ---------------------------------------------------------------------------
+  # Core Assumptions
+  # ---------------------------------------------------------------------------
+  assumptions:
+    - assumption_id: A1_public_equals_consented
+      description: |
+        "Publicly accessible web content is consented to all uses, including AI training"
+      justification: UNKNOWN (not explicitly stated by LAION, inferred from lack of consent mechanism)
+      confidence: low (legal precedent unclear, GDPR case law developing, ethical consensus against)
+      sensitivity: |
+        EXTREME - if false, entire dataset based on non-consensual data extraction. Alternative assumption:
+        "Web content consented to viewing, not AI training" would require opt-in consent, reducing dataset 95%+.
+      testable: yes
+      test_method: |
+        Legal: Await court rulings on AI training fair use (Getty Images v. Stability AI, Andersen v. Stability AI)
+        Empirical: Survey web users on consent expectations (e.g., "Did you consent to Flickr uploads training AI?")
+      evidence_for: "US fair use doctrine (transformative use), robots.txt exclusions (LAION respected some)"
+      evidence_against: "EU GDPR (legitimate interest untested), user surveys (most web users object to AI training without consent)"
+
+    - assumption_id: A2_clip_safety_sufficient
+      description: |
+        "CLIP similarity + NSFW classifier sufficient for safety (no additional CSAM, medical, consent filtering needed)"
+      justification: UNKNOWN (not documented, inferred from lack of additional filtering)
+      confidence: very-low (Stanford report disproved - 3,226 CSAM URLs found)
+      sensitivity: |
+        EXTREME - assumption FALSE (empirically disproven). CLIP cannot detect CSAM (age), medical privacy (context),
+        consent (intent). Failure to add hash matching → 21 months federal crime distribution.
+      testable: yes (already tested and failed)
+      test_method: "Audit dataset for CSAM (Stanford did this, found 3,226 URLs)"
+      evidence_for: "None (assumption disproven)"
+      evidence_against: "Stanford Internet Observatory report (Thiel 2023), Re-LAION-5B (2,236 URLs removed Aug 2024)"
+
+    - assumption_id: A3_opt_out_sufficient
+      description: |
+        "Opt-out (removal upon request) sufficient for consent, no opt-in needed"
+      justification: |
+        Inferred from LAION's "Have I Been Trained?" opt-out tool (launched 2023, post-CSAM discovery).
+        Aligns with GDPR "legitimate interest" logic (data processing lawful unless individual objects).
+      confidence: medium (legal basis exists, ethical debate ongoing)
+      sensitivity: |
+        MODERATE - opt-out requires individuals to DISCOVER they're in dataset (impossible for billions),
+        REQUEST removal (friction), and WAIT for removal (delay). Systematic under-removal likely.
+        Alternative (opt-in) would reduce dataset 95%+ but ensure genuine consent.
+      testable: yes
+      test_method: |
+        Empirical: Measure opt-out uptake (how many of 1-2B depicted individuals requested removal?)
+        LAION reports ~10M opt-out requests by 2024 (<1% of depicted individuals), suggesting opt-out insufficient.
+      evidence_for: "GDPR legitimate interest, common practice in web scraping"
+      evidence_against: "Low opt-out uptake (<1%), power imbalance (individuals vs. LAION), discovery burden"
+
+    - assumption_id: A4_link_rot_acceptable
+      description: |
+        "50% of URLs becoming inaccessible within 2 years is acceptable trade-off for cost savings (federated structure)"
+      justification: |
+        Cost savings ($20-100M avoided by not hosting images) outweigh reproducibility loss. Researchers can
+        download images immediately upon dataset release (March 2022), cache locally.
+      confidence: medium (cost-benefit depends on use case)
+      sensitivity: |
+        MODERATE - link rot harms reproducibility (cannot re-train models with same data in 2024 as 2022),
+        but does not harm safety (dead URLs don't distribute CSAM). Trade-off: cost vs. science quality.
+      testable: yes
+      test_method: "Measure URL availability over time (March 2022 → March 2024), estimate % accessible"
+      evidence_for: "Standard practice in web datasets (Common Crawl, Imagen), researchers cache images locally"
+      evidence_against: "Reproducibility crisis in AI (cannot verify Stable Diffusion training if URLs dead)"
+
+  # ---------------------------------------------------------------------------
+  # Scenarios
+  # ---------------------------------------------------------------------------
+  scenarios:
+    - scenario_id: S1_actual_constitution
+      name: "Actual LAION-5B (No CSAM Filtering, March 2022)"
+      description: |
+        Dataset as published March 2022: CLIP filtering + minimal NSFW classifier, zero CSAM hash matching,
+        zero medical privacy filtering, zero consent mechanism, federated distribution (URLs only).
+
+      variable_values:
+        CSAM_filtering_methodology: "none"
+        Medical_privacy_filtering: "none"
+        Consent_mechanism: "none (opt-out only, post-publication)"
+        Human_review_percentage: "0"
+        Distribution_structure: "federated"
+
+      outcomes:
+        - outcome: "CSAM distribution (3,226 URLs, 1,008 confirmed)"
+          magnitude: "Severe (Tier 1 harm - criminal/safety)"
+          confidence: very-high
+          evidence: "Stanford Internet Observatory report (Thiel 2023), LAION takedown (Dec 2023)"
+          affected_population: "1,008 confirmed CSAM victims (children), plus downstream users (10M+ Stable Diffusion users)"
+
+        - outcome: "Medical privacy violations (UNKNOWN scale)"
+          magnitude: "Moderate (Tier 2-3 harm - legal/ethical)"
+          confidence: medium
+          evidence: "No systematic audit, but Common Crawl includes medical domains (telemedicine, patient forums)"
+          affected_population: "UNKNOWN medical patients (estimated thousands-millions)"
+
+        - outcome: "NCII distribution (UNKNOWN scale)"
+          magnitude: "Moderate (Tier 3 harm - ethical)"
+          confidence: medium
+          evidence: "No systematic audit, but Common Crawl scrapes adult content websites (revenge porn likely)"
+          affected_population: "UNKNOWN NCII victims (estimated millions)"
+
+        - outcome: "Copyright infringement at scale"
+          magnitude: "Large (Tier 4 harm - economic)"
+          confidence: very-high
+          evidence: "Getty Images lawsuit ($1.8T damages claimed), Andersen v. Stability AI class action"
+          affected_population: "Millions of artists, photographers, stock photo companies"
+
+        - outcome: "Generative AI acceleration (Stable Diffusion, Aug 2022)"
+          magnitude: "Large benefit (open-source AI, 10M+ users)"
+          confidence: very-high
+          evidence: "Stable Diffusion trained on LAION-2B-en subset, 10M downloads by end of 2022"
+          affected_population: "10M+ generative AI users, thousands of researchers"
+
+        - outcome: "Western/English bias propagation"
+          magnitude: "Large (Tier 5 harm - bias)"
+          confidence: very-high
+          evidence: "2.32B English pairs (40% of dataset), non-Western cultures under-represented"
+          affected_population: "Billions of non-Western AI users (biased outputs)"
+
+    - scenario_id: S2_hash_matching_prepublication
+      name: "CSAM Hash Matching (Counterfactual - Pre-Publication Filtering)"
+      description: |
+        Counterfactual scenario: LAION performs PhotoDNA/NCMEC hash matching before March 2022 release.
+        Cost: $50-100K (nonprofit rate), 2-3 months delay. Removes 2,236 CSAM URLs (Re-LAION-5B count).
+
+      variable_values:
+        CSAM_filtering_methodology: "hash_only (PhotoDNA/NCMEC)"
+        Medical_privacy_filtering: "none"
+        Consent_mechanism: "none"
+        Human_review_percentage: "0"
+        Distribution_structure: "federated"
+
+      outcomes:
+        - outcome: "Known CSAM excluded from distribution"
+          magnitude: "Major benefit (Tier 1 harm prevented)"
+          confidence: very-high
+          evidence: "Re-LAION-5B removed 2,236 URLs (Aug 2024), these would not have been distributed March 2022"
+          affected_population: "1,008 confirmed CSAM victims protected from re-victimization"
+
+        - outcome: "21-month harm window eliminated"
+          magnitude: "Major benefit (March 2022 - Dec 2023 CSAM distribution prevented)"
+          confidence: very-high
+          evidence: "Original LAION-5B distributed CSAM for 21 months before Stanford discovery"
+          affected_population: "Thousands of researchers, millions of users, 1,008 victims"
+
+        - outcome: "Federal crime avoided"
+          magnitude: "Major benefit (18 U.S.C. § 2252 strict liability)"
+          confidence: very-high
+          evidence: "CSAM distribution is federal crime regardless of intent, hash matching prevents liability"
+          affected_population: "LAION team (legal protection), CSAM victims (harm prevention)"
+
+        - outcome: "2-3 month publication delay"
+          magnitude: "Minor cost (March 2022 → June 2022 release)"
+          confidence: high
+          evidence: "Hash matching requires downloading images (bandwidth), API calls (time), human review (validation)"
+          affected_population: "AI researchers (delayed access to dataset)"
+
+        - outcome: "Cost: $50-100K"
+          magnitude: "Negligible cost (0.5-1% of LAION-5B total budget)"
+          confidence: high
+          evidence: "PhotoDNA API nonprofit rate ~$0.001/image × 50-100M images (sample, not full 5.85B)"
+          affected_population: "LAION team (budget impact minimal)"
+
+      comparison_to_actual: |
+        BENEFIT-COST RATIO: Prevent federal crime ($0 financial value, infinite moral value) vs. $50-100K + 2-3
+        months delay. Ratio: INFINITE (no amount of cost justifies CSAM distribution).
+
+        LAION chose S1 (actual) over S2 (hash matching) for UNKNOWN reasons. Possible explanations:
+        (a) Ignorance (did not consider CSAM risk)
+        (b) Cost-benefit error (underweighted Tier 1 harm, overweighted delay)
+        (c) Legal confusion (thought federated URLs exempt from 18 U.S.C. § 2252, incorrect)
+        (d) Technical difficulty (hash matching requires downloading images, added complexity)
+
+    - scenario_id: S3_comprehensive_safety
+      name: "Comprehensive Safety Filtering (Counterfactual - Hash + ML + Human Review)"
+      description: |
+        Counterfactual scenario: LAION implements multi-layered safety filtering:
+        (a) CSAM hash matching (PhotoDNA/NCMEC)
+        (b) Medical image classifier (remove HIPAA-protected imagery)
+        (c) NCII detection (ML classifier + human review sample)
+        (d) 0.01% human review (50,000 images for validation)
+        Cost: $1-1.5M total, 4-6 months delay.
+
+      variable_values:
+        CSAM_filtering_methodology: "hash_ml_human (hash + ML classifier + human review)"
+        Medical_privacy_filtering: "ml_detection (medical image classifier)"
+        Consent_mechanism: "none (opt-out only)"
+        Human_review_percentage: "0.01 (50,000 images)"
+        Distribution_structure: "federated"
+
+      outcomes:
+        - outcome: "Known + unknown CSAM excluded"
+          magnitude: "Major benefit (Tier 1 harm prevented, beyond hash-only)"
+          confidence: high
+          evidence: "ML classifiers detect novel CSAM (not in hash databases), human review catches edge cases"
+          affected_population: "1,008+ CSAM victims (hash matching) + UNKNOWN additional (ML detection)"
+
+        - outcome: "Medical privacy violations prevented"
+          magnitude: "Moderate benefit (Tier 2-3 harm prevented)"
+          confidence: medium
+          evidence: "Medical image classifiers 80-90% accurate (some false positives/negatives), but reduces HIPAA risk"
+          affected_population: "UNKNOWN medical patients (estimated thousands-millions protected)"
+
+        - outcome: "NCII partially excluded"
+          magnitude: "Moderate benefit (Tier 3 harm reduced)"
+          confidence: medium
+          evidence: "NCII detection hard (visually similar to consensual content), but human review catches obvious cases"
+          affected_population: "UNKNOWN NCII victims (estimated partial reduction, not elimination)"
+
+        - outcome: "Dataset size reduction: 5.85B → ~5.5B (5% loss)"
+          magnitude: "Minor cost (long-tail diversity reduced)"
+          confidence: medium
+          evidence: "Safety filtering removes edge cases (medical, NCII, CSAM), some legitimate content (false positives)"
+          affected_population: "AI researchers (slightly smaller dataset, likely negligible model performance impact)"
+
+        - outcome: "Cost: $1-1.5M (10-30% of total budget)"
+          magnitude: "Moderate cost (but within feasibility for $5M project)"
+          confidence: high
+          evidence: "CSAM hash $50-100K + medical ML $200-500K + NCII ML $200-500K + human review $400K + compute $100K"
+          affected_population: "LAION team (budget impact significant but manageable)"
+
+        - outcome: "4-6 month publication delay (March 2022 → July-Sep 2022)"
+          magnitude: "Moderate cost (delayed AI research)"
+          confidence: medium
+          evidence: "ML training (2-3 months), human review (1-2 months), compute (1 month) sequential"
+          affected_population: "AI researchers (delayed Stable Diffusion → Dec 2022 instead of Aug 2022?)"
+
+      comparison_to_actual: |
+        BENEFIT-COST RATIO: Prevent Tier 1-3 harms (CSAM, HIPAA, NCII) vs. $1-1.5M + 4-6 months + 5% dataset shrinkage.
+        Ratio: HIGH (federal crime prevention + legal compliance + ethical integrity vs. moderate cost/delay).
+
+        KEY QUESTION: Would 5% smaller, 4-6 months delayed dataset significantly harm AI research?
+        Answer: UNLIKELY. Stable Diffusion (Aug 2022) used LAION-2B-en subset (2.32B pairs, 40% of full 5.85B).
+        Suggests dataset size flexible, quality > quantity. 5.5B (S3) vs. 5.85B (S1) negligible difference.
+
+    - scenario_id: S4_consent_based_opt_in
+      name: "Consent-Based Dataset (Counterfactual - Opt-In Only)"
+      description: |
+        Radical counterfactual: LAION only includes images where depicted individuals/copyright holders
+        explicitly consented to AI training use. Requires partnerships with stock photo companies (Getty,
+        Shutterstock opted-in tiers), Creative Commons BY licenses, Flickr users who check "AI training OK" box.
+        Scale: Estimated 50-250M pairs (95%+ reduction from 5.85B), cost similar to S1 (no additional filtering,
+        but curation labor $500K-1M).
+
+      variable_values:
+        CSAM_filtering_methodology: "none_needed (consent mechanism excludes CSAM by design)"
+        Medical_privacy_filtering: "none_needed (consent excludes medical imagery)"
+        Consent_mechanism: "opt_in (explicit consent required)"
+        Human_review_percentage: "0.1 (500,000 images to validate consent)"
+        Distribution_structure: "federated or hosted (cost similar)"
+
+      outcomes:
+        - outcome: "Zero CSAM (by design)"
+          magnitude: "Major benefit (Tier 1 harm eliminated)"
+          confidence: very-high
+          evidence: "Consent mechanisms exclude minors (cannot consent), CSAM inherently non-consensual"
+          affected_population: "All potential CSAM victims protected"
+
+        - outcome: "Zero medical privacy violations"
+          magnitude: "Major benefit (Tier 2 harm eliminated)"
+          confidence: very-high
+          evidence: "Patients unlikely to consent to medical imagery for AI training (privacy expectations)"
+          affected_population: "All medical patients protected"
+
+        - outcome: "Zero NCII"
+          magnitude: "Major benefit (Tier 3 harm eliminated)"
+          confidence: very-high
+          evidence: "Consent requirement excludes revenge porn, hacked images, stolen content"
+          affected_population: "All NCII victims protected"
+
+        - outcome: "Minimal copyright issues"
+          magnitude: "Major benefit (Tier 4 harm minimized)"
+          confidence: high
+          evidence: "Opt-in includes license verification (CC-BY, paid stock licenses), lawsuits unlikely"
+          affected_population: "Copyright holders protected, LAION legal risk minimized"
+
+        - outcome: "Dataset size: 50-250M pairs (95%+ reduction)"
+          magnitude: "UNKNOWN cost (untested whether small consented dataset trains comparable models)"
+          confidence: very-low
+          evidence: "No large-scale generative models trained on consent-only datasets (empirical gap)"
+          affected_population: "AI researchers (unknown impact on model quality)"
+
+        - outcome: "Western bias likely WORSE (consent infrastructure concentrated in Global North)"
+          magnitude: "Moderate cost (Tier 5 harm amplified)"
+          confidence: high
+          evidence: "Stock photo companies, CC-BY content, consent tools disproportionately Western/English"
+          affected_population: "Non-Western communities (even less represented than S1)"
+
+      comparison_to_actual: |
+        ETHICAL TRADE-OFF: S4 eliminates Tier 1-4 harms (CSAM, medical, NCII, copyright) but:
+        (a) Unknown if 250M consented images trains viable models (vs. 5.85B non-consented)
+        (b) Likely amplifies Western bias (consent infrastructure Western-heavy)
+        (c) Delays open-source AI (smaller dataset → worse models → proprietary labs win?)
+
+        CRITICAL UNKNOWN: Is dataset size (5.85B) necessary for Stable Diffusion quality, or would 250M
+        high-quality consented images suffice? No empirical evidence either way (untested). If quality >
+        quantity, S4 superior on all dimensions. If quantity critical, S4 kills open-source generative AI.
+
+        LAION chose S1 (non-consented scale) over S4 (consented small) likely because:
+        (a) Assumed scale necessary (untested)
+        (b) Consent infrastructure non-existent in 2021-2022 (no "AI training consent" checkboxes on Flickr)
+        (c) Competitive pressure (proprietary labs use non-consented data, open-source must match scale)
+
+  # ---------------------------------------------------------------------------
+  # Sensitivity Analysis
+  # ---------------------------------------------------------------------------
+  sensitivity_analysis: |
+    CRITICAL VARIABLE: CSAM_filtering_methodology
+    - Changing from "none" (S1 actual) to "hash_only" (S2) eliminates 2,236 known CSAM URLs → prevents Tier 1
+      harm at 5-10% of dataset cost ($50-100K vs $1-5M LAION-5B total). Sensitivity: EXTREME - small input
+      change (add hash matching) prevents federal crime distribution.
+    - Changing to "hash_ml_human" (S3) catches additional unknown CSAM + medical + NCII → prevents Tier 1-3
+      harms at 50-100% of dataset cost ($1-1.5M). Sensitivity: VERY HIGH - moderate input change prevents
+      multiple harm tiers.
+
+    MODERATE VARIABLE: Human_review_percentage
+    - 0% (S1 actual) → 0.01% (S3) detects systematic issues pre-publication. Cost: $400K, 2 months delay.
+      Benefit: Catches edge cases, validates classifiers, provides feedback loop. Sensitivity: MODERATE -
+      0.01% sample small but representative, catches obvious failures (CSAM, medical, explicit NCII).
+
+    LOW SENSITIVITY: Distribution_structure
+    - Federated (S1-S3) vs Hosted (S4) affects remediation capability (can't retrieve cached images) but
+      doesn't prevent harm proactively. Storage cost difference: ~$10-50M saved by federated. Sensitivity: LOW
+      for prevention (harm occurs either way), HIGH for remediation (hosted enables image deletion post-discovery).
+
+    RADICAL VARIABLE: Consent_mechanism
+    - None (S1-S3) vs Opt-in (S4) eliminates all involuntary content but reduces scale 95%+. Untested whether
+      95% smaller dataset trains comparable models. Sensitivity: UNKNOWN (empirical gap) - could be minor (quality
+      matters more than quantity) or catastrophic (long tail diversity critical for generative models).
+
+  # ---------------------------------------------------------------------------
+  # Limitations and Unknowns
+  # ---------------------------------------------------------------------------
+  limitations_and_unknowns:
+    - limitation: "No internal LAION documentation available"
+      impact: |
+        This Layer 2 analysis reconstructed from public sources (papers, blog posts, Stanford report). Cannot
+        verify internal deliberations (e.g., "Why no CSAM filtering?" - UNKNOWN, not documented). Scenarios
+        S2-S4 are counterfactuals, not actual alternatives LAION considered.
+
+    - limitation: "Cost estimates speculative"
+      impact: |
+        PhotoDNA pricing, ML training costs, human review rates estimated from industry standards (Microsoft,
+        Scale AI public pricing). Actual LAION budget unknown ($1-5M range estimated from compute/labor). Cost
+        figures ±50% uncertainty.
+
+    - limitation: "Counterfactual model quality unknown (S4 consent-based)"
+      impact: |
+        No large-scale generative models trained on consent-only datasets. Cannot assess whether 250M consented
+        images (S4) would produce Stable Diffusion-quality models or fail catastrophically. Empirical gap prevents
+        definitive S1 vs S4 comparison.
+
+    - limitation: "Harm quantification incomplete (medical, NCII)"
+      impact: |
+        CSAM quantified (3,226 URLs, 1,008 validated), but medical privacy violations and NCII victims UNKNOWN
+        (no systematic audit). May significantly underestimate Tier 2-3 harms in S1 outcomes.
+
+    - limitation: "Link rot makes retrospective audit hard"
+      impact: |
+        50% of LAION-5B URLs dead by 2024 (link rot). Cannot fully audit dataset for medical/NCII content
+        post-hoc. Harm estimates based on partial data (accessible URLs only).
+
+  # ---------------------------------------------------------------------------
+  # Notes
+  # ---------------------------------------------------------------------------
+  notes: |
+    CRITICAL VARIABLE: CSAM_filtering_methodology - changing from "none" to "hash_only" eliminates 2,236 known
+    CSAM URLs, prevents Tier 1 harm at 5-10% of dataset cost ($50-100K vs $1-5M LAION-5B total). Small input
+    change prevents federal crime distribution.
+
+    RADICAL VARIABLE: Consent_mechanism - None (S1-S3) vs Opt-in (S4) eliminates all involuntary content but
+    reduces scale 95%+. Untested whether 95% smaller dataset trains comparable models. Empirical gap.
+
+# =============================================================================
+# LAYER 3: EMPATHY MAPPING
+# =============================================================================
+# Who is affected by this dataset and how? Focus on representation disparities,
+# absent nodes, vulnerable populations, and distributional welfare.
+
+l3_empathy_mapping:
+
+  # ---------------------------------------------------------------------------
+  # Affected Population Overview
+  # ---------------------------------------------------------------------------
+  affected_population:
+    total_scale: billions (estimated 5+ billion people depicted or affected globally)
+    geographic_scope: Global (Common Crawl sources from worldwide web, dataset used internationally)
+    temporal_scope: |
+      Immediate (March 2022 - December 2023): 5.85 billion URL distribution including 3,226 CSAM URLs
+      Long-term (2022 - present): Generative AI models (Stable Diffusion, etc.) trained on LAION-derived
+      datasets continue to be used billions of times, perpetuating representation biases and safety gaps.
+
+    direct_stakeholders: |
+      - LAION team (creators, 20-30 people)
+      - AI researchers using dataset (thousands globally)
+      - Commercial AI companies (Stability AI, etc., using LAION for training)
+      - Generative AI users (millions creating images from LAION-trained models)
+
+    indirect_stakeholders: |
+      - Individuals depicted in images (billions, involuntary participants)
+      - CSAM victims (children depicted in abuse material - no consent possible)
+      - Medical patients (appearing in HIPAA-violating imagery)
+      - Non-consensual intimate imagery (NCII) victims
+      - Copyright holders (artists, photographers, Getty Images, etc.)
+      - Web users generally (anyone whose uploaded content became training data)
+      - Non-Western communities (under-represented in dataset, biased model outputs)
+
+  # ---------------------------------------------------------------------------
+  # Stakeholder Groups (10 groups with representation analysis)
+  # ---------------------------------------------------------------------------
+  stakeholder_groups:
+
+    # -------------------------------------------------------------------------
+    # Group 1: LAION Team (Creators) - HIGH REPRESENTATION
+    # -------------------------------------------------------------------------
+    - group_id: SG1_laion_team
+      name: LAION Team (Dataset Creators)
+      size: 20-30 core contributors
+      representation_in_governance: FULL (100%)
+      decision_power: Complete (constitutive authority over dataset design, filtering, distribution)
+
+      benefits:
+        - Academic recognition (publications: Schuhmann et al. 2021, 2022)
+        - Community reputation (enabling open-source generative AI)
+        - Influence over AI research direction (5.85B scale set standard for image-text datasets)
+
+      harms:
+        - Reputational damage (CSAM discovery December 2023, criminal investigation concerns)
+        - Legal exposure (potential CSAM distribution liability under 18 U.S.C. § 2252)
+        - Moral distress (discovering dataset facilitated child exploitation)
+
+      representation_gap: NONE (authors fully represented in decision-making)
+      harm_severity: TIER 2 - LEGAL (potential criminal liability), TIER 3 - ETHICAL (reputational)
+
+    # -------------------------------------------------------------------------
+    # Group 2: AI Researchers & Community - HIGH REPRESENTATION
+    # -------------------------------------------------------------------------
+    - group_id: SG2_researchers
+      name: AI Researchers & Academic Community
+      size: Thousands globally (LAION-5B cited 2,000+ times as of 2024)
+      representation_in_governance: HIGH (researchers participated in LAION Discord, provided feedback)
+      decision_power: Medium (influenced feature requests, flagged issues, but no constitutive authority)
+
+      benefits:
+        - Open access to state-of-the-art dataset (vs proprietary alternatives like Google's JFT-300M)
+        - Research publications enabled (Stable Diffusion, DALL-E 2 reproductions, etc.)
+        - Accelerated research timelines (LAION-5B available March 2022, Stable Diffusion Aug 2022)
+
+      harms:
+        - Ethical compromise (using dataset with CSAM, NCII, medical privacy violations)
+        - Research invalidation risk (results based on compromised data may be questioned)
+        - Complicity concerns (benefiting from child exploitation imagery)
+
+      representation_gap: MODERATE (voice heard but not decision-making authority)
+      harm_severity: TIER 3 - ETHICAL (complicity, research integrity)
+
+    # -------------------------------------------------------------------------
+    # Group 3: Commercial AI Companies - HIGH REPRESENTATION
+    # -------------------------------------------------------------------------
+    - group_id: SG3_commercial_companies
+      name: Commercial AI Companies (Stability AI, etc.)
+      size: 10-20 major companies using LAION for training
+      representation_in_governance: HIGH (Stability AI founder funded LAION infrastructure)
+      decision_power: Medium-High (financial influence, early access, feature requests)
+
+      benefits:
+        - Free training data ($0 licensing cost vs millions for curated datasets)
+        - Competitive advantage (Stability AI released Stable Diffusion Aug 2022, ahead of DALL-E 2 API)
+        - Revenue generation (Stability AI valued at $1 billion, DreamStudio subscriptions)
+
+      harms:
+        - Legal liability (potential copyright infringement lawsuits - Getty Images v. Stability AI Jan 2023)
+        - Brand damage (association with CSAM distribution, NCII generation capabilities)
+        - Regulatory scrutiny (EU AI Act high-risk classification, UK Online Safety Act)
+
+      representation_gap: MINIMAL (companies had significant influence on dataset priorities)
+      harm_severity: TIER 2 - LEGAL (copyright, CSAM liability), TIER 4 - ECONOMIC (lawsuit damages)
+
+    # -------------------------------------------------------------------------
+    # Group 4: Generative AI Users - LOW REPRESENTATION
+    # -------------------------------------------------------------------------
+    - group_id: SG4_ai_users
+      name: Generative AI End Users
+      size: Millions (Stable Diffusion 10M+ users by end of 2022)
+      representation_in_governance: NONE (no input into LAION-5B dataset constitution)
+      decision_power: None (downstream recipients of model outputs)
+
+      benefits:
+        - Access to generative AI tools (Stable Diffusion open-sourced Aug 2022)
+        - Creative capabilities (text-to-image generation, artistic applications)
+        - Low/no cost (vs proprietary tools like DALL-E 2, Midjourney subscriptions)
+
+      harms:
+        - Unintentional CSAM generation (models trained on LAION reproduce abusive imagery)
+        - Legal exposure (generating/possessing CSAM-adjacent content unknowingly)
+        - Ethical complicity (using tools trained on exploitation imagery)
+        - Bias propagation (models reproduce Western/male biases in outputs)
+
+      representation_gap: SEVERE (billions of uses, zero governance representation)
+      harm_severity: TIER 1-2 (CSAM generation risk), TIER 3 (ethical complicity), TIER 5 (bias)
+
+    # -------------------------------------------------------------------------
+    # Group 5: CHILDREN DEPICTED IN CSAM - CRITICAL ABSENT NODE (TIER 1)
+    # -------------------------------------------------------------------------
+    - group_id: SG5_csam_victims
+      name: Children Depicted in Child Sexual Abuse Material
+      size: UNKNOWN (Stanford found 3,226 CSAM URLs, 1,008 externally validated)
+      representation_in_governance: NONE (absolute absence - victims cannot consent, images illegal)
+      decision_power: None (zero representation, zero remediation, zero notification)
+
+      benefits: NONE
+
+      harms:
+        - TIER 1 - CRIMINAL/SAFETY: Re-victimization (CSAM distribution perpetuates original abuse)
+        - TIER 1 - CRIMINAL/SAFETY: Normalization of abuse (models trained on CSAM may generate similar imagery)
+        - TIER 2 - LEGAL: Violation of federal law (18 U.S.C. § 2252 - CSAM distribution)
+        - TIER 3 - ETHICAL: Dignity violation (children's images exploited without any possible consent)
+        - TIER 3 - ETHICAL: Lifetime trauma (victims may discover their abuse imagery trained AI models)
+
+      representation_gap: ABSOLUTE AND IRREMEDIABLE (children cannot consent, no mechanism for voice)
+      harm_severity: TIER 1 - CRIMINAL/SAFETY (child protection is absolute priority, federal crime)
+
+      vulnerable_population_flags:
+        - Children (cannot provide informed consent under any circumstance)
+        - Crime victims (CSAM production is inherently abusive, coercive)
+        - Lifelong harm (re-victimization continues as long as imagery circulates)
+        - Legal protection (18 U.S.C. § 2252, NCMEC mandatory reporting, strict liability)
+
+      notes: |
+        This is the MOST CRITICAL absent node in LAION-5B. Unlike other stakeholder groups (copyright
+        holders, medical patients, NCII victims), CSAM victims are children who:
+        1. Cannot consent to image collection (legal incapacity)
+        2. Cannot consent to CSAM creation (inherently coercive, illegal)
+        3. Cannot be notified or remediated (identifying victims would require viewing illegal content)
+        4. Suffer TIER 1 harm (criminal/safety) not amenable to utilitarian trade-offs
+
+        ORP's value here: If LAION had used Layer 3 empathy mapping BEFORE publication, this stakeholder
+        group would have been identified as "vulnerable population requiring absolute protection," triggering
+        Layer 2 scenario analysis (S2: hash matching) at negligible cost ($50-100K, 2-3 month delay) to
+        prevent 12+ months of federal crime distribution.
+
+    # -------------------------------------------------------------------------
+    # Group 6: Medical Patients - ABSENT NODE (TIER 2)
+    # -------------------------------------------------------------------------
+    - group_id: SG6_medical_patients
+      name: Medical Patients (HIPAA-Protected Individuals)
+      size: UNKNOWN (no systematic audit for medical imagery in LAION-5B)
+      representation_in_governance: NONE (patients unaware their medical data in dataset)
+      decision_power: None (no consent mechanism, no notification, no opt-out)
+
+      benefits: NONE (involuntary participants)
+
+      harms:
+        - TIER 2 - LEGAL: HIPAA violations (medical imagery scraped from web may include PHI)
+        - TIER 3 - ETHICAL: Privacy violation (medical conditions exposed without consent)
+        - TIER 3 - ETHICAL: Dignity harm (sensitive health information becomes training data)
+        - TIER 4 - ECONOMIC: Discrimination risk (models trained on medical data may reveal conditions)
+
+      representation_gap: ABSOLUTE (patients have no idea their data is in LAION-5B)
+      harm_severity: TIER 2 - LEGAL (HIPAA), TIER 3 - ETHICAL (privacy, dignity)
+
+      vulnerable_population_flags:
+        - Health data subjects (HIPAA-protected class)
+        - Privacy expectation (medical information presumed confidential)
+        - No consent mechanism (web scraping bypasses medical consent protocols)
+
+      notes: |
+        Common Crawl (LAION-5B source) includes URLs from medical websites, telemedicine platforms, patient
+        forums. No filtering for HIPAA-protected health information (PHI) was performed. Unlike CSAM
+        (illegal inherently), medical images may be legally posted but ethically protected by healthcare
+        privacy norms. Remediation difficulty: identifying medical imagery requires domain expertise,
+        no hash databases exist (unlike CSAM).
+
+    # -------------------------------------------------------------------------
+    # Group 7: Non-Consensual Intimate Imagery (NCII) Victims - ABSENT NODE (TIER 3)
+    # -------------------------------------------------------------------------
+    - group_id: SG7_ncii_victims
+      name: Non-Consensual Intimate Imagery (NCII) Victims
+      size: UNKNOWN (no systematic audit for NCII in LAION-5B, Stanford report focused on CSAM)
+      representation_in_governance: NONE (victims unaware their imagery in dataset)
+      decision_power: None (no consent, no notification, no removal mechanism until 2023 opt-out)
+
+      benefits: NONE (involuntary participants)
+
+      harms:
+        - TIER 3 - ETHICAL: Severe privacy violation (intimate imagery shared without consent)
+        - TIER 3 - ETHICAL: Dignity harm (sexual imagery becomes training data)
+        - TIER 3 - ETHICAL: Re-victimization (original NCII distribution compounded by AI training)
+        - TIER 2 - LEGAL: Potential state law violations (many US states criminalize NCII distribution)
+        - TIER 4 - ECONOMIC: Reputational damage (NCII victims face employment, social consequences)
+
+      representation_gap: ABSOLUTE (victims have no idea their imagery in dataset, no notification)
+      harm_severity: TIER 3 - ETHICAL (privacy, dignity, consent), TIER 2 - LEGAL (state NCII laws)
+
+      vulnerable_population_flags:
+        - Abuse victims (NCII often created through coercion, domestic violence, revenge)
+        - Consent violated (images shared against subject's will)
+        - Gendered harm (NCII disproportionately affects women)
+
+      notes: |
+        "Revenge porn" and non-consensual intimate imagery (NCII) likely present in LAION-5B due to:
+        1. Common Crawl scrapes from pornography websites (large % of web traffic)
+        2. No consent verification mechanism (assumes posted = consented)
+        3. Federated structure (URLs only → can't inspect images for consent markers)
+
+        Unlike CSAM (federal crime, hash databases exist), NCII remediation harder:
+        - No centralized hash database for NCII (privacy concerns for victims)
+        - State-level laws vary (not uniform federal crime)
+        - Victim identification requires self-reporting (many unaware of LAION-5B)
+
+    # -------------------------------------------------------------------------
+    # Group 8: Copyright Holders (Artists, Photographers, Getty) - MODERATE REPRESENTATION
+    # -------------------------------------------------------------------------
+    - group_id: SG8_copyright_holders
+      name: Copyright Holders (Artists, Photographers, Stock Photo Companies)
+      size: Millions (billions of images in LAION-5B, each with copyright holder)
+      representation_in_governance: NONE (creators not consulted, no opt-in mechanism)
+      decision_power: None at constitution; Legal recourse post-hoc (lawsuits filed 2022-2023)
+
+      benefits:
+        - Potential exposure (AI-generated art may increase interest in original artists - speculative)
+
+      harms:
+        - TIER 4 - ECONOMIC: Copyright infringement (images used for commercial AI training without license)
+        - TIER 4 - ECONOMIC: Market displacement (generative AI competes with stock photography, illustration)
+        - TIER 2 - LEGAL: Litigation costs (Getty Images v. Stability AI, Andersen v. Stability AI class action)
+        - TIER 3 - ETHICAL: Attribution failure (no credit given to artists whose work trains models)
+        - TIER 4 - ECONOMIC: Devaluation of creative labor (AI produces "in the style of" outputs instantly)
+
+      representation_gap: SEVERE (billions of copyrighted works, zero creator consent)
+      harm_severity: TIER 4 - ECONOMIC (market harm, infringement), TIER 2 - LEGAL (lawsuits)
+
+      notes: |
+        Multiple lawsuits filed 2022-2023:
+        - Getty Images v. Stability AI (Jan 2023): $1.8 trillion in statutory damages claimed
+        - Andersen v. Stability AI (Jan 2023): Class action on behalf of artists
+        - Legal theory: Fair use defense (Stability AI) vs. derivative works (plaintiffs)
+
+        Key tension: US Copyright Act allows "fair use" for transformative purposes, but generative AI
+        outputs can closely mimic training data (watermarks reproduced, recognizable styles). Courts
+        have not settled whether AI training is transformative use or infringement.
+
+    # -------------------------------------------------------------------------
+    # Group 9: Web Users Generally (Depicted Individuals) - MINIMAL REPRESENTATION
+    # -------------------------------------------------------------------------
+    - group_id: SG9_web_users_depicted
+      name: Web Users Generally (Individuals Depicted in Images)
+      size: Billions (5.85 billion image-text pairs likely depict 1-2 billion unique individuals)
+      representation_in_governance: NONE (no notification, no consent mechanism, no opt-out until 2023)
+      decision_power: None (involuntary participants in training data)
+
+      benefits:
+        - Indirect: Access to generative AI tools trained on LAION-5B (if user also uses Stable Diffusion)
+
+      harms:
+        - TIER 3 - ETHICAL: Privacy violation (images scraped without individual consent)
+        - TIER 5 - BIAS: Biased representation (Western/English-language web over-represented)
+        - TIER 3 - ETHICAL: Dignity harm (images used for purposes never intended by uploader/subject)
+        - TIER 4 - ECONOMIC: Potential misuse (deepfakes, impersonation, generated from training data)
+
+      representation_gap: SEVERE (billions depicted, zero governance voice)
+      harm_severity: TIER 3 - ETHICAL (privacy, dignity), TIER 5 - BIAS (demographic)
+
+      notes: |
+        "Depicted individuals" includes:
+        - People who uploaded images to social media (Instagram, Flickr, Facebook)
+        - People photographed by others who uploaded images
+        - People in public spaces captured by street photography
+        - People in news imagery, event photography, etc.
+
+        Key issue: Common Crawl scrapes public web, but "publicly accessible" ≠ "consented to AI training."
+        Many web users assumed "posted to Flickr" means "friends can see," not "becomes training data for
+        global generative AI models." No mechanism to distinguish these consent levels.
+
+    # -------------------------------------------------------------------------
+    # Group 10: Non-Western Communities - ABSENT NODE (TIER 5)
+    # -------------------------------------------------------------------------
+    - group_id: SG10_non_western_communities
+      name: Non-Western Communities (Global South, Non-English Speakers)
+      size: Billions (80%+ of global population outside Western/English-speaking contexts)
+      representation_in_governance: NONE (LAION team primarily Western researchers, dataset Western-skewed)
+      decision_power: None (no input into dataset constitution, no representation in governance)
+
+      benefits:
+        - Minimal: Access to Stable Diffusion (if user has internet, hardware to run models locally)
+
+      harms:
+        - TIER 5 - BIAS: Under-representation in dataset (Common Crawl skews Western/English)
+        - TIER 5 - BIAS: Model performance degradation (Stable Diffusion worse at non-Western cultural contexts)
+        - TIER 3 - ETHICAL: Cultural erasure (Western aesthetic norms encoded as "default" in AI models)
+        - TIER 4 - ECONOMIC: Competitive disadvantage (Western companies train better models on Western data)
+
+      representation_gap: SEVERE (80% of global population, <20% of dataset by estimate)
+      harm_severity: TIER 5 - BIAS (demographic), TIER 3 - ETHICAL (cultural)
+
+      notes: |
+        Common Crawl (LAION-5B source) is English-heavy, Western-heavy due to:
+        1. English-language web larger and better crawled (Google indexing bias)
+        2. Web infrastructure concentrated in Global North (server locations, CDN performance)
+        3. CLIP filtering (OpenAI CLIP trained on English captions → LAION-5B inherits bias)
+
+        Consequence: Stable Diffusion prompts like "a beautiful wedding" default to Western white weddings,
+        not Indian, Nigerian, or Chinese wedding traditions. "Professional attire" defaults to Western
+        business suits, not saris, dashikis, or other cultural norms.
+
+  # ---------------------------------------------------------------------------
+  # Minority Stress Test
+  # ---------------------------------------------------------------------------
+  minority_stress_test:
+    test_description: |
+      Evaluate whether LAION-5B's constitution disproportionately harms minority or vulnerable groups
+      relative to majority/privileged groups. Focus on groups with <10% representation in governance
+      despite >10% stake in outcomes.
+
+    vulnerable_populations_identified:
+      - group: CHILDREN DEPICTED IN CSAM (SG5)
+        representation: 0% (absolute absence, cannot consent)
+        stake: 100% of harm (Tier 1 - criminal/safety)
+        disparity: EXTREME (zero voice, maximum harm)
+        remedy_available: None (federated structure prevents image removal, only URL delisting)
+        stress_test_result: FAILED - Constitutive decision (no CSAM filtering) imposed irreversible Tier 1 harm on legally protected class with zero representation
+
+      - group: MEDICAL PATIENTS (SG6)
+        representation: 0% (unaware of inclusion)
+        stake: High (HIPAA violations, privacy, dignity)
+        disparity: SEVERE (zero voice, Tier 2-3 harm)
+        remedy_available: Partial (opt-out tool launched 2023, but can't remove cached images)
+        stress_test_result: FAILED - HIPAA-protected class excluded from governance, no pre-publication filtering
+
+      - group: NCII VICTIMS (SG7)
+        representation: 0% (unaware of inclusion)
+        stake: High (privacy, dignity, re-victimization)
+        disparity: SEVERE (zero voice, Tier 3 harm)
+        remedy_available: Partial (opt-out tool, but victim must discover inclusion first)
+        stress_test_result: FAILED - Abuse victims excluded from governance, no consent mechanism
+
+      - group: NON-WESTERN COMMUNITIES (SG10)
+        representation: <5% (LAION team Western-dominated, Common Crawl Western-skewed)
+        stake: 80% of global population
+        disparity: SEVERE (billions affected, near-zero governance voice)
+        remedy_available: None (dataset constitution baked in, bias propagates to all trained models)
+        stress_test_result: FAILED - Global majority under-represented in both governance and dataset content
+
+    comparative_analysis: |
+      PRIVILEGED GROUPS (high representation, low harm):
+      - LAION Team (SG1): 100% governance representation, benefits (recognition) > harms (reputational risk)
+      - AI Researchers (SG2): High representation, benefits (open access data) > harms (ethical concerns)
+      - Commercial Companies (SG3): High representation, massive benefits ($1B+ valuations, free training data)
+
+      VULNERABLE GROUPS (zero representation, high harm):
+      - CSAM Victims (SG5): 0% representation, Tier 1 harm (federal crime), zero remedy
+      - Medical Patients (SG6): 0% representation, Tier 2-3 harm (HIPAA, privacy), partial remedy
+      - NCII Victims (SG7): 0% representation, Tier 3 harm (dignity, consent), partial remedy
+      - Non-Western Communities (SG10): <5% representation, Tier 5 harm (bias), zero remedy
+
+      DISPARITY PATTERN: Benefits concentrated among Western AI researchers/companies (20% of global
+      population), harms concentrated among vulnerable populations and Global South (80% of global
+      population). Classic "diffuse harms, concentrated benefits" structure.
+
+    minority_stress_test_conclusion: |
+      LAION-5B's constitutive decisions SYSTEMATICALLY disadvantaged vulnerable and minority groups:
+
+      1. CHILDREN (CSAM victims): Zero representation, maximum harm (Tier 1 criminal), zero remedy
+      2. ABUSE VICTIMS (medical patients, NCII victims): Zero representation, Tier 2-3 harms, partial remedy
+      3. GLOBAL MAJORITY (non-Western): Near-zero representation, Tier 5 harm (bias), zero remedy
+
+      Meanwhile, WESTERN AI COMMUNITY (LAION team, researchers, companies) held 100% governance power,
+      captured 90%+ of benefits (publications, revenue, research access), and bore minimal harms
+      (reputational risk, lawsuit costs).
+
+      ORP's value: Layer 3 empathy mapping would have surfaced this disparity BEFORE publication, enabling
+      constitutive remedies (CSAM filtering, consent mechanisms, linguistic diversity targets) rather than
+      post-hoc damage control after 12+ months of harm distribution.
+
+  # ---------------------------------------------------------------------------
+  # Net Welfare Assessment
+  # ---------------------------------------------------------------------------
+  net_welfare_assessment:
+    overall_assessment: NEGATIVE (harms to vulnerable populations outweigh benefits to AI community)
+
+    benefits_summary: |
+      QUANTIFIED BENEFITS:
+      - 2,000+ research papers enabled (academic productivity)
+      - $1B+ commercial value created (Stability AI valuation, DreamStudio revenue)
+      - 10M+ users gained access to generative AI (Stable Diffusion downloads by end of 2022)
+      - Open-source alternative to proprietary models (vs DALL-E 2, Midjourney paywalls)
+
+      BENEFICIARY CONCENTRATION: 95%+ benefits captured by Western AI researchers, companies, users
+      (20% of global population).
+
+    harms_summary: |
+      QUANTIFIED HARMS:
+      - 3,226 CSAM URLs distributed for 12+ months (Stanford report, Tier 1 harm)
+      - 1,008 externally validated CSAM images (child victims re-victimized, federal crime)
+      - UNKNOWN medical patients (HIPAA violations, Tier 2 harm)
+      - UNKNOWN NCII victims (privacy violations, Tier 3 harm)
+      - Billions depicted without consent (privacy, dignity, Tier 3-5 harms)
+      - $1.8 trillion in copyright damages claimed (Getty lawsuit, Tier 4 harm)
+      - 80% of global population under-represented (bias, Tier 5 harm)
+
+      HARM CONCENTRATION: 80%+ harms borne by vulnerable populations (CSAM victims, abuse victims)
+      and Global South (bias, under-representation).
+
+    utilitarian_analysis: |
+      CLASSICAL UTILITARIAN CALCULATION (maximize aggregate welfare):
+      Benefits: 2,000 papers + $1B value + 10M users > Harms: 1,008 CSAM victims + unknown others
+      → Conclusion: Net positive (benefits outweigh harms in aggregate)
+
+      HOWEVER, this analysis is MORALLY INADEQUATE for two reasons:
+
+      1. INCOMMENSURABILITY: Tier 1 harms (CSAM, child protection) are NOT tradeable against Tier 4-5
+         benefits (research papers, commercial value, user access). Children's safety is an absolute
+         constraint, not a factor in utility calculus. 18 U.S.C. § 2252 does not include "scientific
+         research" exception—federal law treats CSAM distribution as strict liability crime regardless
+         of aggregate benefits.
+
+      2. DISTRIBUTIONAL INJUSTICE: Even if benefits outweigh harms in aggregate, the DISTRIBUTION is
+         unjust: privileged groups (Western AI community) capture benefits while imposing harms on
+         vulnerable groups (CSAM victims, abuse survivors, Global South). Rawlsian justice principle:
+         inequalities permissible only if they benefit the least advantaged. LAION-5B violated this—
+         least advantaged (children, abuse victims) bore maximum harm for others' benefit.
+
+    deontological_analysis: |
+      KANTIAN CATEGORICAL IMPERATIVE: "Act only according to that maxim whereby you can at the same time
+      will that it should become a universal law."
+
+      LAION-5B's maxim: "Scrape all publicly accessible web content for AI training, regardless of consent,
+      to accelerate AI research for the common good."
+
+      Universalization test: If ALL datasets adopted this maxim, consequences would include:
+      - Systematic CSAM distribution (every dataset would contain child exploitation material)
+      - Medical privacy collapse (all HIPAA-protected data becomes training data)
+      - Consent meaningless (no distinction between "public" and "consented to AI use")
+
+      Conclusion: Maxim CANNOT be universalized without violating human dignity (Kant's second formulation:
+      treat humanity as end in itself, never merely as means). CSAM victims, medical patients, NCII victims
+      treated as MEANS (training data) to others' ENDS (AI research), without consent or representation.
+
+    harm_prioritization: |
+      NOT ALL HARMS ARE EQUAL. Prioritization by tier:
+
+      TIER 1 (CRIMINAL/SAFETY): CSAM distribution
+      → 1,008 validated victims, federal crime, strict liability
+      → ABSOLUTE PRIORITY (no trade-offs permissible)
+      → Cost to prevent: $50-100K, 2-3 month delay (hash matching pre-publication)
+      → Benefit-cost ratio: Infinite (prevent federal crime vs negligible cost)
+
+      TIER 2 (LEGAL): HIPAA violations, copyright infringement
+      → Medical patients (UNKNOWN count), copyright holders (millions)
+      → HIGH PRIORITY (legal compliance required)
+      → Cost to prevent: $100-500K (medical image detection, license filtering)
+
+      TIER 3 (ETHICAL): NCII victims, privacy violations, dignity harms
+      → NCII victims (UNKNOWN count), billions depicted without consent
+      → MEDIUM PRIORITY (ethical norms, not legal mandates in all jurisdictions)
+      → Cost to prevent: $500K-1M (consent mechanisms, content moderation)
+
+      TIER 4 (ECONOMIC): Copyright market harm
+      → Artists, stock photo companies (millions affected, $1.8T damages claimed)
+      → LOWER PRIORITY (economic interests, legal disputes ongoing)
+
+      TIER 5 (BIAS): Demographic under-representation
+      → Non-Western communities (billions affected, model performance gaps)
+      → LOWEST PRIORITY (quality/fairness issue, not safety/legal)
+      → Cost to prevent: $1-5M (targeted crawling, linguistic diversity, human curation)
+
+    net_welfare_conclusion: |
+      LAION-5B is a MORALLY FAILED dataset constitution when evaluated through empathy-informed ethics:
+
+      1. TIER 1 HARM (CSAM): Absolute priority violated—1,008 children re-victimized for 12+ months,
+         preventable at $50-100K cost (hash matching). No utilitarian trade-off justifies this.
+
+      2. DISTRIBUTIONAL INJUSTICE: Privileged groups (Western AI community) captured benefits, vulnerable
+         groups (CSAM victims, abuse survivors, Global South) bore harms. Rawlsian justice violated.
+
+      3. CONSENT FAILURE: Billions of individuals (depicted, medical patients, NCII victims) treated as
+         MEANS (training data) without consent, violating Kantian dignity principle.
+
+      4. POST-HOC REMEDIATION INADEQUATE: Opt-out tool (2023) and Re-LAION-5B (2024) cannot undo:
+         - 12+ months of CSAM distribution (criminal act completed)
+         - Millions of Stable Diffusion models already trained on compromised data
+         - Cached images on user devices (federated structure prevents removal)
+
+      COUNTERFACTUAL: If LAION had conducted Layer 3 empathy mapping BEFORE publication (March 2022),
+      minority stress test would have identified CSAM victims as vulnerable population requiring absolute
+      protection, triggering Scenario S2 (hash matching), preventing Tier 1 harm at 5% of dataset cost.
+
+      CONCLUSION: LAION-5B demonstrates CONSTITUTIVE OPACITY → IRREVERSIBLE HARM pattern. ORP Layer 3
+      is designed to prevent this by surfacing absent nodes and vulnerable populations BEFORE decisions
+      become irreversible.
+
+# =============================================================================
+# LAYER 4: ACCOUNTABILITY LEDGER
+# =============================================================================
+# Immutable log of constitutive decisions: who decided what, when, why, and what alternatives were considered.
+
+l4_accountability_ledger:
+
+  # ---------------------------------------------------------------------------
+  # Decision 1: CLIP Filtering as Primary Selection Criterion
+  # ---------------------------------------------------------------------------
+  - decision_id: D1_clip_filtering
+    date: "2021-09-01"
+    decision_makers:
+      - name: Christoph Schuhmann
+        role: LAION founder, lead researcher
+        affiliation: LAION e.V.
+      - name: LAION core team
+        role: Dataset designers
+        affiliation: LAION e.V.
+
+    decision: |
+      Use OpenAI's CLIP (ViT-B/32 and ViT-L/14) cosine similarity score as PRIMARY filtering criterion for
+      image-text pair selection. Threshold: 0.28 (ViT-B/32), 0.32 (ViT-L/14). Filter 50B+ candidates → 5.85B final pairs.
+
+    rationale: |
+      CLIP similarity correlates with image-text relevance (high-quality training data for vision-language models).
+      LAION-400M (predecessor, Sep 2021) validated approach: CLIP-filtered datasets train better models than
+      random image-text pairs. Threshold 0.28 optimized for recall (include borderline relevant pairs) over precision.
+
+    alternatives_considered: UNKNOWN (not documented in LAION papers)
+
+    alternatives_not_considered:
+      - alternative: "Human curation (manual selection of high-quality pairs)"
+        pros: "Higher quality, safety review, consent verification possible"
+        cons: "Infeasible at 5.85B scale (would require 1,850 person-years at 10 sec/image)"
+        why_not_chosen: UNKNOWN (cost likely prohibitive, ~$100M+ for full human review)
+
+      - alternative: "Hybrid filtering (CLIP + additional safety/quality classifiers)"
+        pros: "Catch CLIP blind spots (CSAM, medical, NCII, bias), higher safety"
+        cons: "Increased compute cost ($500K-1M), 2-4 months delay, some false positives"
+        why_not_chosen: UNKNOWN (not documented, possibly cost/timeline constraints)
+
+      - alternative: "Lower threshold (0.25 instead of 0.28, larger dataset)"
+        pros: "More diverse training data (10B+ pairs instead of 5.85B)"
+        cons: "Lower average quality (more noise), increased compute for downstream training"
+        why_not_chosen: UNKNOWN (calibrated on LAION-400M, 0.28 chosen empirically)
+
+    consequences:
+      intended:
+        - "5.85B high-relevance image-text pairs (CLIP similarity > 0.28)"
+        - "Efficient filtering (GPU compute only, no human labor)"
+        - "Reproducible methodology (threshold documented, CLIP models public)"
+
+      unintended:
+        - "CLIP cannot detect age (CSAM missed), consent (NCII missed), medical context (HIPAA missed)"
+        - "CLIP bias amplified (trained on English captions → Western-skewed dataset)"
+        - "High CLIP similarity includes harmful content (if caption accurately describes abuse imagery)"
+
+      harm_tier: TIER 1-5 (CLIP blind spots enabled all harm categories)
+
+    reversibility: IRREVERSIBLE (5.85B pairs distributed March 2022, millions of downloads before Dec 2023 takedown)
+
+    decision_transparency: MEDIUM (threshold documented in papers, but alternatives not discussed)
+
+    legal_review_conducted: UNKNOWN (no mention of legal counsel in LAION documentation)
+    ethical_review_conducted: UNKNOWN (no IRB or ethics board mentioned)
+
+    source: 'Schuhmann et al. (2022) "LAION-5B: An open large-scale dataset for training next generation image-text models"'
+
+  # ---------------------------------------------------------------------------
+  # Decision 2: NO CSAM Filtering Pre-Publication
+  # ---------------------------------------------------------------------------
+  - decision_id: D2_no_csam_filtering
+    date: "2021-09 to 2022-03"
+    decision_makers:
+      - name: LAION core team
+        role: Dataset designers
+        affiliation: LAION e.V.
+        note: "Specific individuals unknown (decision not attributed in public documentation)"
+
+    decision: |
+      DO NOT implement CSAM (Child Sexual Abuse Material) hash matching or detection before publication.
+      Release dataset March 2022 without PhotoDNA, NCMEC hash database, or CSAI Match filtering.
+
+    rationale: UNKNOWN (not documented in LAION papers, blog posts, or public statements)
+
+    possible_rationales_inferred:
+      - rationale: "Cost prohibitive ($5.85M for PhotoDNA API at $0.001/image for full dataset)"
+        evidence_for: "LAION nonprofit, limited budget (~$1-5M estimated)"
+        evidence_against: "Sampling approach (50-100M images) costs $50-100K, 1-2% of budget"
+
+      - rationale: "Legal concern (accessing CSAM for filtering may violate 18 U.S.C. § 2252 possession laws)"
+        evidence_for: "Hash matching requires downloading images, potential legal exposure"
+        evidence_against: "Safe harbor provisions for tech platforms, PhotoDNA designed for legal compliance"
+
+      - rationale: "Technical difficulty (federated structure, URLs only, can't hash without downloading)"
+        evidence_for: "LAION distributed URLs, not images (federated design)"
+        evidence_against: "Could sample images for hash matching before finalizing URL list"
+
+      - rationale: "Ignorance (LAION team unaware of CSAM risk in web scraping)"
+        evidence_for: "Academic researchers, not content moderation experts; no safety team mentioned"
+        evidence_against: "Common Crawl known to contain problematic content, should have been foreseeable"
+
+    alternatives_considered: UNKNOWN (no documentation of safety deliberations)
+
+    alternatives_not_considered:
+      - alternative: "PhotoDNA hash matching (50-100M sample of images)"
+        pros: "Detect 2,236 known CSAM URLs (Re-LAION-5B count), prevent 21 months of federal crime distribution"
+        cons: "$50-100K cost, 2-3 months delay, requires image download (bandwidth)"
+        why_not_chosen: UNKNOWN (not documented)
+        cost_benefit: "INFINITE benefit-cost ratio (prevent federal crime vs negligible cost/delay)"
+
+      - alternative: "CSAM ML classifier (train on NCMEC data, Google CSAI API)"
+        pros: "Detect novel CSAM (not in hash databases), catch variants, higher recall"
+        cons: "$200-500K (ML training), 3-4 months, false positives (may flag artistic nudes, medical)"
+        why_not_chosen: UNKNOWN
+
+      - alternative: "Defer to downstream users (provide CSAM filtering tools, don't filter pre-publication)"
+        pros: "No upfront cost, users responsible for local compliance"
+        cons: "21-month distribution of CSAM (March 2022 - Dec 2023), LAION legal liability"
+        why_not_chosen: UNKNOWN (but this is effectively what happened - no filtering)
+
+    consequences:
+      intended: UNKNOWN (no documented intent behind omission)
+
+      unintended:
+        - "3,226 CSAM URLs distributed (Stanford report, Dec 2023), 1,008 externally validated"
+        - "21 months of federal crime distribution (18 U.S.C. § 2252 strict liability)"
+        - "1,008 child victims re-victimized (CSAM used for AI training without remediation)"
+        - "LAION takedown (Dec 2023), Re-LAION-5B cleanup (Aug 2024, 2,236 URLs removed)"
+        - "Stable Diffusion models trained on CSAM (Aug 2022, weights frozen, cannot remove)"
+        - "Reputational damage (LAION associated with child exploitation)"
+
+      harm_tier: TIER 1 - CRIMINAL/SAFETY (absolute priority, federal crime)
+
+    reversibility: IRREVERSIBLE (cannot remove cached images, trained models, or undo 21 months of distribution)
+
+    decision_transparency: ZERO (decision not documented, rationale unknown, alternatives not discussed)
+
+    legal_review_conducted: UNKNOWN (if conducted, results not published)
+    ethical_review_conducted: UNKNOWN (no IRB approval mentioned)
+
+    accountability_gap: |
+      CRITICAL ACCOUNTABILITY FAILURE. This is the MOST CONSEQUENTIAL decision in LAION-5B constitution,
+      yet it is UNDOCUMENTED. We do not know:
+      - WHO made the decision (specific individuals)
+      - WHEN exactly (Sep 2021? Dec 2021? Feb 2022 before release?)
+      - WHY (cost? legal? technical? ignorance?)
+      - WHAT alternatives were considered (hash matching? ML classifiers? defer to users?)
+
+      ORP's value: Layer 4 accountability ledger would have REQUIRED this decision to be logged, attributed,
+      and justified BEFORE publication. Even if LAION chose "no CSAM filtering" (for cost reasons), the
+      decision would be TRANSPARENT, enabling:
+      1. External critique (safety researchers could flag risk before publication)
+      2. Informed consent (users know dataset contains CSAM, choose whether to use)
+      3. Legal clarity (LAION team aware of 18 U.S.C. § 2252 exposure, consult counsel)
+      4. Retrospective accountability (identify who made decision, learn from failure)
+
+    source: |
+      Absence of documentation in Schuhmann et al. (2021, 2022), LAION blog posts (2021-2023).
+      Inferred from Stanford Internet Observatory report (Thiel 2023) discovering CSAM post-hoc.
+
+  # ---------------------------------------------------------------------------
+  # Decision 3: Minimal NSFW Filtering (Adult Content Only, Not CSAM/NCII/Medical)
+  # ---------------------------------------------------------------------------
+  - decision_id: D3_minimal_nsfw_filtering
+    date: "2021-09 to 2022-03"
+    decision_makers:
+      - name: LAION core team
+        role: Dataset designers
+        affiliation: LAION e.V.
+
+    decision: |
+      Implement CLIP-based NSFW classifier to remove "hardcore pornography" only. Do NOT filter for:
+      - CSAM (child sexual abuse material)
+      - NCII (non-consensual intimate imagery / revenge porn)
+      - Medical nudity (surgical photos, medical exams)
+      - Artistic nudity (classical art, breastfeeding, cultural context)
+
+      Result: ~2.5-5 billion pairs filtered from 50B+ candidates (50-85% removal rate), but 5.85B final
+      dataset still contains CSAM, NCII, medical imagery.
+
+    rationale: |
+      Documented (partial): "Preserve dataset utility for artistic/scientific purposes, avoid over-filtering."
+      Inferred: Adult pornography legally risky (distribution liability), but removing ALL nudity would
+      exclude legitimate content (medical education, classical art, cultural photography).
+
+    alternatives_considered: UNKNOWN (threshold tuning likely, but not documented)
+
+    alternatives_not_considered:
+      - alternative: "Strict NSFW filter (remove all nudity, including artistic/medical)"
+        pros: "Eliminates CSAM, NCII, medical privacy issues (over-inclusive but safer)"
+        cons: "False positives (removes classical art, medical education, breastfeeding, cultural content), dataset less diverse"
+        why_not_chosen: "Documented: preserve utility for artistic/scientific use"
+
+      - alternative: "Multi-tiered NSFW (hardcore → CSAM → NCII → medical → artistic, separate classifiers)"
+        pros: "Surgical precision (remove illegal/harmful, keep legitimate), best of both worlds"
+        cons: "Expensive ($500K-1M for multiple ML classifiers), complex (false positives/negatives per tier)"
+        why_not_chosen: UNKNOWN (cost/complexity likely prohibitive)
+
+      - alternative: "No NSFW filtering (include all content, let users filter locally)"
+        pros: "Maximum diversity, no false positives, users control own filtering"
+        cons: "Legal liability (distributing adult content, CSAM), ethical issues (consent)"
+        why_not_chosen: "Documented: avoid legal issues with sexually explicit content distribution"
+
+    consequences:
+      intended:
+        - "Hardcore pornography removed (~2.5-5B pairs filtered)"
+        - "Artistic/medical/cultural nudity preserved (dataset utility maintained)"
+
+      unintended:
+        - "CSAM missed (NSFW classifier trained on adult content, cannot detect age)"
+        - "NCII missed (consensual vs non-consensual indistinguishable to classifier)"
+        - "Medical privacy violations (medical nudity not filtered, HIPAA concerns)"
+
+      harm_tier: TIER 1-3 (CSAM, NCII, medical privacy all missed due to under-filtering)
+
+    reversibility: IRREVERSIBLE (filtered content discarded, cannot re-add; missed content distributed)
+
+    decision_transparency: LOW (rationale partially documented, but alternatives and threshold not detailed)
+
+    legal_review_conducted: UNKNOWN
+    ethical_review_conducted: UNKNOWN
+
+    source: 'Schuhmann et al. (2022), LAION blog post "LAION-5B: A new era of open large-scale multi-modal datasets" (March 2022)'
+
+  # ---------------------------------------------------------------------------
+  # Decision 4: Federated Distribution (URLs Only, No Image Hosting)
+  # ---------------------------------------------------------------------------
+  - decision_id: D4_federated_distribution
+    date: "2021-09"
+    decision_makers:
+      - name: LAION core team
+        role: Dataset designers
+        affiliation: LAION e.V.
+
+    decision: |
+      Distribute dataset as URLs + metadata (parquet files), NOT hosted images. Users download images
+      themselves from original sources. Dataset size: ~240 GB compressed (metadata only) vs. 50-100 PB
+      (if images hosted).
+
+    rationale: |
+      Documented:
+      1. Cost savings ($20-100M avoided: $10-50M storage, $10-50M bandwidth)
+      2. Legal liability reduction (DMCA takedown burden on original hosters, not LAION)
+      3. Distributed downloads (users fetch images, reduces LAION bandwidth)
+      Inferred:
+      4. Open-source ethos (users can verify/audit original sources, not LAION-curated)
+
+    alternatives_considered: UNKNOWN (cost-benefit analysis not published)
+
+    alternatives_not_considered:
+      - alternative: "Hosted images (download and serve 5.85B images directly)"
+        pros: "Permanent availability (no link rot), remediation capability (can delete CSAM images), reproducibility (static dataset)"
+        cons: "$20-100M cost (storage + bandwidth), DMCA liability (LAION responsible for takedowns), copyright exposure"
+        why_not_chosen: "Cost prohibitive for nonprofit, legal liability concerns"
+        trade_off: "Upfront cost ($20-100M) vs. remediation capability (can delete images post-discovery)"
+
+      - alternative: "Hybrid (host subset, URLs for rest)"
+        pros: "Balance cost and remediation (host high-value/sensitive content, URLs for bulk)"
+        cons: "Complexity (which subset to host?), still significant cost ($5-20M for 10-20% hosting)"
+        why_not_chosen: UNKNOWN (not discussed in documentation)
+
+      - alternative: "Distributed hosting (BitTorrent, IPFS, community mirrors)"
+        pros: "Cost-effective (community-hosted), decentralized (no single point of failure)"
+        cons: "Even less remediation capability (cannot remove from peer-to-peer network), legal ambiguity"
+        why_not_chosen: UNKNOWN (federated URLs chosen instead)
+
+    consequences:
+      intended:
+        - "$20-100M cost savings (storage + bandwidth avoided)"
+        - "Legal liability reduced (DMCA burden on original hosters)"
+        - "Distributed downloads (users responsible for bandwidth)"
+
+      unintended:
+        - "Link rot (50% URLs dead within 2 years, reproducibility suffers)"
+        - "ZERO remediation capability post-CSAM discovery (can delist URLs, cannot retrieve cached images)"
+        - "Trained models frozen (Stable Diffusion weights from Aug 2022 cannot be retrained without CSAM)"
+        - "User devices cached CSAM (downloaded Sep 2021 - Dec 2023, cannot be removed remotely)"
+
+      harm_tier: TIER 1 (prevents CSAM remediation), TIER 5 (link rot harms reproducibility)
+
+    reversibility: IRREVERSIBLE (federated architecture cannot be changed post-distribution)
+
+    decision_transparency: MEDIUM (cost rationale clear, but remediation trade-off not discussed)
+
+    legal_review_conducted: UNKNOWN (DMCA analysis likely, but not published)
+    ethical_review_conducted: UNKNOWN
+
+    critical_consequence: |
+      When Stanford discovered CSAM (Dec 2023), LAION could only:
+      1. Remove URLs from future downloads (Re-LAION-5B, Aug 2024)
+      2. Provide opt-out tool ("Have I Been Trained?")
+
+      LAION could NOT:
+      1. Retrieve images downloaded by users (Sep 2021 - Dec 2023, 27 months of caching)
+      2. Remove images from trained models (Stable Diffusion, DALL-E 2 reproductions, etc.)
+      3. Notify CSAM victims (identifying victims requires viewing illegal content)
+
+      This architectural decision (federated URLs) PERMANENTLY PREVENTED remediation of Tier 1 harm.
+
+    source: Schuhmann et al. (2022), LAION blog post (March 2022)
+
+  # ---------------------------------------------------------------------------
+  # Decision 5: No Consent Mechanism (Opt-Out Only, Post-Publication)
+  # ---------------------------------------------------------------------------
+  - decision_id: D5_no_consent_mechanism
+    date: "2021-09 to 2022-03"
+    decision_makers:
+      - name: LAION core team
+        role: Dataset designers
+        affiliation: LAION e.V.
+
+    decision: |
+      Do NOT implement pre-publication consent verification. Assume "publicly accessible URL" equals
+      "consented to all uses, including AI training." Provide opt-out tool post-publication (2023).
+
+    rationale: |
+      Inferred (not documented explicitly):
+      1. GDPR "legitimate interest" (data processing lawful unless individual objects)
+      2. Fair use (US copyright law allows transformative use without permission)
+      3. Infeasibility (contacting 1-2 billion depicted individuals impossible)
+      4. Web scraping norm (robots.txt exclusions respected, otherwise assume public = consented)
+
+    alternatives_considered: UNKNOWN (no consent deliberations documented)
+
+    alternatives_not_considered:
+      - alternative: "Opt-in consent (only include images with explicit permission)"
+        pros: "Zero consent violations (CSAM, NCII, medical all excluded by design), legal/ethical gold standard"
+        cons: "95%+ dataset reduction (250M pairs vs 5.85B), untested if small dataset trains comparable models"
+        why_not_chosen: "Likely: assumed scale necessary for model quality, consent infrastructure non-existent in 2021-2022"
+
+      - alternative: "Opt-out pre-publication (announce dataset, allow removal requests before March 2022)"
+        pros: "Partial consent (aware individuals can object), still 5B+ scale (most people unaware)"
+        cons: "3-6 month delay (notification period), limited reach (billions unaware of LAION)"
+        why_not_chosen: UNKNOWN (opt-out only implemented post-publication in 2023)
+
+      - alternative: "Tiered consent (opt-in for sensitive content, opt-out for general)"
+        pros: "Balance safety and scale (medical, intimate, child imagery requires consent, general content opt-out)"
+        cons: "Complex (how to classify 'sensitive'?), still requires detection (medical, NCII classifiers)"
+        why_not_chosen: UNKNOWN (not discussed)
+
+    consequences:
+      intended:
+        - "5.85B scale maintained (no dataset reduction from consent requirements)"
+        - "Legal compliance (GDPR legitimate interest, US fair use assumed sufficient)"
+
+      unintended:
+        - "1-2 billion depicted individuals never notified (involuntary participants)"
+        - "CSAM victims cannot consent (children, legal incapacity)"
+        - "NCII victims unaware (revenge porn, hacked images, stolen content)"
+        - "Medical patients unaware (HIPAA-protected imagery scraped)"
+        - "Opt-out uptake <1% (~10M requests by 2024, out of 1-2B depicted)"
+
+      harm_tier: TIER 1-3 (consent failure enables CSAM, NCII, medical privacy harms)
+
+    reversibility: PARTIALLY REVERSIBLE (opt-out tool launched 2023, but cannot remove cached images or trained models)
+
+    decision_transparency: ZERO (consent rationale not documented, alternatives not discussed)
+
+    legal_review_conducted: UNKNOWN (GDPR "legitimate interest" analysis not published)
+    ethical_review_conducted: UNKNOWN (no IRB or consent protocol)
+
+    accountability_gap: |
+      "Publicly accessible" ≠ "consented to AI training" is a CONTESTED LEGAL/ETHICAL ASSUMPTION.
+      LAION assumed this without documentation, yet:
+      - EU GDPR: "Legitimate interest" untested for AI training (case law developing)
+      - US Fair Use: Courts have not settled whether AI training is transformative use
+      - Ethical consensus: Most web users object to AI training without consent (surveys 2022-2024)
+
+      ORP Layer 4 would require this assumption to be EXPLICITLY STATED and JUSTIFIED, enabling critique.
+
+    source: |
+      Absence of consent discussion in Schuhmann et al. (2021, 2022).
+      Opt-out tool "Have I Been Trained?" launched 2023 (post-CSAM discovery).
+
+  # ---------------------------------------------------------------------------
+  # Decision 6: Zero Human Review (100% Automated Pipeline)
+  # ---------------------------------------------------------------------------
+  - decision_id: D6_zero_human_review
+    date: "2021-09 to 2022-03"
+    decision_makers:
+      - name: LAION core team
+        role: Dataset designers
+        affiliation: LAION e.V.
+
+    decision: |
+      Do NOT manually inspect ANY images before publication. Rely entirely on CLIP filtering + NSFW classifier
+      (both automated). Zero human validation of sample (not even 0.01% = 50,000 images).
+
+    rationale: |
+      Inferred (not documented):
+      1. Infeasibility (5.85B images at 10 sec/image = 1,850 person-years, ~$100M labor cost)
+      2. Trust in automation (CLIP + NSFW classifiers assumed sufficient)
+      3. Budget constraint (LAION estimated $1-5M total, cannot afford $100K-1M for sampling)
+
+    alternatives_considered: UNKNOWN (no discussion of human review trade-offs)
+
+    alternatives_not_considered:
+      - alternative: "0.01% human review (50,000 images, industry minimum for validation)"
+        pros: "Catch systematic failures (CSAM, medical, NCII, bias), validate classifiers, feedback loop"
+        cons: "$100K cost (50K images × $2/image labor), 1-2 months delay (reviewer training, annotation)"
+        why_not_chosen: "Likely: budget constraint ($100K = 2-10% of $1-5M total), timeline pressure"
+        cost_benefit: "HIGH benefit-cost ratio (detect CSAM before publication vs 2-10% budget increase)"
+
+      - alternative: "0.1% human review (500,000 images, robust sampling)"
+        pros: "Higher confidence (larger sample), catch edge cases, statistical power for bias analysis"
+        cons: "$1M cost (10-100% of budget), 2-4 months delay"
+        why_not_chosen: "Cost prohibitive for nonprofit"
+
+      - alternative: "Targeted review (sample high-risk subsets: child-related queries, medical terms, intimate contexts)"
+        pros: "Efficient (focus on high-risk content), lower cost ($50-200K for 25-100K images), catches CSAM/NCII/medical"
+        cons: "Requires risk taxonomy (what to sample?), 1-2 months delay"
+        why_not_chosen: UNKNOWN (not discussed, possibly lack of safety expertise)
+
+    consequences:
+      intended:
+        - "Zero human labor cost (fully automated pipeline)"
+        - "Fast publication (no review bottleneck)"
+
+      unintended:
+        - "CSAM undetected (automated classifiers missed 3,226 URLs)"
+        - "Medical privacy violations undetected"
+        - "NCII undetected"
+        - "Bias patterns unvalidated (Western skew, gender bias, etc. not sampled/measured)"
+        - "No feedback loop (cannot improve classifiers based on human review)"
+
+      harm_tier: TIER 1-5 (all harm categories undetected due to zero human review)
+
+    reversibility: IRREVERSIBLE (once published without review, cannot retroactively add pre-publication review)
+
+    decision_transparency: ZERO (human review not discussed in papers)
+
+    legal_review_conducted: UNKNOWN
+    ethical_review_conducted: UNKNOWN (no IRB, no sampling)
+
+    industry_standard_deviation: |
+      Industry standard for large-scale datasets: 0.01-0.1% human review for validation.
+      Examples:
+      - Google Open Images (9M images): 0.1% human review (~9,000 images validated)
+      - ImageNet (14M images): 1% human review (~140,000 images validated by AMT workers)
+      - Microsoft COCO (330K images): 100% human review (smaller scale, comprehensive)
+
+      LAION-5B: 0% human review (5.85B images, zero validation).
+
+      Deviation: LAION 100x-1000x below industry standard (0% vs 0.01-0.1%).
+
+    source: |
+      Absence of human review mention in Schuhmann et al. (2021, 2022).
+      Inferred from "fully automated pipeline" description.
+
+  # ---------------------------------------------------------------------------
+  # Decision 7: Common Crawl as Sole Source (No Linguistic/Geographic Diversity Targets)
+  # ---------------------------------------------------------------------------
+  - decision_id: D7_common_crawl_sole_source
+    date: "2021-09"
+    decision_makers:
+      - name: LAION core team
+        role: Dataset designers
+        affiliation: LAION e.V.
+
+    decision: |
+      Use Common Crawl (Dec 2020 - Mar 2021) as SOLE source for image URLs. Do NOT supplement with:
+      - Targeted crawling (non-Western websites, low-resource languages)
+      - Curated sources (museums, cultural archives, Global South media)
+      - Partnerships (stock photo companies, government archives, linguistic databases)
+
+      Result: 2.32B English pairs (40%), <20% non-Western content (estimated), 80% global population under-represented.
+
+    rationale: |
+      Documented:
+      1. Availability (Common Crawl free, open-source, large-scale)
+      2. Reproducibility (Common Crawl snapshots archived, methodology transparent)
+      3. Efficiency (existing infrastructure, no custom crawling required)
+      Inferred:
+      4. Budget constraint (custom crawling expensive, $1-5M for targeted Global South crawling)
+
+    alternatives_considered: UNKNOWN (no discussion of source diversity)
+
+    alternatives_not_considered:
+      - alternative: "Supplement Common Crawl with targeted non-Western crawling"
+        pros: "Linguistic diversity (7,000+ languages vs 100+ in Common Crawl), geographic balance (80% global population better represented)"
+        cons: "$1-5M cost (custom crawling infrastructure, language expertise), 6-12 months delay, smaller non-Western web"
+        why_not_chosen: "Likely: budget constraint, timeline pressure, no linguistic expertise on team"
+
+      - alternative: "Partner with cultural institutions (museums, archives, Global South media)"
+        pros: "High-quality curated content, consent/licensing clear, cultural authenticity"
+        cons: "$500K-2M (licensing fees, partnership negotiations), 6-12 months delay, smaller scale (millions vs billions)"
+        why_not_chosen: UNKNOWN (no partnerships mentioned in documentation)
+
+      - alternative: "Weight Common Crawl by language/geography (oversample non-Western)"
+        pros: "Balance dataset without custom crawling (use existing Common Crawl, just resample)"
+        cons: "Reduces absolute scale (5.85B → 3-4B if 2x weight on non-Western), may harm model quality (unproven)"
+        why_not_chosen: UNKNOWN (not discussed)
+
+    consequences:
+      intended:
+        - "Massive scale (5.85B pairs from single source)"
+        - "Low cost (Common Crawl free, no custom crawling)"
+        - "Reproducibility (Common Crawl archived, others can verify)"
+
+      unintended:
+        - "Linguistic extinction accelerated (models trained on LAION unusable for 6,900+ languages)"
+        - "Western/English bias baked in (2.32B English pairs, 40% of dataset)"
+        - "Non-Western communities marginalized (80% global population <20% dataset)"
+        - "Stable Diffusion outputs biased (Western weddings, business attire, beauty standards encoded)"
+
+      harm_tier: TIER 5 - BIAS (demographic), TIER 3 - ETHICAL (cultural erasure)
+
+    reversibility: IRREVERSIBLE (bias propagates to all trained models, cannot retrain without new data)
+
+    decision_transparency: MEDIUM (Common Crawl source documented, but diversity alternatives not discussed)
+
+    legal_review_conducted: UNKNOWN
+    ethical_review_conducted: UNKNOWN (no diversity/equity analysis)
+
+    long_term_consequence: |
+      LAION-5B trained Stable Diffusion (Aug 2022), which became foundational model for:
+      - Midjourney (v5 fine-tuned on Stable Diffusion base)
+      - DreamStudio (Stability AI's commercial offering)
+      - Open-source derivatives (Waifu Diffusion, Stable Diffusion XL)
+
+      Western/English bias in LAION-5B → propagated to entire generative AI ecosystem (2022-present).
+      Billions of AI-generated images (2022-2026) encode Western aesthetic norms as "default."
+
+      Counterfactual: If LAION had invested $1-5M in linguistic diversity (targeted crawling), cost would be
+      0.1-0.5% of Stability AI's $1B valuation. Missed opportunity for inclusive AI at negligible cost.
+
+    source: Schuhmann et al. (2022), Common Crawl Foundation documentation
+
+# =============================================================================
+# LAYER 5: FORK REGISTRY
+# =============================================================================
+# Track dataset lineage, forks, responses, and alternative approaches.
+
+l5_fork_registry:
+
+  # ---------------------------------------------------------------------------
+  # Original Document
+  # ---------------------------------------------------------------------------
+  this_document:
+    document_id: laion5b-training-data-2024-001
+    version: "1.0"
+    created: "2026-04-07"
+    status: draft
+    note: |
+      Post-hoc reconstruction of LAION-5B constitution using publicly available sources.
+      NOT official LAION documentation (LAION team did not create ORP document).
+      This document represents external analysis for demonstrating ORP's value.
+
+  # ---------------------------------------------------------------------------
+  # Known Forks (Dataset Derivatives and Remediations)
+  # ---------------------------------------------------------------------------
+  known_forks:
+
+    # Fork 1: Re-LAION-5B (Official Remediation, August 2024)
+    - fork_id: relaion5b-2024
+      fork_name: Re-LAION-5B
+      forked_by:
+        - name: LAION team
+          affiliation: LAION e.V.
+      fork_date: "2024-08-01"
+      fork_reason: |
+        Emergency remediation after Stanford Internet Observatory discovered 3,226 CSAM URLs (Dec 2023).
+        Dataset taken offline Dec 2023, cleaned, re-released Aug 2024 with 2,236 URLs removed.
+
+      key_changes:
+        - change: "2,236 CSAM URLs removed (identified by Stanford + LAION internal review)"
+          rationale: "Federal crime compliance (18 U.S.C. § 2252), child protection"
+        - change: "Dataset size reduced 5.85B → 5.847B (0.04% reduction)"
+          rationale: "Minimal impact on model training (CSAM <0.05% of dataset)"
+        - change: "No other changes (medical, NCII, consent issues NOT addressed)"
+          rationale: "UNKNOWN (time pressure? cost? only CSAM addressed)"
+
+      improvements_over_original:
+        - "Known CSAM removed (2,236 URLs validated, federal crime eliminated)"
+        - "Faster remediation (8 months from discovery to re-release vs 21-month original distribution)"
+
+      limitations:
+        - "Cannot retrieve cached images (downloaded Sep 2021 - Dec 2023 by users)"
+        - "Cannot fix trained models (Stable Diffusion Aug 2022 weights frozen)"
+        - "Medical privacy violations persist (no HIPAA filtering added)"
+        - "NCII still present (no consent mechanism added)"
+        - "Western/English bias unchanged (no linguistic diversity improvements)"
+
+      fork_url: "https://laion.ai/blog/laion-5b-relaunch/"
+      fork_status: active
+
+    # Fork 2: LAION-400M (Predecessor, September 2021)
+    - fork_id: laion400m-2021
+      fork_name: LAION-400M
+      forked_by:
+        - name: Christoph Schuhmann
+          affiliation: LAION e.V.
+        - name: LAION core team
+          affiliation: LAION e.V.
+      fork_date: "2021-09-01"
+      fork_reason: |
+        Proof-of-concept dataset to validate CLIP filtering methodology before scaling to 5.85B pairs.
+        Demonstrated CLIP-filtered datasets train better vision-language models than random pairs.
+
+      key_changes:
+        - change: "Smaller scale (400M pairs vs 5.85B)"
+          rationale: "Validate methodology at manageable scale before full deployment"
+        - change: "Single Common Crawl snapshot (vs 4 months)"
+          rationale: "Faster iteration for proof-of-concept"
+
+      relationship_to_laion5b: PREDECESSOR (validated approach, then scaled 14x)
+
+      fork_url: "https://laion.ai/blog/laion-400-open-dataset/"
+      fork_status: archived
+
+    # Fork 3: LAION-2B-en (English Subset for Stable Diffusion, 2022)
+    - fork_id: laion2b-en-2022
+      fork_name: LAION-2B-en (English Subset)
+      forked_by:
+        - name: Stability AI
+          affiliation: Stability AI Ltd.
+      fork_date: "2022-05-01"
+      fork_reason: |
+        Training data for Stable Diffusion v1 (released Aug 2022). Filtered LAION-5B to English-only pairs
+        (2.32B) for computational efficiency and Western market focus.
+
+      key_changes:
+        - change: "Language filter (English only, 2.32B of 5.85B)"
+          rationale: "Reduce training compute (smaller dataset), optimize for English-speaking users"
+        - change: "LAION-Aesthetics v2 6+ subset (filtered for aesthetic quality)"
+          rationale: "Improve Stable Diffusion output quality (artistic, visually pleasing images)"
+
+      consequences:
+        - "CSAM inherited (Stable Diffusion trained on LAION-2B-en containing CSAM URLs, March-Aug 2022)"
+        - "Western bias amplified (2.32B English pairs, 100% Western-skewed vs 40% in LAION-5B full)"
+        - "Model weights frozen (Aug 2022 release, cannot remove CSAM post-discovery)"
+
+      fork_url: "https://github.com/CompVis/stable-diffusion"
+      fork_status: archived (Stable Diffusion v1 superseded by v2, XL)
+
+    # Fork 4: LAION-Aesthetics (Quality-Filtered Subset, 2022)
+    - fork_id: laion-aesthetics-2022
+      fork_name: LAION-Aesthetics v2 6+
+      forked_by:
+        - name: LAION team
+          affiliation: LAION e.V.
+        - name: Christoph Schuhmann
+          role: Lead researcher
+      fork_date: "2022-04-01"
+      fork_reason: |
+        Subset of LAION-5B filtered for aesthetic quality (predicted aesthetic score > 6.0 on 1-10 scale).
+        Intended for training high-quality generative models (art, photography vs web scrape quality).
+
+      key_changes:
+        - change: "Aesthetic filtering (ML classifier predicting human aesthetic preference)"
+          rationale: "Improve generative model output quality (artistic applications)"
+        - change: "Reduced scale (estimated 600M-1B pairs from 5.85B)"
+          rationale: "Quality over quantity for artistic use cases"
+
+      consequences:
+        - "CSAM potentially included (no safety filtering, only aesthetic filtering)"
+        - "Western aesthetic bias (classifier trained on Western art/photo preferences)"
+
+      fork_url: "https://laion.ai/blog/laion-aesthetics/"
+      fork_status: active
+
+  # ---------------------------------------------------------------------------
+  # Potential Forks (Alternative Approaches Not Pursued)
+  # ---------------------------------------------------------------------------
+  potential_forks:
+
+    # Potential Fork 1: LAION-5B-Safe (Comprehensive Safety Filtering)
+    - fork_id: laion5b-safe-hypothetical
+      fork_name: LAION-5B-Safe (Hypothetical)
+      proposed_by:
+        - name: External safety researchers
+          affiliation: N/A
+      proposal_description: |
+        Comprehensive safety remediation of LAION-5B:
+        - CSAM hash matching (PhotoDNA, NCMEC)
+        - Medical imagery detection (HIPAA compliance)
+        - NCII detection (consent verification where possible)
+        - 0.01% human review (50,000 images validation)
+        Result: 5.5B pairs (5% reduction), Tier 1-3 harms eliminated.
+
+      why_not_pursued: |
+        LAION chose minimal remediation (Re-LAION-5B, CSAM only) for unknown reasons. Possible:
+        1. Cost ($1-1.5M for comprehensive safety vs $50-100K for CSAM-only)
+        2. Time pressure (8 months to re-release, comprehensive would take 12-18 months)
+        3. Scope creep concern (CSAM urgent, medical/NCII less legally critical)
+        4. Lack of expertise (LAION team lacks safety engineering, would need partnerships)
+
+      estimated_cost: "$1-1.5M (CSAM hash $100K + medical ML $300K + NCII ML $300K + human review $500K + compute $200K)"
+      estimated_timeline: "12-18 months (vs 8 months for CSAM-only remediation)"
+
+      benefits_over_original:
+        - "Tier 1-3 harms eliminated (CSAM, HIPAA, NCII)"
+        - "Legal compliance (federal CSAM law, state NCII laws, medical privacy)"
+        - "Ethical integrity (vulnerable populations protected)"
+
+      limitations:
+        - "Cannot fix past harms (cached images, trained models still compromised)"
+        - "Still 5% dataset reduction (may impact model quality, untested)"
+        - "Western/English bias unchanged (safety ≠ diversity)"
+
+      implementation_difficulty: MEDIUM (requires ML expertise, human review infrastructure, but technically feasible)
+
+    # Potential Fork 2: LAION-Consent (Opt-In Only Dataset)
+    - fork_id: laion-consent-hypothetical
+      fork_name: LAION-Consent (Hypothetical)
+      proposed_by:
+        - name: Privacy advocates
+          affiliation: N/A
+      proposal_description: |
+        Radical reconstruction: Only include images with explicit consent for AI training.
+        Sources:
+        - Stock photo companies (Getty, Shutterstock opt-in tiers)
+        - Creative Commons BY licenses (with AI training clause)
+        - Partnerships with photographers/artists (paid licensing or volunteer contribution)
+        Result: 50-250M pairs (95%+ reduction), zero consent violations by design.
+
+      why_not_pursued: |
+        1. Scale reduction (5.85B → 250M, 95% loss) assumed to harm model quality (untested)
+        2. Consent infrastructure non-existent in 2021-2022 (no "AI training OK" checkboxes on web)
+        3. Cost ($500K-2M for licensing partnerships, curation labor)
+        4. Competitive pressure (proprietary labs use non-consented data, open-source must match scale)
+
+      estimated_cost: "$500K-2M (licensing fees $200K-1M + curation labor $300K-1M)"
+      estimated_timeline: "12-24 months (partnership negotiations, consent tool development)"
+
+      benefits_over_original:
+        - "Zero consent violations (CSAM, NCII, medical all excluded by design - children/patients can't consent)"
+        - "Legal certainty (explicit licenses, no GDPR/fair use ambiguity)"
+        - "Ethical gold standard (respects autonomy, dignity, privacy)"
+
+      limitations:
+        - "UNKNOWN model quality (untested if 250M consented images trains viable generative models)"
+        - "Western bias likely WORSE (consent infrastructure concentrated in Global North)"
+        - "Cannot retroactively obtain consent for LAION-5B (billions of depicted individuals)"
+
+      implementation_difficulty: HIGH (requires paradigm shift from "scrape all" to "consent-first", untested at scale)
+
+      critical_empirical_question: |
+        Can 250M high-quality consented images train generative models comparable to 5.85B non-consented?
+        If YES: LAION-Consent strictly dominates LAION-5B (better ethics, same quality).
+        If NO: Trade-off between scale (LAION-5B) and consent (LAION-Consent), no clear answer.
+        Status: UNTESTED (no large-scale consent-only generative models exist as of 2026).
+
+    # Potential Fork 3: LAION-Global (Linguistic Diversity Targeted)
+    - fork_id: laion-global-hypothetical
+      fork_name: LAION-Global (Hypothetical)
+      proposed_by:
+        - name: Linguistic diversity researchers
+          affiliation: N/A
+      proposal_description: |
+        Supplement Common Crawl with targeted crawling for non-Western languages/cultures:
+        - Partner with Global South media organizations (news, photo archives)
+        - Targeted web crawling (non-English websites, low-resource language domains)
+        - Oversample non-Western content (2x weight vs English)
+        Result: 5B pairs with 50% non-Western (vs 20% in LAION-5B), 200+ languages (vs 100+).
+
+      why_not_pursued: |
+        1. Cost ($1-5M for custom crawling infrastructure, language expertise)
+        2. Timeline (6-12 months delay for partnerships, crawling, curation)
+        3. Lack of linguistic expertise on LAION team (computer vision researchers, not linguists)
+        4. Smaller non-Western web (Global South internet infrastructure less developed, fewer images available)
+
+      estimated_cost: "$1-5M (custom crawling $500K-2M + partnerships $500K-2M + language expertise $500K-1M)"
+      estimated_timeline: "6-12 months (partnership negotiations, targeted crawling, quality validation)"
+
+      benefits_over_original:
+        - "Linguistic diversity (200+ languages vs 100+, 7,000+ languages still underrepresented but improved)"
+        - "Geographic balance (50% non-Western vs 20%)"
+        - "Cultural authenticity (partnered content vs web scrape)"
+        - "Model quality for Global South (Stable Diffusion outputs better represent non-Western contexts)"
+
+      limitations:
+        - "Still consent violations (scraped data, not opt-in)"
+        - "Still CSAM/medical/NCII risks (diversity ≠ safety)"
+        - "Cannot fully balance (Global South web smaller, historical infrastructure gap)"
+
+      implementation_difficulty: MEDIUM-HIGH (requires linguistic expertise, international partnerships, custom infrastructure)
+
+      long_term_value: |
+        Investment cost $1-5M (0.1-0.5% of Stability AI's $1B valuation, 0.02-0.1% of generative AI market).
+        Benefit: Billions of non-Western AI users (80% global population) gain equitable model performance.
+        Missed opportunity: LAION-5B baked Western bias into foundational models (2022-present).
+
+    # Potential Fork 4: LAION-Living (Temporal Updates, Link Rot Remediation)
+    - fork_id: laion-living-hypothetical
+      fork_name: LAION-Living (Hypothetical)
+      proposed_by:
+        - name: Reproducibility researchers
+          affiliation: N/A
+      proposal_description: |
+        Hybrid distribution: Host subset of images (high-value, safety-sensitive) + URLs for bulk.
+        - Host 10-20% of images (500M-1B pairs, ~5-10 PB storage)
+        - Prioritize: CSAM-adjacent content (enable deletion), high-value cultural content (prevent link rot)
+        - Update quarterly (re-crawl Common Crawl, replace dead URLs, safety re-scan)
+        Result: Permanent availability for hosted subset, remediation capability, reproducibility improved.
+
+      why_not_pursued: |
+        1. Cost ($5-20M for 10-20% hosting: $2-10M storage, $3-10M bandwidth over 3 years)
+        2. Complexity (which subset to host? CSAM-adjacent requires detection, cultural value subjective)
+        3. Ongoing maintenance ($1-3M/year for quarterly updates, re-crawling, safety scanning)
+        4. Legal liability (hosting images increases DMCA burden vs URLs only)
+
+      estimated_cost: "$5-20M initial + $1-3M/year maintenance"
+      estimated_timeline: "6-12 months setup (storage infrastructure, content selection)"
+
+      benefits_over_original:
+        - "Remediation capability (hosted images can be deleted post-CSAM discovery, not just URLs)"
+        - "Reduced link rot (hosted subset permanently available, reproducibility improved)"
+        - "Quarterly safety updates (new CSAM hash databases, evolving safety standards)"
+
+      limitations:
+        - "Still 80-90% federated (cannot remedy cached images for bulk content)"
+        - "Subset selection subjective (how to prioritize? cultural value, safety risk, popularity?)"
+        - "Ongoing cost burden (LAION nonprofit, $1-3M/year maintenance challenging)"
+
+      implementation_difficulty: MEDIUM (technically feasible, cost/maintenance is barrier)
+
+  # ---------------------------------------------------------------------------
+  # Fork Encouragement (Invitation for Alternative Approaches)
+  # ---------------------------------------------------------------------------
+  fork_encouragement:
+    statement: |
+      This ORP document is a POST-HOC reconstruction of LAION-5B constitution, demonstrating what
+      PROSPECTIVE transparency would enable. If you disagree with:
+      - LAION's original decisions (no CSAM filtering, no consent, Common Crawl-only)
+      - Re-LAION-5B's minimal remediation (CSAM-only, no medical/NCII/diversity fixes)
+      - This document's analysis (cost-benefit calculations, harm prioritization, counterfactuals)
+
+      YOU CAN FORK:
+      1. Create your own dataset (LAION-Safe, LAION-Consent, LAION-Global, etc.)
+      2. Fork this ORP document (challenge assumptions, propose alternative harm taxonomy, better cost estimates)
+      3. Propose policy interventions (mandate CSAM filtering, require consent mechanisms, fund linguistic diversity)
+
+      ORP's purpose: Make constitutive decisions TRANSPARENT so alternatives can be demonstrated, not just debated.
+
+    how_to_fork:
+      - step: "Copy this ORP document (laion5b_training_data.yaml)"
+      - step: "Modify Layer 2 (new scenarios), Layer 3 (different stakeholder prioritization), Layer 4 (alternative decisions)"
+      - step: "Document your rationale (why your approach better balances safety/scale/consent/diversity)"
+      - step: "Publish fork (GitHub, academic paper, policy proposal)"
+      - step: "Implement if feasible (create LAION-Safe dataset, demonstrate viability)"
+
+    example_forks_welcomed:
+      - "LAION-Safe: Comprehensive safety filtering ($1-1.5M, 12-18 months, Tier 1-3 harms eliminated)"
+      - "LAION-Consent: Opt-in only ($500K-2M, 12-24 months, test if 250M consented images sufficient)"
+      - "LAION-Global: Linguistic diversity ($1-5M, 6-12 months, 50% non-Western representation)"
+      - "LAION-Living: Hosted hybrid ($5-20M, 6-12 months, remediation capability + reproducibility)"
+
+  # ---------------------------------------------------------------------------
+  # Notes
+  # ---------------------------------------------------------------------------
+  notes: |
+    Layer 5 fork registry demonstrates ORP's value for GENERATIVE CRITIQUE:
+    - Known forks (Re-LAION-5B) show post-hoc remediation inadequate (CSAM-only, 8 months delay)
+    - Potential forks (LAION-Safe, LAION-Consent, LAION-Global) show PROSPECTIVE alternatives were feasible
+    - Cost-benefit analysis shows missed opportunities ($1-5M investments, 0.1-0.5% of market value, would prevent
+      Tier 1-5 harms or improve equity for 80% global population)
+
+    ORP would have enabled LAION to:
+    1. Document decisions BEFORE publication (Layer 4 accountability ledger)
+    2. Model alternatives BEFORE committing (Layer 2 scenarios: CSAM filtering, consent, diversity)
+    3. Identify absent nodes BEFORE harm (Layer 3 empathy mapping: CSAM victims, medical patients, Global South)
+    4. Invite forks BEFORE crisis (Layer 5: "If you think CSAM filtering worth $50-100K delay, fork and show us")
+
+    Result: Constitutive transparency → proactive safety → reduced irreversible harm.

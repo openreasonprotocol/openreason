@@ -10,6 +10,7 @@ theme:
 ---
 
 import Story from '../components/Story'
+import LiveProof from '../components/LiveProof'
 
 <div className="pr-landing">
 <div className="pr-wrap">
@@ -29,7 +30,7 @@ acting on it.
 
 <div className="pr-cta-row">
   <a className="pr-btn primary" href="/protocol/overview">Read the protocol →</a>
-  <a className="pr-btn" href="/getting-started/installation">Install the validator</a>
+  <a className="pr-btn" href="#live">Try it live ↓</a>
 </div>
 
 </section>
@@ -39,8 +40,16 @@ acting on it.
 <Story />
 </section>
 
+<section className="pr-sec" id="live">
+<div className="pr-tag">Not just text on a website <b>02</b></div>
+<h2>Real, now. Verify it yourself.</h2>
+<p className="pr-body" style={{ marginBottom: '26px' }}>Everything on this page is shipped. Check a cryptographic signature in your own browser, send a real document to
+the live API, and install the same tools an agent would use — then tell us what breaks.</p>
+<LiveProof />
+</section>
+
 <section className="pr-sec">
-<div className="pr-tag">Two readers <b>02</b></div>
+<div className="pr-tag">Two readers <b>03</b></div>
 <div className="pr-two">
   <div>
     <div className="pr-k">Public reasoning</div>
@@ -60,7 +69,7 @@ acting on it.
 </section>
 
 <section className="pr-sec">
-<div className="pr-tag">What it is <b>03</b></div>
+<div className="pr-tag">What it is <b>04</b></div>
 <div className="pr-show">
 
 <div className="pr-fork" aria-hidden="true">
@@ -104,7 +113,7 @@ offline and know exactly how far to trust it.
 </section>
 
 <section className="pr-sec">
-<div className="pr-tag">The machine layer · v0.3 <b>04</b></div>
+<div className="pr-tag">The machine layer · v0.3 <b>05</b></div>
 <h2>Data products</h2>
 <div className="pr-grid">
   <a className="pr-cell" href="/data-products/attestation"><div className="n">01</div><div className="t">Attestation</div><div className="d">Offline Ed25519 verification, AdCP #4441-aligned.</div></a>
@@ -117,7 +126,7 @@ offline and know exactly how far to trust it.
 </section>
 
 <section className="pr-sec" style={{ borderBottom: 'none' }}>
-<div className="pr-tag">Start <b>05</b></div>
+<div className="pr-tag">Start <b>06</b></div>
 <h2>Write your first document</h2>
 <p className="pr-body" style={{ marginBottom: '20px' }}>Apache-2.0 · Python · runs locally.</p>
 

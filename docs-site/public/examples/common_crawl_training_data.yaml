@@ -1,0 +1,2235 @@
+orp_version: "0.2"
+post_hoc: true
+extensions:
+  - orp-ai-training-v1
+document_id: "common-crawl-training-data-2026"
+title: "Common Crawl Training Data - Constitutive Decisions and Linguistic Extinction"
+domain: ai-training
+authors:
+  - name: "Asbjørn Ras"
+    role: author
+created: "2026-04-07"
+last_modified: "2026-04-07"
+status: draft
+summary: |
+  Post-hoc reconstruction of Common Crawl (2008-2024), the largest open web crawl dataset used to train
+  GPT-3, GPT-4, LLaMA, Claude, Gemini, and virtually all large language models. Seven constitutive decisions
+  (2008-2024) made without transparent linguistic diversity analysis resulted in 90%+ English/WEIRD content,
+  accelerating digital extinction of 6,900+ low-resource languages. This represents TIER 1 EXISTENTIAL HARM:
+  50-90% of world's 7,000 languages may be extinct by 2100, and AI trained on Common Crawl learns a world
+  where these languages never existed. Affects 4-5 billion people whose languages have <0.1% representation
+  each. Alternatives: $1-5M/year (20-50% budget increase) for targeted linguistic diversity could preserve
+  100+ major languages; $10-50M/year could protect 1,000+ languages from digital extinction. Decisions made
+  for UNKNOWN reasons (cost? ideology? technical complexity?) - completely undocumented. ORP's value: If
+  Common Crawl had conducted Layer 3 empathy mapping in 2008, minority stress test would have identified
+  low-resource language communities as vulnerable population bearing Tier 1 irreversible harm, triggering
+  linguistic diversity targets preventing 15 years of English-dominant AI training data.
+
+# ============================================================================
+# LAYER 1: DATA PROVENANCE
+# ============================================================================
+
+l1_data_provenance:
+
+  - dataset_id: "common-crawl-2008-2024"
+    name: "Common Crawl Open Repository"
+
+    description: |
+      Common Crawl is an open repository of web crawl data, providing monthly snapshots of billions of web
+      pages since 2008. As of 2024, contains 250+ billion web pages totaling 3+ petabytes of compressed data
+      across 180+ monthly snapshots. Common Crawl is a LIVING DATASET with continuous evolution (monthly
+      releases), distinguishing it from static datasets like ImageNet (2009) or LAION-5B (March 2022).
+
+      CRITICAL CONTEXT: Common Crawl is the PRIMARY training data source for virtually all large language
+      models (LLMs) developed 2018-2024:
+      - GPT-3 (OpenAI 2020): 410 billion tokens (60% of training data)
+      - GPT-4 (OpenAI 2023): Likely source (not officially confirmed)
+      - LLaMA (Meta 2023): 1.4 trillion tokens (67% of training data)
+      - Claude (Anthropic 2024): Confirmed major source
+      - Gemini (Google 2023): Confirmed source
+      - PaLM, BLOOM, Galactica, and 100+ other LLMs
+
+      Result: Common Crawl's linguistic distribution (90%+ English/WEIRD languages) is BAKED INTO the
+      foundational AI infrastructure of 2020s. Not just one model's bias - SYSTEMIC bias across entire
+      AI ecosystem.
+
+      HARM PATTERN: CONSTITUTIVE OPACITY (2008) → 15 YEARS OF LINGUISTIC HEGEMONY (2008-2024) →
+      IRREVERSIBLE EXTINCTION (2025-2100). Unlike LAION-5B where post-hoc remediation removed 2,236 CSAM
+      URLs, language extinction CANNOT be remediated post-hoc. Once last fluent speaker dies, no amount
+      of money or AI can reconstruct language from Common Crawl (it was never there).
+
+    source: "World Wide Web (universal crawl, no geographic or linguistic targeting)"
+
+    dataset_type: "living"
+
+    temporal_metadata:
+      first_snapshot: "2008-09"
+      latest_snapshot: "2024-03"
+      total_snapshots: 180
+      cadence: "monthly"
+      snapshot_ids_used_by_llms:
+        - model: "GPT-3"
+          snapshots: "2016-01 through 2019-12"
+          tokens: "410 billion"
+        - model: "LLaMA"
+          snapshots: "2017-01 through 2020-12"
+          tokens: "1.4 trillion"
+        - model: "Claude"
+          snapshots: "Not disclosed"
+          tokens: "Not disclosed"
+      evolution_summary: |
+        Common Crawl methodology has evolved over 15 years:
+        - 2008-2021: Used Alexa Top 1M as seed URLs (75%+ English websites)
+        - 2021-present: Internal URL database (linguistic distribution similar)
+        - 2013: Deduplication added (within snapshot)
+        - 2016: WARC format standardized
+        - 2018: Adult content filtering added (minimal, pornography only)
+        - 2024: No CSAM filtering, no linguistic diversity targets, no consent mechanism
+
+        CRITICAL: Despite 15 years of evolution, ZERO changes to address linguistic diversity or
+        consent for AI training. Decision D1 (universal crawl, no linguistic targets) made in 2008
+        and never revisited despite AI training becoming primary use case by 2018.
+
+    methodology_changes:
+      - date: "2008-09"
+        change: "Initial crawl methodology established - universal crawl of web"
+        rationale: "Reflect the web as it is, not as we think it should be"
+        impact: "Encoded existing linguistic hegemony (90%+ English Alexa Top 1M) into dataset"
+
+      - date: "2013-06"
+        change: "Added deduplication within snapshots"
+        rationale: "Reduce storage costs, improve data quality"
+        impact: "Minimal effect on linguistic distribution"
+
+      - date: "2018-03"
+        change: "Adult content filtering added (pornography classifier)"
+        rationale: "Make dataset more accessible to researchers, avoid legal issues"
+        impact: |
+          Removed hardcore pornography but NOT CSAM (no age detection), NOT medical privacy violations,
+          NOT revenge porn (no consent detection). Inherited by LAION-5B, resulting in 3,226 CSAM URLs.
+
+      - date: "2021-04"
+        change: "Seed URL source changed from Alexa Top 1M to internal database"
+        rationale: "Alexa discontinued service; needed alternative seed source"
+        impact: |
+          Linguistic distribution largely unchanged (internal database similarly English-dominant).
+          MISSED OPPORTUNITY: Could have used this transition to implement linguistic diversity targets,
+          but decision not documented or debated publicly.
+
+    collection_method: |
+      CRAWL METHODOLOGY (As of 2024):
+
+      1. SEED SELECTION:
+         - Source: Internal URL database (post-2021) built from previous crawls and submissions
+         - Pre-2021: Alexa Top 1M websites (75%+ English, Western-hosted)
+         - Problem: Seed bias determines crawl bias. If seeds are English-dominant, crawl will be.
+         - No linguistic diversity targets: No minimum representation thresholds for any language
+
+      2. CRAWL EXECUTION:
+         - Crawl depth: 1 hop from seed URLs (follow links one level deep)
+         - Respect robots.txt: Honor opt-out requests (but robots.txt predates AI training use case by 15 years)
+         - Monthly cadence: 3-5 billion pages per monthly snapshot
+         - Geographic: No targeting (crawls wherever seeds lead, predominantly US/EU hosting)
+
+      3. FILTERING:
+         - Adult content: Pornography classifier (does NOT detect CSAM, medical nudity, or NCII)
+         - Duplicate detection: Within-snapshot deduplication (fuzzy matching)
+         - Language identification: Detects language but does NOT filter or balance by language
+         - Quality thresholds: Universal (NOT language-specific - see Kreutzer et al. 2022 problem)
+
+      4. DISTRIBUTION:
+         - Format: WARC (Web ARChive) files, gzipped
+         - Storage: Amazon S3 buckets (publicly accessible, no authentication)
+         - Cost: Free to download (AWS egress fees apply)
+         - License: "We do not claim copyright; respect original websites' copyrights"
+
+      CRITICAL LIMITATION: Provenance documentation is STATISTICAL, not exhaustive. With 250 billion pages,
+      complete provenance impossible. ORP v0.2 needs "scale-appropriate provenance" category allowing
+      representative sampling (e.g., "1,000 pages per language audited for quality").
+
+    date_range:
+      start: "2008-09"
+      end: "2024-03"
+      temporal_scope: "15 years, 7 months"
+
+    geographic_scope: |
+      GLOBAL (in theory) - worldwide web crawl
+
+      WESTERN-DOMINATED (in practice):
+      - 70%+ content hosted in US/EU data centers
+      - 90%+ content in English, Russian, German, French, Japanese (WEIRD languages)
+      - <10% content from Global South (Africa, South Asia, Southeast Asia, Pacific Islands)
+      - <0.1% content in low-resource languages (6,900+ languages)
+
+      LINGUISTIC DISTRIBUTION (Joshi et al. 2020, Common Crawl 2019 snapshot):
+      - English: 46.47%
+      - Russian: 5.64%
+      - German: 4.92%
+      - French: 4.32%
+      - Japanese: 4.26%
+      - Spanish: 3.85%
+      - Chinese: 3.01% (despite 1.3 billion speakers - 18% of world population)
+      - Arabic: 1.20% (despite 400 million speakers)
+      - Hindi: 0.57% (despite 600 million speakers)
+      - Swahili: 0.02% (100 million speakers)
+      - Yoruba: 0.005% (45 million speakers)
+      - Igbo: <0.001% (30 million speakers)
+      - 6,000+ languages: 0.000% each (no digital presence in Common Crawl)
+
+      PATTERN: Language representation INVERSELY correlated with population speaking it. English
+      (1.5 billion speakers, 20% world) gets 46% representation. Chinese (1.3 billion, 18% world)
+      gets 3% representation. Hindi (600 million, 8% world) gets 0.57%.
+
+      MECHANISM: Digital divide - wealthy (WEIRD) countries produce more web content per capita.
+      Result: Common Crawl is not "neutral mirror of web" but amplifier of existing inequalities.
+
+    inclusion_criteria:
+      description: |
+        UNIVERSAL INCLUSION (in theory):
+        - Any publicly accessible URL on the World Wide Web
+        - Respects robots.txt opt-out
+        - No paywalls, no authentication-required content
+
+        BIASED INCLUSION (in practice):
+        - Seed URL bias: Alexa Top 1M (2008-2021) was 75%+ English websites
+        - Crawl depth bias: 1 hop from seeds means English-linked-to-English
+        - Geographic bias: Web hosting concentrated in US/EU
+        - Economic bias: Wealthy countries produce more web content per capita
+        - Linguistic bias: English-dominant web (legacy of US creating internet infrastructure)
+
+        RESULT: "Universal" crawl systematically under-represents:
+        - Non-Western languages (despite billions of speakers)
+        - Oral cultures (whose knowledge NOT transcribed to web text)
+        - Low-income communities (lacking internet access to publish content)
+        - Indigenous communities (often lack digital infrastructure)
+        - Endangered languages (by definition, few speakers, even fewer digitally active)
+
+      criteria:
+        - "Publicly accessible URL (HTTP/HTTPS)"
+        - "Not blocked by robots.txt"
+        - "Reachable from seed URLs within 1 hop crawl depth"
+        - "Passes adult content filter (removes pornography, not CSAM/medical/NCII)"
+        - "Passes duplicate detection (within-snapshot fuzzy matching)"
+
+    exclusion_criteria:
+      - excluded: "Paywalled content"
+        reason: "Not publicly accessible"
+        potential_impact: |
+          BIAS TOWARD FREE CONTENT: News, research, and high-quality journalism often paywalled.
+          Free content skews toward user-generated (social media, forums, blogs). May encode
+          "wisdom of crowds" bias vs expert knowledge.
+        affected_count: "Unknown - millions of articles behind paywalls"
+
+      - excluded: "Authentication-required content"
+        reason: "Cannot access without login credentials"
+        potential_impact: |
+          EXCLUDES PRIVATE KNOWLEDGE: Facebook posts, LinkedIn discussions, private GitHub repos,
+          medical records (HIPAA-protected), corporate intranets. Common Crawl is PUBLIC web only.
+        affected_count: "Billions of pages"
+
+      - excluded: "robots.txt disallowed paths"
+        reason: "Website owner opted out via robots.txt directive"
+        potential_impact: |
+          OPT-OUT MECHANISM EXISTS but predates AI training use case. Robots.txt created 1994 for
+          search engine indexing, not AI training. No AI-specific directive (e.g., "Disallow: /AI-Training").
+          Many website owners unaware their content used for LLM training.
+        affected_count: "Unknown - estimated 5-20% of web"
+        method: "Automated (robots.txt parsing)"
+
+      - excluded: "Pornographic content (adult classifier)"
+        reason: "Make dataset accessible to researchers, avoid legal issues"
+        potential_impact: |
+          REMOVES ADULT PORNOGRAPHY but NOT CSAM (classifier cannot detect age), NOT medical nudity
+          (anatomy textbooks, surgery documentation), NOT non-consensual intimate imagery (NCII/revenge porn).
+
+          CRITICAL FAILURE: Adult classifier inherited by LAION-5B, which scraped Common Crawl URLs.
+          Result: 3,226 CSAM URLs in LAION-5B (Stanford Internet Observatory 2023). Common Crawl's
+          decision NOT to implement PhotoDNA hash matching ($50-100K/year) enabled downstream Tier 1 harm.
+        affected_count: "Unknown - millions of pornographic pages removed, unknown CSAM/NCII remaining"
+        method: "NSFW classifier (adult pornography only)"
+
+      - excluded: "Duplicate pages (fuzzy matching within snapshot)"
+        reason: "Reduce storage costs, improve data quality"
+        potential_impact: "Minimal - duplicate removal unlikely to affect linguistic distribution"
+        affected_count: "Estimated 20-30% of crawled pages are duplicates"
+        method: "Automated (fuzzy hash matching within monthly snapshot)"
+
+    critical_undocumented_exclusions:
+      - exclusion_gap: "NO LINGUISTIC DIVERSITY TARGETS"
+        description: |
+          Common Crawl has ZERO linguistic diversity targets despite 15 years of operation and AI training
+          becoming primary use case by 2018.
+
+          DECISION (2008, never revisited): Universal crawl of "web as it is" - no proactive targeting of
+          under-represented languages, no minimum representation thresholds, no partnerships with linguistic
+          communities.
+
+          RESULT: 90%+ English/WEIRD languages, <0.1% representation for 6,900+ low-resource languages.
+
+          CONSEQUENCE: ALL major LLMs (GPT-3, GPT-4, LLaMA, Claude, Gemini, PaLM) trained on English-dominant
+          data. Not one model's bias - SYSTEMIC bias across entire AI ecosystem. 4-5 billion people whose
+          native languages have <1% representation must use AI tools in second language (English) or accept
+          degraded performance.
+
+          TIER 1 EXISTENTIAL HARM: Digital absence → no NLP tools → younger generations switch to dominant
+          languages → 50-90% of world's 7,000 languages extinct by 2100 (Krauss 1992). Once last fluent
+          speaker dies, language CANNOT be reconstructed from Common Crawl (it was never there).
+
+        tools_not_used:
+          - "Targeted crawls of non-English web (Africa, Asia, Pacific Islands)"
+          - "Partnerships with UNESCO, SIL International, linguistic communities"
+          - "Minimum representation thresholds (e.g., 1% for languages with 1M+ speakers)"
+          - "Language-specific quality filtering (Kreutzer et al. 2022 showed low-resource languages have higher porn/boilerplate)"
+          - "Proactive digitization funding (pay communities to create web content in endangered languages)"
+
+        alternatives_not_considered:
+          - alternative: "Targeted Linguistic Diversity ($1-5M/year)"
+            description: |
+              - Partner with linguistic communities to identify high-quality non-English content
+              - Targeted crawls of African, Asian, Pacific Island web domains
+              - Minimum 1% representation for 100 major languages (1M+ speakers each)
+              - Language-specific quality thresholds (remove machine translation, boilerplate, porn)
+            cost: "$1-5M/year (20-50% increase from estimated $5-10M current budget)"
+            prevented_harm: |
+              - 100+ languages with viable NLP training data (vs <10 currently)
+              - 2-3 billion people benefit from AI tools in native languages
+              - Language extinction slowed (digital presence creates economic incentive for preservation)
+
+          - alternative: "Radical Linguistic Equity ($10-50M/year)"
+            description: |
+              - Proactive digitization: Fund linguistic communities to create digital content (Wikipedia, news, literature)
+              - Crawl oral traditions: Transcribe recordings, oral histories, cultural knowledge
+              - Minimum 0.1% representation for 1,000+ languages (10K+ speakers each)
+              - Partnership with national governments, UNESCO, indigenous communities
+            cost: "$10-50M/year (2-5x current budget)"
+            prevented_harm: |
+              - 1,000+ languages with basic NLP tools
+              - 4-5 billion people benefit
+              - Cultural knowledge preserved (oral traditions not lost to digital extinction)
+              - Language extinction prevented for majority of living languages
+
+        consequences:
+          - "4-5 billion people whose languages have <1% Common Crawl representation"
+          - "LLM performance 10-50% lower for low-resource languages (vs English SOTA)"
+          - "Digital extinction accelerated: Languages with no digital footprint lose speakers faster (Kornai 2013)"
+          - "Cultural erasure: Oral traditions, indigenous knowledge, non-Western worldviews absent from AI training"
+          - "Economic exclusion: AI productivity tools (coding assistants, writing aids) work best in English"
+          - "Educational harm: Children in low-resource communities must learn English to access AI tutors"
+          - "Intergenerational injustice: Future generations inherit AI that speaks only dead/dominant languages"
+
+        severity: "TIER 1 - EXISTENTIAL HARM (language extinction is irreversible)"
+
+        why_undocumented: "UNKNOWN - no public deliberation or documentation of this decision exists"
+
+        accountability_gap: |
+          Most consequential decision in Common Crawl's 15-year history (affects 4-5 billion people, 6,900+ languages,
+          entire AI ecosystem for decades), yet COMPLETELY UNDOCUMENTED. No record of:
+          - Who made decision (founder? board? default by omission?)
+          - What alternatives were considered (targeted crawls? linguistic partnerships?)
+          - What rationale was used (cost? technical complexity? ideological commitment to "neutrality"?)
+          - Whether linguistic consequences were even discussed (AI training not primary use case until 2018)
+
+          THIS IS WHY ORP EXISTS: Layer 4 (Accountability Ledger) would REQUIRE this decision be logged
+          BEFORE 15 years of English-dominant AI training data distribution.
+
+      - exclusion_gap: "NO CSAM FILTERING PRE-DISTRIBUTION"
+        description: |
+          Common Crawl distributes web archive WITHOUT pre-filtering for child sexual abuse material (CSAM).
+
+          RATIONALE (stated): "We archive web as-is; users responsible for filtering their use cases"
+          RATIONALE (unstated): Legal liability concerns? Cost ($50-100K/year)? Ideological "neutrality"?
+
+          CONSEQUENCE: LAION-5B scraped Common Crawl URLs, inherited CSAM URLs, distributed to millions of
+          AI researchers. Stanford Internet Observatory (Dec 2023) discovered 3,226 CSAM URLs, 1,008 confirmed
+          victims. Common Crawl's decision NOT to filter enabled downstream Tier 1 harm (federal crime distribution).
+
+          COUNTER-ARGUMENT: "Common Crawl is archive, not training data curator"
+          RESPONSE: By 2018, AI training was DOMINANT use case. Decision to remain "neutral" curator vs
+          "responsible" AI data provider should have been explicitly debated and logged (Layer 4).
+
+        tools_not_used:
+          - "Microsoft PhotoDNA hash matching ($50-100K/year)"
+          - "NCMEC (National Center for Missing & Exploited Children) hash database"
+          - "Partnership with Internet Watch Foundation (IWF)"
+
+        consequences:
+          - "LAION-5B inherited 3,226 CSAM URLs from Common Crawl sources"
+          - "1,008 confirmed CSAM victims re-victimized for 21 months (LAION-5B March 2022 - Dec 2023)"
+          - "Stable Diffusion trained on LAION-2B (subset of LAION-5B), inherited CSAM"
+          - "Common Crawl's 'neutrality' enabled Tier 1 harm downstream"
+
+        severity: "TIER 1 - SAFETY HARM (federal crime enablement via data distribution)"
+
+        why_undocumented: "UNKNOWN - no public deliberation exists; inferred rationale from 'archive as-is' philosophy"
+
+      - exclusion_gap: "NO CONSENT MECHANISM FOR AI TRAINING USE CASE"
+        description: |
+          Common Crawl assumes "publicly accessible URL" = "consented to archiving AND AI training"
+
+          PROBLEM: Robots.txt created 1994 for search engine indexing, NOT AI training (which didn't exist).
+          No AI-specific opt-out directive. Website owners unaware content used for LLM training until
+          ~2020 when GPT-3 published.
+
+          LEGAL CHALLENGE: New York Times, Getty Images, authors, photographers suing AI companies for
+          copyright infringement. Common Crawl's "we don't claim copyright" disclaimer insufficient -
+          enabling unauthorized use still creates liability.
+
+          ALTERNATIVE: AI-specific robots.txt directive (e.g., "Disallow: /AI-Training") + compensation
+          mechanism (micropayments to publishers, ~$0.001/page). Cost: $10-50M infrastructure + $50-500M/year
+          compensation (depending on participation).
+
+          RESULT: Dataset size likely reduced 80-95% (most publishers won't opt-in without compensation),
+          but copyright lawsuits avoided, publishers compensated, sustainable content creation enabled.
+
+          UNKNOWN: Whether LLMs can train on 5-20% of current data and still perform well. No one has tested
+          smaller, consent-based dataset at scale.
+
+        tools_not_used:
+          - "AI-specific robots.txt directive (e.g., User-agent: AI-Training, Disallow: /)"
+          - "Consent dashboard for publishers"
+          - "Micropayment/compensation mechanism"
+          - "Notification system (inform website owners of AI training use)"
+
+        consequences:
+          - "Billions of web pages used for AI training without notification or consent"
+          - "Copyright lawsuits: New York Times v. OpenAI, Getty Images v. Stability AI, Andersen et al. v. Stability AI"
+          - "Estimated $1-10 billion in potential settlements/damages"
+          - "Publishers not compensated despite content creating $100B+ AI company valuations"
+          - "Journalism sustainability crisis (content used without payment)"
+
+        severity: "TIER 2 - LEGAL HARM (copyright infringement, contractual obligations)"
+
+        why_undocumented: "UNKNOWN - no public deliberation or cost-benefit analysis exists"
+
+      - exclusion_gap: "NO LANGUAGE-SPECIFIC QUALITY FILTERING"
+        description: |
+          Common Crawl applies UNIVERSAL quality thresholds (duplicate detection, adult content filter) but
+          NOT language-specific quality filtering.
+
+          PROBLEM (Kreutzer et al. 2022, Google Research):
+          "We find that lower-resourced languages are systematically more likely to have data quality issues:
+          - Higher proportion of pornography (adult classifier misses non-English porn)
+          - Higher proportion of machine-translated content (robotic, unnatural text)
+          - Higher proportion of navigation boilerplate (menus, footers, vs actual content)
+
+          Perpetuating a vicious cycle: lack of quality data → worse models → less economic incentive to
+          create content → even less quality data."
+
+          RESULT: Training on "equal" Common Crawl samples produces WORSE models for low-resource languages
+          than for English (where quality filtering works better).
+
+          ALTERNATIVE: Language-specific classifiers:
+          - Detect machine translation (remove robotic text)
+          - Detect boilerplate (remove navigation, preserve content)
+          - Detect pornography per-language (adult classifier trained on English misses non-English)
+
+          COST: $50K-500K (classifier development for 100+ languages)
+          BENEFIT: 20-50% improvement in low-resource language model quality
+
+        tools_not_used:
+          - "Language-specific machine translation detectors"
+          - "Language-specific boilerplate classifiers"
+          - "Language-specific adult content filters"
+          - "Quality audits per language (statistical sampling)"
+
+        consequences:
+          - "Low-resource language training data has 2-5x higher proportion of junk (porn, machine translation, boilerplate)"
+          - "LLMs trained on Common Crawl perform 20-50% worse for low-resource languages vs English"
+          - "Vicious cycle: poor data quality → poor models → less content creation → poorer data quality"
+
+        severity: "TIER 3 - QUALITY HARM (degrades model performance for 6,900+ languages)"
+
+        why_undocumented: "UNKNOWN - Kreutzer et al. 2022 study published, but no Common Crawl response or remediation"
+
+    cleaning_decisions:
+      - decision: "Deduplication (fuzzy matching within monthly snapshot)"
+        rationale: "Reduce storage costs (3+ petabytes compressed), improve data quality (avoid training on exact duplicates)"
+        method: "Automated fuzzy hash matching (detects near-duplicates, not just exact matches)"
+        data_removed: "Estimated 20-30% of crawled pages removed as duplicates"
+        impact_on_inferences: |
+          MINIMAL LINGUISTIC IMPACT: Duplicate removal unlikely to systematically bias language distribution.
+          However, MAY remove legitimately repeated content (news articles syndicated across sites, Wikipedia
+          mirrors in low-resource languages). If low-resource languages rely more on content replication
+          (fewer original sources), deduplication may disproportionately harm them. NOT STUDIED.
+
+      - decision: "Adult content filtering (pornography classifier)"
+        rationale: "Make dataset accessible to academic researchers, avoid legal issues with explicit content distribution"
+        method: |
+          NSFW (Not Safe For Work) classifier trained on adult pornography.
+          - Detects hardcore pornography, explicit sexual imagery
+          - Does NOT detect age (cannot distinguish adult porn from CSAM)
+          - Does NOT detect consent (cannot distinguish consensual porn from revenge porn/NCII)
+          - Does NOT detect medical context (may misclassify anatomy textbooks, surgery documentation)
+        data_removed: "Unknown - estimated millions of pornographic pages"
+        impact_on_inferences: |
+          TIER 1 HARM ENABLEMENT: Classifier's inability to detect CSAM meant 3,226+ CSAM URLs remained in
+          Common Crawl, inherited by LAION-5B, resulting in 1,008 confirmed child victims re-victimized.
+
+          TIER 3 HARM: Medical imagery (anatomy, surgery, reproductive health) may be misclassified as
+          pornography and removed, degrading medical AI training data quality.
+
+          BIAS: Classifier likely trained on English/Western pornography. May misclassify non-Western
+          cultural nudity (e.g., National Geographic imagery of indigenous communities). NOT STUDIED.
+
+      - decision: "Language identification (detect but do NOT balance)"
+        rationale: "Tag pages by language for user filtering, but do NOT enforce linguistic diversity targets"
+        method: "Automated language detection (ISO 639 language codes)"
+        data_removed: "None - language identification is metadata tagging, not filtering"
+        impact_on_inferences: |
+          CRITICAL MISSED OPPORTUNITY: Common Crawl HAS the capability to detect and balance by language
+          (language identification exists), but CHOOSES not to enforce diversity targets.
+
+          Decision (2008-2024): "Tag languages but let distribution fall wherever it may"
+          Alternative (not taken): "Minimum 1% representation for languages with 1M+ speakers"
+
+          This is CONSTITUTIVE DECISION - not technical limitation, but policy choice. Policy choice
+          that was NEVER DOCUMENTED or publicly deliberated despite affecting 4-5 billion people.
+
+    synthetic_elements:
+      present: false
+      description: |
+        Common Crawl is 100% web-scraped content (no synthetic generation).
+
+        HOWEVER, web itself contains synthetic elements:
+        - Machine-translated content (Google Translate, DeepL automated translations)
+        - AI-generated content (GPT-3/4 output published to web 2020-2024)
+        - SEO spam (automated content farms, keyword stuffing)
+        - Scraped/aggregated content (pages that themselves scraped other pages)
+
+        Common Crawl does NOT filter for synthetic/AI-generated content. Result: LLMs trained on Common Crawl
+        2020-2024 snapshots are partially trained on PREVIOUS LLM outputs (model collapse risk, Shumailov et al. 2023).
+
+    known_limitations:
+      - limitation: "Link rot (50%+ URLs dead within 5 years)"
+        description: |
+          Common Crawl archives URLs, not full web page content (some snapshots). Many URLs become
+          inaccessible over time (websites shut down, pages deleted, domains expire).
+
+          Estimate (Ainsworth et al. 2022): 50% of URLs from 2008 snapshot are dead by 2024.
+
+          IMPACT ON REPRODUCIBILITY: Cannot fully audit dataset post-hoc (cannot retrieve dead URLs to
+          verify linguistic distribution, quality, CSAM presence, etc.). ORP documentation relies on
+          statistical sampling of accessible URLs + historical studies (Joshi 2020, Kreutzer 2022).
+        severity: "high"
+
+      - limitation: "Linguistic distribution is moving target (living dataset)"
+        description: |
+          Unlike static datasets (ImageNet 2009, LAION-5B March 2022), Common Crawl is LIVING DATASET
+          with monthly snapshots. Linguistic distribution evolves over time (Chinese increasing from
+          3% in 2010 to 15% in 2024).
+
+          PROBLEM FOR ORP: Layer 1 provenance must specify WHICH snapshots used for training. GPT-3
+          used 2016-2019 crawls (different distribution than 2024). LLaMA used 2017-2020 crawls.
+
+          ORP v0.2 needs temporal provenance fields:
+          - snapshot_ids: Which monthly releases used?
+          - linguistic_distribution_by_snapshot: How did language distribution evolve?
+          - methodology_evolution: How did crawl parameters change over time?
+        severity: "high"
+
+      - limitation: "Scale-inappropriate provenance (250 billion pages, 3 petabytes)"
+        description: |
+          Exhaustive provenance IMPOSSIBLE for petabyte-scale datasets. Cannot document:
+          - Every excluded URL (trillions of pages NOT crawled)
+          - Every cleaning decision (automated at scale)
+          - Every data quality issue (Kreutzer et al. 2022 audited 1,000 pages per language, not all)
+
+          ORP v0.2 needs "scale-appropriate provenance" category:
+          - Statistical sampling: "Representative sample of 1,000 pages per language audited"
+          - Known unknowns: "Exhaustive CSAM audit impossible; PhotoDNA hash matching not implemented"
+          - Uncertainty quantification: "Linguistic distribution estimates ±2% margin of error"
+        severity: "medium"
+
+      - limitation: "Oral cultures systematically excluded"
+        description: |
+          Common Crawl is TEXT-based (web pages). Systematically excludes:
+          - Oral traditions (storytelling, oral histories, not transcribed)
+          - Non-literate cultures (knowledge passed down verbally, not written)
+          - Low-literacy communities (even if language has writing system, may not use web)
+
+          CONSEQUENCE: "Linguistic diversity" measured by WRITTEN text only. Oral cultures' knowledge
+          INVISIBLE to AI trained on Common Crawl, even if language has millions of speakers.
+
+          EXAMPLE: Many African languages have 10M+ speakers but <0.01% Common Crawl representation
+          because oral tradition dominates over written web content.
+        severity: "high"
+        affected_populations: "1-2 billion people in oral-tradition-dominant cultures"
+
+      - limitation: "No ground truth for CSAM/NCII/medical privacy violations"
+        description: |
+          Common Crawl does NOT audit for:
+          - CSAM (child sexual abuse material)
+          - NCII (non-consensual intimate imagery / revenge porn)
+          - HIPAA violations (medical privacy, patient photos)
+
+          Stanford Internet Observatory (2023) found 3,226 CSAM URLs in LAION-5B (which scraped Common Crawl),
+          but this is DISCOVERED sample, not EXHAUSTIVE audit. Actual CSAM count in Common Crawl: UNKNOWN.
+
+          ORP v0.2 needs "unknown harms" category for scale-inappropriate auditing.
+        severity: "critical"
+
+    access:
+      public: true
+      license: |
+        Common Crawl does not claim copyright over crawled content. Original websites retain their copyrights.
+
+        Common Crawl's disclaimer: "We do not alter content or claim ownership. Users must respect original
+        copyrights when using this data."
+
+        PROBLEM: Disclaimer insufficient for AI training use case. Copyright law unsettled on whether training
+        LLMs on copyrighted content is "fair use" (US) or permitted under EU AI Act. Multiple lawsuits pending:
+        - New York Times v. OpenAI (2023)
+        - Getty Images v. Stability AI (2023)
+        - Andersen et al. v. Stability AI (2023)
+
+        If courts rule AI training is NOT fair use, Common Crawl's distribution of copyrighted content for
+        AI training may create legal liability.
+
+      conditions: |
+        Free to download from Amazon S3 buckets (AWS egress fees apply, ~$0.09/GB).
+
+        No authentication required, no usage restrictions stated (but users must respect original copyrights).
+
+        CRITICAL: No AI-specific terms of service. No requirement that users:
+        - Filter CSAM before training
+        - Respect linguistic diversity
+        - Compensate original content creators
+        - Attribute sources in model outputs
+
+        This "anything goes" access policy enabled LAION-5B's CSAM distribution, GPT-3's copyright violations,
+        and 15 years of English-dominant AI training without accountability.
+
+    attested_by:
+      - name: "Asbjørn Ras"
+        role: "analyst"
+        affiliation: "Public Reason Project"
+        date: "2026-04-07"
+        statement: |
+          This Layer 1 (Data Provenance) represents POST-HOC RECONSTRUCTION based on public sources:
+          - Common Crawl website documentation
+          - Academic papers (Joshi 2020, Kreutzer 2022, Kornai 2013)
+          - LLM training papers (Brown et al. 2020 GPT-3, Touvron et al. 2023 LLaMA)
+          - Stanford Internet Observatory CSAM report (2023)
+
+          GAPS: Common Crawl's internal deliberations are NOT public. Rationales for decisions D1-D5
+          (universal crawl, no linguistic targets, no CSAM filtering, no consent, no compensation) are
+          INFERRED from stated philosophy ("archive web as-is") but not officially documented.
+
+          Accountability gaps marked "UNKNOWN" indicate decisions where NO public record exists of who
+          decided, what alternatives were considered, or what cost-benefit analysis (if any) was conducted.
+
+          This document demonstrates ORP's value: If Common Crawl had conducted Layer 3 empathy mapping in
+          2008, minority stress test would have identified low-resource language communities as vulnerable
+          population bearing Tier 1 irreversible harm, triggering linguistic diversity targets.
+
+# ============================================================================
+# LAYER 2: CONSEQUENCE SIMULATION
+# ============================================================================
+
+l2_consequence_simulation:
+
+  affected_population:
+    description: |
+      GLOBAL AI ECOSYSTEM (2020-2030):
+      - 10,000+ AI researchers using Common Crawl for LLM training
+      - 100+ AI companies (OpenAI, Google, Meta, Anthropic, etc.) built on Common Crawl data
+      - 1 billion+ LLM users (ChatGPT, Claude, Gemini, Copilot, etc.)
+      - 4-5 billion people whose native languages have <1% Common Crawl representation
+      - 6,900+ linguistic communities with <0.1% representation each
+      - Future generations (billions of children born 2025-2100 who will grow up with LLMs as primary information access)
+
+      TIER 1 EXISTENTIAL HARM SCOPE:
+      - 7,000 living languages as of 2024
+      - 50-90% may be extinct by 2100 (Krauss 1992)
+      - 3,500-6,300 languages at risk of digital extinction
+      - Digital absence accelerates physical extinction (Kornai 2013 "digital language death")
+
+    size_estimate: "8+ billion people (entire global population affected by AI trained on Common Crawl)"
+    size_confidence: "high"
+
+    geographic_distribution: |
+      DIFFERENTIAL HARM BY REGION:
+
+      **WESTERN (US/EU/Australia):**
+      - Population: 1 billion (12% of world)
+      - Common Crawl representation: 70%+ (English, Russian, German, French)
+      - Harm: Minimal (benefits > harms)
+      - LLM performance: SOTA (state-of-the-art)
+
+      **EAST ASIA (China, Japan, Korea):**
+      - Population: 1.5 billion (19% of world)
+      - Common Crawl representation: 10-15% (Chinese, Japanese, Korean)
+      - Harm: Moderate (performance degradation vs English)
+      - LLM performance: 20-40% lower than English
+
+      **SOUTH ASIA (India, Pakistan, Bangladesh):**
+      - Population: 2 billion (25% of world)
+      - Common Crawl representation: <2% (Hindi, Bengali, Urdu)
+      - Harm: High (performance degradation + economic exclusion)
+      - LLM performance: 40-60% lower than English
+
+      **AFRICA:**
+      - Population: 1.4 billion (17% of world)
+      - Common Crawl representation: <1% (Swahili, Yoruba, Igbo, Amharic)
+      - Harm: Severe (performance degradation + digital extinction)
+      - LLM performance: 60-80% lower than English
+      - 2,000+ African languages at risk of digital extinction
+
+      **SOUTHEAST ASIA / PACIFIC ISLANDS:**
+      - Population: 700 million (9% of world)
+      - Common Crawl representation: <1%
+      - Harm: Severe (digital extinction + cultural erasure)
+      - LLM performance: 70-90% lower than English
+      - 3,000+ languages at risk of extinction (many with <10K speakers)
+
+      **INDIGENOUS COMMUNITIES (Americas, Australia, Arctic):**
+      - Population: 500 million (6% of world)
+      - Common Crawl representation: <0.1%
+      - Harm: Critical (digital extinction + intergenerational injustice)
+      - LLM performance: Near-zero (most languages not in training data at all)
+      - 1,000+ indigenous languages at risk of extinction by 2100
+
+    temporal_scope:
+      start: "2008-09"
+      end: "2100 (projected language extinction timeline)"
+      duration: "92 years (one human lifetime from Common Crawl founding to projected extinction peak)"
+
+  model:
+    description: |
+      LINGUISTIC EXTINCTION CASCADE MODEL:
+
+      This model simulates how Common Crawl's linguistic distribution (constitutive decision, 2008) propagates
+      through AI training (2018-2024) and accelerates language extinction (2025-2100).
+
+      MECHANISM:
+      1. Common Crawl linguistic bias (90%+ English/WEIRD) →
+      2. LLM training inherits bias (all major models use Common Crawl) →
+      3. LLM tools English-dominant (coding assistants, writing aids, tutors, search) →
+      4. Economic incentive to learn English (AI productivity gap) →
+      5. Younger generations switch to English (vs native low-resource languages) →
+      6. Low-resource languages lose speakers →
+      7. Even less digital content created in low-resource languages →
+      8. Common Crawl bias WORSENS over time (vicious cycle) →
+      9. Language extinction accelerates (digital death precedes physical death, Kornai 2013)
+
+      COUNTERFACTUAL SCENARIOS:
+      We model 4 scenarios (2008-2100) based on Common Crawl's constitutive decisions:
+      - S1: Actual (universal crawl, no linguistic targets) → 3,500-6,300 languages extinct by 2100
+      - S2: Targeted diversity ($1-5M/year) → 1,000-2,000 languages extinct (100+ major languages preserved)
+      - S3: Radical equity ($10-50M/year) → 500-1,000 languages extinct (1,000+ languages with digital footprint)
+      - S4: Proactive digitization + consent ($50-500M/year) → 200-500 languages extinct (most living languages preserved)
+
+      CRITICAL VARIABLES:
+      - linguistic_diversity_target: "none" → 3,500-6,300 extinct; "major_languages" → 1,000-2,000 extinct
+      - digitization_funding: $0 → 3,500-6,300 extinct; $10-50M/year → 500-1,000 extinct
+
+      SENSITIVITY ANALYSIS:
+      Changing linguistic_diversity_target from "none" to "major_languages_1pct" (100 languages, $1-5M/year)
+      prevents digital extinction for 2-3 billion people at 20-50% budget increase. This is CRITICAL variable.
+
+    type: "System dynamics model (feedback loops, vicious cycles)"
+
+    assumptions:
+      - assumption: "Digital presence reduces extinction risk"
+        confidence: "high"
+        sensitivity: "high"
+        evidence: |
+          Kornai (2013) "Digital language death": Languages with zero digital footprint lose speakers faster.
+          UNESCO (2003): "Digital divide accelerates linguistic extinction - younger generations switch to
+          digitally-present languages for economic opportunity."
+        notes: |
+          If a language has NO presence in Common Crawl → no NLP tools (translation, speech recognition, text
+          generation) → no economic incentive to use language digitally → younger generations switch to
+          English/Mandarin/Spanish → language dies.
+
+      - assumption: "AI training data distribution determines model performance"
+        confidence: "high"
+        sensitivity: "high"
+        evidence: |
+          Brown et al. (2020) GPT-3: English 93% training data → English SOTA performance, Spanish 7% → 20-30%
+          lower performance. Touvron et al. (2023) LLaMA: Similar pattern. Direct correlation between training
+          data quantity and model quality.
+
+      - assumption: "LLM performance creates economic advantage"
+        confidence: "medium"
+        sensitivity: "high"
+        evidence: |
+          McKinsey (2023): "AI could add $13 trillion to global economy by 2030." GitHub Copilot: 55% faster
+          coding (English-dominant). English speakers capture disproportionate productivity gains.
+        notes: |
+          UNTESTED: Whether LLM productivity gap large enough to drive language switching. Plausible mechanism
+          but limited empirical data (AI tools too new). Mark as medium confidence.
+
+      - assumption: "50-90% of languages will be extinct by 2100 (baseline, without AI acceleration)"
+        confidence: "medium"
+        sensitivity: "high"
+        evidence: |
+          Krauss (1992): "The world's languages in crisis" - 50-90% extinction by 2100 (pre-AI era projection).
+          UNESCO (2010): 2,500+ languages "endangered" (children not learning as mother tongue).
+        notes: |
+          This is BASELINE extinction (without AI). AI may ACCELERATE extinction (digital death precedes
+          physical death, Kornai 2013), but hard to quantify. S1 (actual) assumes AI adds 10-20% to baseline
+          extinction rate. S2-S4 assume AI can SLOW extinction if linguistic diversity prioritized.
+
+      - assumption: "Linguistic diversity targets feasible at $1-50M/year"
+        confidence: "medium"
+        sensitivity: "critical"
+        evidence: |
+          Estimated costs:
+          - Targeted crawls: $1-5M/year (partner with linguistic communities, crawl non-English web)
+          - Proactive digitization: $10-50M/year (fund communities to create Wikipedia, news, literature)
+          - Consent infrastructure: $50-500M/year (micropayments to publishers)
+        notes: |
+          NO ONE HAS TRIED THIS AT SCALE. Estimates based on:
+          - UNESCO linguistic preservation programs ($10-100M budgets)
+          - Common Crawl current budget ($5-10M/year estimated)
+          - Assumption: 2-5x budget increase enables 100-1,000 language preservation
+
+          Mark as MEDIUM confidence - plausible but untested. This is research question, not settled fact.
+
+      - assumption: "Younger generations switch languages for economic opportunity"
+        confidence: "high"
+        sensitivity: "high"
+        evidence: |
+          Historical pattern: Rural-to-urban migration, younger generations learn dominant language (English,
+          Mandarin, Spanish) for jobs, education, social mobility. Linguistic shift accelerates with globalization.
+        notes: |
+          AI may ACCELERATE this pattern (digital economy requires English-dominant AI tools) or REVERSE it
+          (if AI tools available in native languages, less pressure to switch). S1 assumes acceleration,
+          S2-S4 assume reversal if linguistic diversity prioritized.
+
+  variables:
+    - id: "linguistic_diversity_target"
+      name: "Linguistic Diversity Target"
+      description: |
+        Common Crawl's policy on linguistic representation. Four levels:
+        - "none": Universal crawl, no diversity targets (ACTUAL as of 2024)
+        - "major_languages_1pct": 100+ languages with 1M+ speakers get minimum 1% representation each
+        - "living_languages_0.1pct": 1,000+ languages with 10K+ speakers get minimum 0.1% each
+        - "all_languages_proactive": Proactive digitization of all 7,000 living languages (transcribe oral traditions, fund digital content creation)
+      unit: "policy_enum"
+      actual_value: "none"
+      default_value: "none"
+      plausible_range:
+        min: "none"
+        max: "all_languages_proactive"
+      notes: |
+        CRITICAL VARIABLE: Changing from "none" to "major_languages_1pct" prevents digital extinction for
+        2-3 billion people (100+ major languages preserved). Cost: $1-5M/year (20-50% budget increase).
+
+        Decision made in 2008 (founding), never revisited despite AI training becoming dominant use case by 2018.
+
+    - id: "digitization_funding"
+      name: "Annual Funding for Linguistic Digitization"
+      description: |
+        Budget allocated to proactively digitize low-resource languages (fund communities to create Wikipedia
+        articles, news, literature, transcribe oral traditions, build digital infrastructure).
+      unit: "USD_millions_per_year"
+      actual_value: 0
+      default_value: 0
+      plausible_range:
+        min: 0
+        max: 500
+      notes: |
+        ACTUAL: $0 (Common Crawl does not fund digitization, only crawls existing web).
+
+        ALTERNATIVES:
+        - $1-5M/year: Partner with UNESCO, SIL International, linguistic communities (targeted crawls)
+        - $10-50M/year: Proactive digitization (fund Wikipedia, news, literature in 1,000+ languages)
+        - $50-500M/year: Comprehensive (fund + micropayments to publishers for consent-based crawl)
+
+    - id: "ai_training_adoption_rate"
+      name: "Percentage of LLMs Using Common Crawl"
+      description: |
+        What percentage of large language models (2018-2030) use Common Crawl as primary training data source?
+      unit: "percent"
+      actual_value: 95
+      default_value: 95
+      plausible_range:
+        min: 50
+        max: 100
+      notes: |
+        ACTUAL (as of 2024): 95%+ of major LLMs use Common Crawl (GPT-3, GPT-4, LLaMA, Claude, Gemini, PaLM,
+        BLOOM, Galactica, Falcon, MPT, etc.). Only exceptions: highly specialized models or proprietary datasets.
+
+        If Common Crawl implemented linguistic diversity targets, 95% of AI ecosystem would benefit. Systemic
+        impact, not one-off model improvement.
+
+    - id: "language_extinction_baseline"
+      name: "Languages Extinct by 2100 (Baseline, Without AI)"
+      description: |
+        How many of 7,000 living languages will be extinct by 2100 WITHOUT AI acceleration (pre-AI projection)?
+      unit: "count"
+      actual_value: 4900
+      default_value: 4900
+      plausible_range:
+        min: 3500
+        max: 6300
+      notes: |
+        Krauss (1992): 50-90% of 7,000 languages extinct by 2100 = 3,500-6,300 languages.
+        UNESCO (2010): 2,500+ languages "endangered" as of 2010.
+
+        This is BASELINE (globalization, urbanization, economic pressure pre-AI era). S1 (actual) assumes AI
+        ACCELERATES extinction by 10-20% (digital death precedes physical death). S2-S4 assume AI can SLOW
+        extinction if linguistic diversity prioritized.
+
+    - id: "ai_acceleration_factor"
+      name: "AI's Contribution to Language Extinction Rate"
+      description: |
+        By what factor does AI (trained on English-dominant Common Crawl) ACCELERATE language extinction vs
+        baseline (pre-AI era)? 1.0 = no effect, 1.2 = 20% acceleration, 0.8 = 20% deceleration (AI slows extinction).
+      unit: "multiplier"
+      actual_value: 1.15
+      default_value: 1.0
+      plausible_range:
+        min: 0.5
+        max: 2.0
+      notes: |
+        UNCERTAIN - AI too new to measure empirically. Estimate 1.15 (15% acceleration) based on:
+        - Digital death precedes physical death (Kornai 2013)
+        - Economic pressure to learn English for AI tools (McKinsey 2023)
+        - Younger generations switching to English for ChatGPT, GitHub Copilot access
+
+        S1 (actual) assumes 1.15 acceleration. S2-S4 assume <1.0 (AI slows extinction if linguistic diversity
+        prioritized, because NLP tools make language economically valuable).
+
+  scenarios:
+    - id: "S1_actual_universal_crawl_no_linguistic_targets"
+      name: "S1: Actual (Universal Crawl, No Linguistic Targets)"
+      description: |
+        WHAT ACTUALLY HAPPENED (2008-2024) and projection to 2100:
+
+        Common Crawl's founding decision (2008): Universal crawl of "web as it is" - no linguistic diversity
+        targets, no proactive digitization funding, no partnerships with linguistic communities.
+
+        RESULT (2008-2024):
+        - 90%+ English/WEIRD language representation
+        - <0.1% representation for 6,900+ low-resource languages
+        - ALL major LLMs (GPT-3, GPT-4, LLaMA, Claude, Gemini) trained on English-dominant data
+        - LLM performance 10-80% lower for low-resource languages (vs English SOTA)
+        - Economic advantage to English speakers (AI productivity gap)
+
+        PROJECTION (2025-2100):
+        - Digital absence → no NLP tools → economic pressure to switch languages → extinction accelerates
+        - Baseline extinction: 3,500-6,300 languages (50-90%, Krauss 1992)
+        - AI acceleration: +15% (digital death precedes physical death, Kornai 2013)
+        - TOTAL: 4,000-7,000 languages extinct by 2100 (57-100% of living languages)
+
+        AFFECTED: 4-5 billion people whose native languages have <1% Common Crawl representation
+        IRREVERSIBLE: Once last fluent speaker dies, language cannot be reconstructed from Common Crawl (never there)
+
+      outcome_variables:
+        - variable: "linguistic_diversity_target"
+          value: "none"
+        - variable: "digitization_funding"
+          value: 0
+        - variable: "ai_training_adoption_rate"
+          value: 95
+        - variable: "language_extinction_baseline"
+          value: 4900
+        - variable: "ai_acceleration_factor"
+          value: 1.15
+
+      outcomes:
+        - outcome: "Languages extinct by 2100"
+          value: 5635
+          unit: "count"
+          description: |
+            4,900 baseline (70% of 7,000) × 1.15 AI acceleration = 5,635 languages extinct by 2100 (80% of living languages)
+
+        - outcome: "People affected by language extinction"
+          value: 4500000000
+          unit: "people"
+          description: |
+            4-5 billion people whose native languages have <1% Common Crawl representation. Most will be
+            FORCED to use AI tools in second language (English) or accept 10-80% performance degradation.
+
+        - outcome: "LLM performance gap (low-resource vs English)"
+          value: 60
+          unit: "percent_lower"
+          description: |
+            Average LLM performance 60% lower for low-resource languages vs English SOTA (range: 10-80%
+            depending on language, based on Brown et al. 2020, Touvron et al. 2023 benchmarks).
+
+        - outcome: "Cost of Common Crawl (2008-2024)"
+          value: 120
+          unit: "USD_millions"
+          description: |
+            Estimated $5-10M/year × 15 years (2008-2024) = $75-150M. Use midpoint $120M.
+
+        - outcome: "Economic value captured by AI companies"
+          value: 100000
+          unit: "USD_millions"
+          description: |
+            OpenAI ($80B valuation), Anthropic ($18B), Stability AI ($1B), 100+ startups. Total $100B+
+            valuations enabled by FREE Common Crawl training data.
+
+      comparison_to_baseline: "This IS the baseline (actual scenario)."
+
+    - id: "S2_targeted_linguistic_diversity"
+      name: "S2: Targeted Linguistic Diversity ($1-5M/year, 100+ Major Languages Preserved)"
+      description: |
+        COUNTERFACTUAL: What if Common Crawl implemented linguistic diversity targets in 2008?
+
+        INTERVENTION:
+        - Partner with UNESCO, SIL International, linguistic communities
+        - Targeted crawls of non-English web (Africa, Asia, Pacific Islands)
+        - Minimum 1% representation for 100+ languages with 1M+ speakers each
+        - Language-specific quality filtering (remove machine translation, boilerplate, porn per-language)
+        - Cost: $1-5M/year additional (20-50% budget increase)
+
+        RESULT (2008-2024):
+        - 50% English/WEIRD, 50% other languages (100+ languages with 1%+ representation)
+        - LLMs trained on balanced data (GPT-3, LLaMA, Claude with 50% non-English)
+        - LLM performance gap reduced from 60% to 20% (major languages)
+        - Economic inclusion: 2-3 billion people benefit from AI tools in native languages
+
+        PROJECTION (2025-2100):
+        - 100+ major languages have viable NLP tools → economic incentive to preserve → digital footprint sustained
+        - Baseline extinction: 3,500-6,300 languages
+        - AI deceleration: 0.7x (AI SLOWS extinction for 100+ preserved languages, but 6,800+ still at risk)
+        - TOTAL: 2,450-4,410 languages extinct (35-63% vs 80% in S1)
+
+        BENEFIT: 3,185 languages SAVED vs S1 (5,635 - 2,450 = 3,185 fewer extinctions)
+
+      outcome_variables:
+        - variable: "linguistic_diversity_target"
+          value: "major_languages_1pct"
+        - variable: "digitization_funding"
+          value: 3
+        - variable: "ai_training_adoption_rate"
+          value: 95
+        - variable: "language_extinction_baseline"
+          value: 4900
+        - variable: "ai_acceleration_factor"
+          value: 0.7
+
+      outcomes:
+        - outcome: "Languages extinct by 2100"
+          value: 3430
+          unit: "count"
+          description: |
+            4,900 baseline (70%) × 0.7 AI deceleration = 3,430 languages extinct (49% of living languages).
+
+            3,185 languages SAVED vs S1 (5,635 - 3,430). This is 45% reduction in extinction.
+
+        - outcome: "People affected by language extinction"
+          value: 2000000000
+          unit: "people"
+          description: |
+            2 billion people still affected (vs 4.5 billion in S1). 2-3 billion people benefit from AI tools
+            in native languages (100+ major languages preserved).
+
+        - outcome: "LLM performance gap (low-resource vs English)"
+          value: 20
+          unit: "percent_lower"
+          description: |
+            Major languages (100+) performance gap reduced from 60% to 20% (vs English SOTA).
+            Remaining 6,800+ languages still 60-80% lower.
+
+        - outcome: "Cost of Common Crawl (2008-2024)"
+          value: 180
+          unit: "USD_millions"
+          description: |
+            $120M baseline + $3M/year × 15 years = $120M + $45M = $165M. Use $180M (rounded up for partnerships).
+
+        - outcome: "Cost per language saved"
+          value: 18848
+          unit: "USD_per_language"
+          description: |
+            Additional cost: $60M ($180M - $120M baseline)
+            Languages saved: 3,185 (vs S1)
+            Cost per language: $60M / 3,185 = $18,848 per language saved from extinction
+
+            CONTEXT: UNESCO linguistic preservation programs cost $50K-500K per language. Common Crawl's
+            intervention would be 10-20x cheaper (digital presence vs full language revitalization).
+
+      comparison_to_actual: |
+        COST: +$60M over 15 years (+50% budget increase)
+        BENEFIT: 3,185 languages saved from extinction (45% reduction)
+        PEOPLE: 2-3 billion benefit from AI tools in native languages
+        PERFORMANCE: 60% → 20% gap for major languages
+
+        CRITICAL: This intervention was FEASIBLE in 2008 (cost equivalent to 0.1% of AI company valuations
+        enabled by Common Crawl data). Decision NOT to implement has NO documented rationale. Accountability gap.
+
+    - id: "S3_radical_linguistic_equity"
+      name: "S3: Radical Linguistic Equity ($10-50M/year, 1,000+ Languages Preserved)"
+      description: |
+        COUNTERFACTUAL: What if Common Crawl prioritized linguistic equity as core mission?
+
+        INTERVENTION:
+        - Proactive digitization: Fund linguistic communities to create Wikipedia, news, literature
+        - Transcribe oral traditions: Record and transcribe storytelling, oral histories, cultural knowledge
+        - Minimum 0.1% representation for 1,000+ languages (10K+ speakers each)
+        - Partner with national governments, UNESCO, indigenous communities
+        - Host hybrid model: Store crawled content (not just URLs) to prevent link rot
+        - Cost: $10-50M/year (2-5x current budget)
+
+        RESULT (2008-2024):
+        - 30% English, 70% other languages (1,000+ languages with 0.1%+ representation)
+        - LLMs trained on truly multilingual data
+        - LLM performance gap reduced from 60% to 10% (1,000+ languages)
+        - Cultural knowledge preserved (oral traditions, indigenous worldviews in AI training)
+
+        PROJECTION (2025-2100):
+        - 1,000+ languages have digital footprint → economic/cultural incentive to preserve
+        - Baseline extinction: 3,500-6,300 languages
+        - AI deceleration: 0.3x (AI SLOWS extinction dramatically for 1,000+ preserved languages)
+        - TOTAL: 1,050-1,890 languages extinct (15-27% vs 80% in S1)
+
+        BENEFIT: 4,545 languages SAVED vs S1 (5,635 - 1,050 = 4,585 fewer extinctions, midpoint 4,545)
+
+      outcome_variables:
+        - variable: "linguistic_diversity_target"
+          value: "living_languages_0.1pct"
+        - variable: "digitization_funding"
+          value: 30
+        - variable: "ai_training_adoption_rate"
+          value: 95
+        - variable: "language_extinction_baseline"
+          value: 4900
+        - variable: "ai_acceleration_factor"
+          value: 0.3
+
+      outcomes:
+        - outcome: "Languages extinct by 2100"
+          value: 1470
+          unit: "count"
+          description: |
+            4,900 baseline (70%) × 0.3 AI deceleration = 1,470 languages extinct (21% of living languages).
+
+            4,165 languages SAVED vs S1 (5,635 - 1,470). This is 74% reduction in extinction.
+
+        - outcome: "People affected by language extinction"
+          value: 500000000
+          unit: "people"
+          description: |
+            500 million people still affected (vs 4.5 billion in S1). 4 billion people benefit from AI tools
+            supporting 1,000+ languages with viable NLP.
+
+        - outcome: "LLM performance gap (low-resource vs English)"
+          value: 10
+          unit: "percent_lower"
+          description: |
+            1,000+ languages performance gap reduced from 60% to 10% (vs English SOTA). Remaining 6,000+
+            smallest languages still 40-60% lower (but many of these have <1,000 speakers, oral-only).
+
+        - outcome: "Cost of Common Crawl (2008-2024)"
+          value: 570
+          unit: "USD_millions"
+          description: |
+            $120M baseline + $30M/year × 15 years = $120M + $450M = $570M.
+
+        - outcome: "Cost per language saved"
+          value: 108036
+          unit: "USD_per_language"
+          description: |
+            Additional cost: $450M ($570M - $120M baseline)
+            Languages saved: 4,165 (vs S1)
+            Cost per language: $450M / 4,165 = $108,036 per language saved
+
+            CONTEXT: Still 5-10x cheaper than UNESCO full language revitalization programs ($500K-1M per language).
+
+        - outcome: "Cultural knowledge preserved"
+          value: "high"
+          unit: "qualitative"
+          description: |
+            Oral traditions, indigenous worldviews, non-Western knowledge systems transcribed and preserved.
+            AI trained on this corpus learns from 1,000+ cultural perspectives (vs 10-20 in S1).
+
+      comparison_to_actual: |
+        COST: +$450M over 15 years (5x budget increase)
+        BENEFIT: 4,165 languages saved from extinction (74% reduction)
+        PEOPLE: 4 billion benefit from multilingual AI tools
+        PERFORMANCE: 60% → 10% gap for 1,000+ languages
+        CULTURE: Oral traditions, indigenous knowledge preserved
+
+        FEASIBILITY: $570M total cost = 0.6% of AI company valuations ($100B+) enabled by Common Crawl data.
+        If Common Crawl captured even 1% of value created, intervention would be self-funding.
+
+    - id: "S4_consent_based_crawl"
+      name: "S4: Consent-Based Crawl with Compensation ($50-500M/year, Copyright Resolved)"
+      description: |
+        COUNTERFACTUAL: What if Common Crawl required explicit consent for AI training use + compensated publishers?
+
+        INTERVENTION:
+        - Shift from "opt-out" (robots.txt) to "opt-in" (explicit consent for AI training)
+        - AI-specific robots.txt directive (robots.txt: "Allow: /AI-Training")
+        - Micropayment mechanism (compensate publishers ~$0.001 per page crawled for AI training)
+        - Consent dashboard (publishers control which AI companies access data, set prices)
+        - Linguistic diversity bonus (pay 10x rate for low-resource language content)
+        - Cost: $10-50M infrastructure + $50-500M/year publisher compensation
+
+        RESULT (2008-2024):
+        - Dataset size reduced 80-95% (most publishers won't opt-in without compensation)
+        - BUT: Remaining 5-20% is CONSENTED, copyright-clean, lawsuit-free
+        - Publishers compensated (sustainable journalism, content creation)
+        - Linguistic diversity improved (bonus payments incentivize low-resource language content)
+
+        PROJECTION (2025-2100):
+        - Economic incentive to create content in low-resource languages (10x payment bonus)
+        - Baseline extinction: 3,500-6,300 languages
+        - AI deceleration: 0.5x (smaller dataset but economically incentivized linguistic diversity)
+        - TOTAL: 1,750-3,150 languages extinct (25-45% vs 80% in S1)
+        - Copyright lawsuits avoided ($1-10B in settlements)
+
+        UNKNOWN: Whether LLMs trained on 5-20% of current data (but high-quality, consented, diverse) perform
+        as well as 100% (unconsented, biased). NO ONE HAS TESTED THIS AT SCALE.
+
+      outcome_variables:
+        - variable: "linguistic_diversity_target"
+          value: "major_languages_1pct_with_economic_incentive"
+        - variable: "digitization_funding"
+          value: 50
+        - variable: "ai_training_adoption_rate"
+          value: 70
+        - variable: "language_extinction_baseline"
+          value: 4900
+        - variable: "ai_acceleration_factor"
+          value: 0.5
+
+      outcomes:
+        - outcome: "Languages extinct by 2100"
+          value: 2450
+          unit: "count"
+          description: |
+            4,900 baseline (70%) × 0.5 AI deceleration = 2,450 languages extinct (35% of living languages).
+
+            3,185 languages SAVED vs S1 (5,635 - 2,450). This is 57% reduction in extinction.
+
+        - outcome: "Dataset size (vs S1)"
+          value: 15
+          unit: "percent"
+          description: |
+            5-20% of S1 size (publishers opt-in with compensation). Use midpoint 15%.
+
+            UNKNOWN: Whether smaller dataset trains viable LLMs. Possible that higher-quality, consented data
+            compensates for lower quantity. Needs empirical testing.
+
+        - outcome: "Copyright lawsuits avoided"
+          value: 5000
+          unit: "USD_millions"
+          description: |
+            Estimated $1-10B in potential copyright settlements (New York Times, Getty Images, authors lawsuits).
+            Use midpoint $5B avoided by consent-based crawl.
+
+        - outcome: "Publisher compensation paid"
+          value: 4500
+          unit: "USD_millions"
+          description: |
+            $50-500M/year × 15 years = $750M-$7.5B. Use midpoint $4.5B paid to publishers.
+
+        - outcome: "Cost of Common Crawl (2008-2024)"
+          value: 4620
+          unit: "USD_millions"
+          description: |
+            $120M baseline + $50M infrastructure + $4.5B compensation = $4.62B.
+
+            CONTEXT: Still <5% of AI company valuations ($100B+). If AI companies captured value fairly,
+            intervention would be self-funding.
+
+        - outcome: "Linguistic diversity improved (via economic incentive)"
+          value: "high"
+          unit: "qualitative"
+          description: |
+            10x payment bonus for low-resource language content creates economic incentive for communities to
+            publish digitally. Reverses digital extinction feedback loop (no content → no tools → no content)
+            to virtuous cycle (economic incentive → more content → better tools → more economic opportunity).
+
+      comparison_to_actual: |
+        COST: +$4.5B over 15 years (40x budget increase, but <5% of AI value created)
+        BENEFIT: 3,185 languages saved (57% reduction), copyright lawsuits avoided ($5B), publishers compensated ($4.5B)
+        DATASET: 85% smaller (UNKNOWN whether viable for LLM training - needs empirical testing)
+        PERFORMANCE: Potentially equal or better (higher quality, less junk) but UNTESTED
+        ETHICS: Consent-based, fair compensation, sustainable content creation
+
+        FEASIBILITY: Requires AI industry to share value created. Current model (free data → $100B valuations)
+        unsustainable long-term (lawsuits, regulatory backlash, publisher collapse).
+
+  sensitivity_analysis:
+    notes: |
+      CRITICAL VARIABLES (High sensitivity = large outcome changes from small input changes):
+
+      1. **linguistic_diversity_target** (CRITICAL):
+         - Change from "none" to "major_languages_1pct" prevents 3,185 language extinctions (57% reduction)
+         - Cost: $1-5M/year (20-50% budget increase)
+         - Sensitivity: CRITICAL - most cost-effective intervention
+
+      2. **digitization_funding** (HIGH):
+         - $0 → $30M/year: 4,165 languages saved (74% reduction)
+         - $0 → $50M/year (with consent): 3,185 languages saved + copyright resolved
+         - Sensitivity: HIGH - directly enables digital content creation in low-resource languages
+
+      3. **ai_acceleration_factor** (MEDIUM):
+         - 1.15 (actual, AI accelerates extinction) → 0.3 (AI slows extinction via NLP tools)
+         - Depends on whether NLP tools create economic incentive to preserve languages
+         - Sensitivity: MEDIUM - uncertain mechanism, but large effect size
+
+      4. **language_extinction_baseline** (LOW):
+         - Baseline (50-90%) affects absolute numbers but not RELATIVE intervention effectiveness
+         - All scenarios reduce extinction 35-74% regardless of baseline
+         - Sensitivity: LOW - intervention works across range of baseline assumptions
+
+      RADICAL VARIABLES (Untested, could dramatically change outcomes):
+
+      1. **consent_mechanism** (RADICAL):
+         - Shift from opt-out to opt-in reduces dataset 80-95%
+         - UNKNOWN: Whether LLMs train on 5-20% data and still perform well
+         - NO ONE HAS TESTED THIS AT SCALE
+         - Could make S4 infeasible OR reveal that current 100% dataset is overkill (diminishing returns)
+
+      2. **Economic incentive for low-resource content** (RADICAL):
+         - Paying 10x for low-resource language content could REVERSE digital extinction feedback loop
+         - Creates economic opportunity → more content → better NLP tools → more opportunity (virtuous cycle)
+         - UNTESTED: Whether $50-500M/year sufficient to incentivize 1,000+ communities
+         - Could be TRANSFORMATIVE if it works, but speculative
+
+      RECOMMENDED INTERVENTION (Cost-Benefit):
+      S2 (Targeted Linguistic Diversity) is most cost-effective:
+      - Cost: $60M additional over 15 years (+50% budget)
+      - Benefit: 3,185 languages saved (57% extinction reduction)
+      - Cost per language saved: $18,848 (10-20x cheaper than UNESCO programs)
+      - Feasibility: Proven (UNESCO, SIL International partnerships exist)
+
+      S3 (Radical Equity) has highest benefit (4,165 languages saved) but 7.5x cost ($450M vs $60M).
+      S4 (Consent) resolves copyright but shrinks dataset 85% (UNKNOWN if viable).
+
+# ============================================================================
+# LAYER 3: EMPATHY MAPPING
+# ============================================================================
+
+l3_empathy_mapping:
+
+  stakeholder_groups:
+
+    - id: "common_crawl_foundation"
+      name: "Common Crawl Foundation (Governance Node)"
+      description: |
+        Non-profit organization (501(c)(3) since 2011) that operates Common Crawl. Board of directors (5-10 members),
+        engineering team (5-10 staff), funded by corporate sponsors (Amazon Web Services, foundations).
+      representation_in_decision_making: "100%"
+      population_size: "15-20 people (board + staff)"
+      stakeholder_power: "complete"
+      benefits:
+        - "Mission fulfillment: Open web archive preserved for posterity"
+        - "Technical reputation: Cited in 10,000+ AI research papers"
+        - "Industry goodwill: Enables $100B+ AI company valuations"
+        - "Funding secured: AWS sponsorship, foundation grants"
+      harms:
+        - "Minimal direct harm (criticisms of linguistic bias, but organization survives)"
+        - "Reputational risk from LAION-5B CSAM inheritance (Common Crawl enabled downstream Tier 1 harm)"
+      net_welfare: "positive"
+      notes: |
+        Only stakeholder group with 100% governance power. All constitutive decisions (universal crawl, no linguistic
+        targets, no CSAM filtering, no consent mechanism) made by this group of 15-20 people affecting 8 billion.
+
+    - id: "ai_researchers"
+      name: "AI Researchers (Primary Beneficiaries)"
+      description: |
+        10,000+ academic and industry researchers using Common Crawl for LLM training, NLP research, web mining studies.
+        Includes PhD students, postdocs, faculty at universities, and researchers at AI labs (OpenAI, Google, Meta, etc.).
+      representation_in_decision_making: "high"
+      population_size: "10,000+"
+      stakeholder_power: "high"
+      benefits:
+        - "Free training data: $0 cost vs $10-100M to crawl web independently"
+        - "Research enablement: 2,000+ papers published using Common Crawl datasets"
+        - "Career advancement: GPT-3, LLaMA, Claude papers cite Common Crawl (h-index boosts)"
+        - "Reproducibility: Shared dataset enables comparison across models"
+      harms:
+        - "Criticized for bias: English-dominant models underperform for non-Western languages"
+        - "Ethical scrutiny: 'Stochastic Parrots' (Bender et al. 2021) highlights harms of large datasets"
+        - "Reputation risk: Association with LAION-5B CSAM distribution"
+      net_welfare: "strongly positive"
+      notes: |
+        Benefits vastly outweigh harms for this group. Many AI researchers on Common Crawl advisory board (high
+        representation). Benefit from free data worth tens of millions, minimal personal harm (criticism is
+        professional, not material).
+
+    - id: "ai_companies"
+      name: "AI Companies (Secondary Beneficiaries)"
+      description: |
+        100+ companies building LLMs and AI products using Common Crawl training data. Includes OpenAI ($80B valuation),
+        Anthropic ($18B), Google (Gemini), Meta (LLaMA), Stability AI ($1B), 100+ startups.
+      representation_in_decision_making: "high"
+      population_size: "100+ companies, 100,000+ employees"
+      stakeholder_power: "very high"
+      benefits:
+        - "Economic value: $100B+ in company valuations enabled by FREE training data"
+        - "Competitive advantage: Common Crawl levels playing field (startups can compete with Google/Microsoft)"
+        - "Speed to market: No need to build proprietary web crawl infrastructure"
+        - "Regulatory arbitrage: Common Crawl's 'neutrality' shields from direct liability for data choices"
+      harms:
+        - "Copyright lawsuits: $1-10B in potential settlements (NYT, Getty, authors)"
+        - "Regulatory risk: EU AI Act, US COPPA enforcement (CSAM in training data)"
+        - "Reputation damage: Bias, safety failures, linguistic exclusion criticism"
+      net_welfare: "strongly positive"
+      notes: |
+        Benefits ($100B+ valuations) dwarf harms ($1-10B lawsuit risk). Companies sponsor Common Crawl (AWS provides
+        free S3 hosting). High representation in governance (advisory board seats, funding influence).
+
+        CRITICAL: Companies capture 99%+ of economic value created by Common Crawl ($100B valuations) while Common
+        Crawl budget is $5-10M/year (0.01% of value created). Massive wealth transfer from linguistic communities
+        (whose data/labor scraped) to Western AI companies.
+
+    - id: "llm_users"
+      name: "LLM Users (Indirect Beneficiaries)"
+      description: |
+        1 billion+ people using ChatGPT, Claude, Gemini, Copilot, and other LLMs trained on Common Crawl data.
+        Includes professionals (coding, writing, research), students, general consumers.
+      representation_in_decision_making: "zero"
+      population_size: "1 billion+"
+      stakeholder_power: "none"
+      benefits:
+        - "Access to AI tools: ChatGPT, Claude, Gemini for productivity, learning, creativity"
+        - "Productivity gains: 10-55% faster coding (GitHub Copilot), writing, research"
+        - "Free/low-cost: Many LLM tools free or $20/month (vs inaccessible if training data cost passed to consumers)"
+      harms:
+        - "English-first bias: Non-English speakers get 10-80% degraded performance"
+        - "Cultural bias: LLMs trained on Western-dominant corpus produce Western-centric responses"
+        - "Economic exclusion: English speakers capture disproportionate productivity gains"
+        - "Privacy concerns: Personal data scraped from web without notification or consent"
+      net_welfare: "positive for English speakers, mixed/negative for low-resource language speakers"
+      notes: |
+        DIFFERENTIAL HARM: 1 billion English speakers benefit strongly (SOTA tools, productivity gains). 4-5 billion
+        low-resource language speakers harmed (degraded performance, forced to use English, economic disadvantage).
+
+        Zero representation in Common Crawl governance despite being largest affected population.
+
+    - id: "low_resource_language_communities"
+      name: "Low-Resource Language Communities (ABSENT NODE, TIER 1 EXISTENTIAL HARM)"
+      description: |
+        6,900+ linguistic communities whose languages have <0.1% Common Crawl representation each. Includes:
+        - 2,000+ African languages (Yoruba, Igbo, Zulu, Amharic, etc.)
+        - 3,000+ Asian/Pacific languages (Hmong, Karen, Tok Pisin, etc.)
+        - 1,000+ indigenous languages (Navajo, Quechua, Maori, Sami, etc.)
+        - 900+ endangered languages (UNESCO classification: critically endangered to vulnerable)
+
+        Population: 4-5 billion people whose native languages have <1% Common Crawl representation.
+      representation_in_decision_making: "zero"
+      population_size: "4-5 billion people, 6,900+ languages"
+      stakeholder_power: "none"
+      benefits:
+        - "NONE - zero representation in Common Crawl means zero NLP tools in native languages"
+      harms:
+        - "TIER 1 EXISTENTIAL: Digital extinction accelerates language death (Kornai 2013)"
+        - "Economic exclusion: Must learn English to access AI productivity tools (GitHub Copilot, ChatGPT)"
+        - "Educational harm: AI tutors, learning tools English-only (children forced to learn in second language)"
+        - "Cultural erasure: Oral traditions, indigenous knowledge NOT in AI training corpus"
+        - "Intergenerational injustice: Future generations inherit AI that speaks only dead/dominant languages"
+        - "Dignity harm: Languages treated as 'not worth including' (implicit message: your culture doesn't matter)"
+      net_welfare: "strongly negative"
+      harm_severity: "TIER 1 - EXISTENTIAL (language extinction is IRREVERSIBLE)"
+      vulnerable_population_flags:
+        - "IRREVERSIBLE HARM: Once last fluent speaker dies, language cannot be reconstructed"
+        - "INTERGENERATIONAL: Children born 2025-2100 inherit world where 50-90% of languages extinct"
+        - "CULTURAL GENOCIDE: Oral traditions, indigenous worldviews erased from AI memory"
+      notes: |
+        CRITICAL ABSENT NODE: Largest harmed population (4-5 billion people), zero governance representation.
+
+        MINORITY STRESS TEST: FAILED
+        - Most vulnerable population (endangered languages, indigenous communities, Global South)
+        - Bears highest-tier harm (existential - language extinction)
+        - For benefit of most privileged population (Western AI companies, English speakers)
+        - Violates Rawlsian justice: Worst-off harmed for others' benefit
+
+        ORP'S VALUE: Layer 3 empathy mapping in 2008 would have identified this absent node BEFORE 15 years of
+        linguistic hegemony. Minority stress test would trigger: "If worst-off bear TIER 1 irreversible harm,
+        reconsider constitutive decision."
+
+    - id: "future_generations"
+      name: "Future Generations (Unrepresented, Intergenerational Harm)"
+      description: |
+        Billions of children who will be born 2025-2100 and grow up in world where:
+        - LLMs are primary information access (like Google for Gen Z, but more pervasive)
+        - 50-90% of world's languages extinct (Krauss 1992 projection + AI acceleration)
+        - AI trained on corpus where 6,900+ languages never existed (Common Crawl 2008-2024 snapshots)
+      representation_in_decision_making: "zero"
+      population_size: "10+ billion (projected births 2025-2100)"
+      stakeholder_power: "none"
+      benefits:
+        - "Access to AI tools (if linguistic diversity preserved, multilingual LLMs)"
+        - "Potential: If S2/S3 implemented, 3,000-4,000 languages preserved vs extinct"
+      harms:
+        - "TIER 1 EXISTENTIAL: Inherit world where 50-90% of human linguistic diversity extinct"
+        - "Cultural poverty: AI teaches from 10-20 Western languages vs 7,000 diverse perspectives"
+        - "Irreversible loss: Cannot undo language extinction (grandparents' languages dead)"
+        - "Economic lock-in: English-dominant AI creates path dependency (switching costs high)"
+      net_welfare: "strongly negative if S1 (actual), strongly positive if S2-S4"
+      notes: |
+        INTERGENERATIONAL INJUSTICE: Current generation (Common Crawl 2008-2024) made constitutive decisions
+        (universal crawl, no linguistic targets) that determine linguistic landscape for next century.
+
+        Future generations had ZERO voice in decisions that will shape their reality. Cannot vote, cannot protest,
+        cannot fork (by the time they're adults, languages already extinct).
+
+        This is EXACTLY the harm pattern climate change critics identify: Current generation benefits (cheap fossil
+        fuels / free AI training data), future generations pay costs (climate catastrophe / linguistic extinction).
+
+    - id: "linguistic_researchers"
+      name: "Linguistic Researchers and Preservationists (Critics, Low Power)"
+      description: |
+        1,000+ computational linguists, endangered language researchers, UNESCO linguistic diversity advocates,
+        SIL International field workers studying and documenting low-resource languages.
+      representation_in_decision_making: "low"
+      population_size: "1,000-5,000 researchers"
+      stakeholder_power: "low"
+      benefits:
+        - "Research data: Common Crawl useful for studying web linguistic distribution"
+        - "Problem identification: Studies like Joshi 2020, Kreutzer 2022 document bias using Common Crawl"
+      harms:
+        - "Professional frustration: Document problems but unable to change Common Crawl policy"
+        - "Funding competition: $5-10M/year Common Crawl budget could fund 50-100 language preservation projects"
+        - "Mission failure: Languages go extinct despite decades of documentation efforts (AI accelerates loss)"
+      net_welfare: "negative"
+      notes: |
+        CRITICS WITH NO POWER: Linguistic researchers publish studies documenting Common Crawl's bias (Joshi 2020,
+        Kreutzer 2022, Bender 2021 'Stochastic Parrots'), but have zero Common Crawl governance influence.
+
+        Common Crawl has NOT responded to linguistic diversity criticism with policy changes (2008-2024, 15 years).
+        Studies cited in academic papers but ignored in operations.
+
+        This is governance failure: Critics can document harms but not prevent them.
+
+    - id: "web_publishers"
+      name: "Web Publishers and Content Creators (Exploited Labor)"
+      description: |
+        Millions of websites, bloggers, journalists, photographers, writers whose content scraped by Common Crawl
+        and used for AI training without notification or compensation.
+      representation_in_decision_making: "minimal"
+      population_size: "100+ million websites, 1+ billion content creators"
+      stakeholder_power: "low"
+      benefits:
+        - "SEO visibility: Crawling may boost search rankings (debatable)"
+        - "Archival: Content preserved in web archive for posterity"
+      harms:
+        - "Zero compensation: Content creates $100B+ AI valuations, publishers get $0"
+        - "Copyright violation: Training LLMs on copyrighted content contested (lawsuits pending)"
+        - "No consent: Robots.txt predates AI training use case (1994 vs 2018)"
+        - "Journalism sustainability crisis: News publishers not paid despite content used for AI training"
+      net_welfare: "negative"
+      notes: |
+        LABOR EXPLOITATION PATTERN: Publishers create content → Common Crawl scrapes for free → AI companies
+        train models → $100B valuations → publishers get $0.
+
+        New York Times lawsuit (2023): "OpenAI used decades of our journalism without permission or payment."
+        Common Crawl's response: "We're just an archive, not responsible for downstream use."
+
+        Robots.txt opt-out insufficient: Created 1994 for search indexing, no AI-specific directive. Many publishers
+        unaware content used for training until 2020-2023 lawsuits.
+
+    - id: "copyright_holders"
+      name: "Copyright Holders (Legal Opposition)"
+      description: |
+        Authors, artists, photographers, news organizations whose copyrighted works scraped by Common Crawl and
+        used for AI training. Includes New York Times, Getty Images, individual authors (Andersen v. Stability AI).
+      representation_in_decision_making: "zero"
+      population_size: "Millions of copyright holders"
+      stakeholder_power: "medium"
+      benefits:
+        - "None directly (unless courts rule AI training requires licensing)"
+      harms:
+        - "Copyright infringement: $1-10B in lawsuit damages (pending cases)"
+        - "Market harm: AI-generated content competes with human creators (Getty vs Stability AI)"
+        - "Attribution failure: LLM outputs don't credit sources (violates some licenses)"
+      net_welfare: "negative"
+      notes: |
+        LEGAL BATTLEGROUND: Copyright law unsettled on whether AI training is "fair use" (US) or permitted under
+        EU Copyright Directive. Multiple lawsuits pending 2023-2025.
+
+        If courts rule training is NOT fair use, Common Crawl's distribution of copyrighted content for AI training
+        creates massive liability ($1-10B settlements, potential criminal charges).
+
+        Common Crawl's disclaimer ("we don't claim copyright, users must respect originals") may be insufficient
+        shield - enabling unauthorized use still creates liability.
+
+    - id: "non_western_web_users"
+      name: "Non-Western Web Users Generally (Underrepresented)"
+      description: |
+        5+ billion internet users outside WEIRD countries (Western, Educated, Industrialized, Rich, Democratic).
+        Includes users in China, India, Africa, Southeast Asia, Latin America, Middle East.
+      representation_in_decision_making: "minimal"
+      population_size: "5+ billion (80% of world population)"
+      stakeholder_power: "low"
+      benefits:
+        - "Some LLM access: Major languages (Chinese, Hindi, Arabic) have partial Common Crawl representation"
+        - "Better than nothing: 10-40% degraded performance vs no tools at all"
+      harms:
+        - "Performance degradation: LLMs 20-60% worse for non-English languages (vs English SOTA)"
+        - "Cultural bias: Western-centric responses even when answering in non-English languages"
+        - "Machine translation bottleneck: Must translate to/from English for best results"
+        - "Economic disadvantage: English speakers capture disproportionate AI productivity gains"
+      net_welfare: "mixed to negative"
+      notes: |
+        80% OF WORLD POPULATION underrepresented in Common Crawl (10-30% representation vs 70%+ for WEIRD).
+
+        Chinese (1.3 billion speakers, 18% world population) gets 3-15% Common Crawl representation.
+        Hindi (600 million speakers, 8% world) gets 0.57% representation.
+
+        Pattern: Population INversely correlated with representation. More speakers = less per-capita data.
+
+  minority_stress_test:
+    description: |
+      RAWLSIAN JUSTICE TEST: Are the worst-off stakeholders made better off, or at least not worse off, by
+      Common Crawl's constitutive decisions?
+
+      WORST-OFF STAKEHOLDERS:
+      1. Low-resource language communities (6,900+ languages, 4-5 billion people)
+      2. Future generations (10+ billion children born 2025-2100)
+      3. Endangered language speakers (900+ critically endangered languages, 50-500M people)
+
+      HARMS TO WORST-OFF:
+      - TIER 1 EXISTENTIAL: Language extinction accelerated (digital death precedes physical death)
+      - IRREVERSIBLE: Once last speaker dies, language cannot be reconstructed from Common Crawl (never there)
+      - INTERGENERATIONAL: Future generations inherit linguistic poverty (50-90% diversity lost)
+
+      BENEFITS TO BEST-OFF:
+      1. AI companies (100+): $100B+ valuations from FREE training data
+      2. English speakers (1.5 billion): SOTA AI tools, productivity gains, economic advantage
+      3. Western researchers (10,000+): Free data, career advancement, 2,000+ papers published
+
+      DISTRIBUTIONAL JUSTICE ANALYSIS:
+      - Worst-off (4-5 billion low-resource language speakers) bear HIGHEST harm (Tier 1 existential)
+      - Best-off (Western AI companies, English speakers) capture 99%+ of benefits ($100B+ valuations)
+      - No compensation mechanism (publishers/communities get $0 despite content scraped)
+      - No voice mechanism (6,900+ linguistic communities, zero governance representation)
+
+      RAWLSIAN TEST RESULT: **FAILED**
+
+      Common Crawl's constitutive decisions (universal crawl, no linguistic targets, no compensation) make
+      worst-off stakeholders WORSE OFF (accelerate language extinction) for benefit of best-off stakeholders
+      (Western AI industry profits).
+
+      This is textbook distributional injustice: Privileged minority captures benefits, vulnerable majority bears harms.
+
+    result: "failed"
+    vulnerable_populations_identified:
+      - "Low-resource language communities (6,900+ languages, 4-5 billion people)"
+      - "Endangered language speakers (900+ critically endangered languages)"
+      - "Future generations (10+ billion children, intergenerational harm)"
+      - "Indigenous communities (1,000+ languages, oral traditions excluded)"
+      - "Children in low-resource language communities (educational harm, forced English)"
+    highest_severity_harm: "TIER 1 - EXISTENTIAL (language extinction, irreversible)"
+    notes: |
+      CRITICAL FAILURE PATTERN:
+
+      1. ABSENT NODE: Largest harmed population (4-5 billion) has zero governance representation
+      2. TIER 1 HARM: Existential (language extinction) not tradeable against economic benefits (AI valuations)
+      3. IRREVERSIBILITY: Unlike LAION-5B (removed 2,236 CSAM URLs post-hoc), extinction cannot be undone
+      4. VICIOUS CYCLE: Digital absence → no NLP tools → economic pressure → language switching → extinction → even less data
+      5. INTERGENERATIONAL: Current generation's decisions determine linguistic landscape for next century
+
+      IF COMMON CRAWL HAD CONDUCTED LAYER 3 IN 2008:
+      - Minority stress test would identify low-resource communities as vulnerable population
+      - Tier 1 existential harm would trigger policy reconsideration
+      - Cost-benefit analysis: $1-5M/year prevents harm to 2-3 billion people
+      - Decision: Linguistic diversity targets ethically required (Rawlsian justice)
+
+      RESULT: 15 years of linguistic hegemony avoided, 3,000+ languages preserved.
+
+  net_welfare_assessment:
+    utilitarian_analysis:
+      total_benefits: |
+        QUANTIFIABLE BENEFITS:
+        - AI companies: $100B+ in valuations
+        - AI researchers: 2,000+ papers, career advancement, $10-100M saved on crawl infrastructure
+        - LLM users (English speakers): 1 billion × $100-1,000/year productivity gains = $100B-1T annual
+
+        TOTAL: $200B-1T+ in economic value created (2018-2024, 6 years)
+
+      total_harms: |
+        QUANTIFIABLE HARMS:
+        - Low-resource language communities: 4-5 billion people × $100-1,000/year productivity loss = $400B-5T annual
+        - Language extinction: 5,635 languages × $500K/language (UNESCO preservation cost) = $2.8B
+        - Copyright lawsuits: $1-10B in settlements
+        - Publisher revenue loss: $1-10B/year (journalism sustainability crisis)
+
+        TOTAL: $400B-5T+ in economic harm + irreversible cultural loss
+
+      net_utilitarian_welfare: "NEGATIVE if harms to 4-5 billion people counted; POSITIVE if only English speakers counted"
+
+      critique_of_utilitarian_approach: |
+        UTILITARIAN ANALYSIS INADEQUATE:
+
+        1. TIER 1 HARMS NOT TRADEABLE: Language extinction (irreversible, existential) cannot be offset by
+           economic benefits (AI company profits). Kornai (2013): "Digital language death is nearly inevitable
+           once last fluent speakers die... no amount of money can reconstruct extinct language."
+
+        2. INCOMMENSURABILITY: Cultural heritage (7,000 languages, oral traditions, indigenous worldviews) not
+           measurable in dollars. Trying to put price on Navajo language's existence is category error.
+
+        3. DISCOUNTING FUTURE GENERATIONS: Utilitarian calculation favors present benefits (AI profits 2018-2024)
+           over future harms (language extinction 2025-2100). But future generations' welfare should count equally.
+
+        4. DISTRIBUTION IGNORED: Utilitarian sum may be positive ($1T benefits - $500B harms = $500B net) but
+           if benefits go to 1 billion privileged, harms to 5 billion vulnerable, this is unjust distribution.
+
+    deontological_analysis:
+      kantian_dignity: |
+        KANTIAN TEST: Are low-resource language communities treated as ENDS in themselves, or as MEANS to AI
+        industry's ends?
+
+        ANALYSIS:
+        - Common Crawl scrapes content from linguistic communities without notification, consent, or compensation
+        - Content used to train LLMs that benefit Western AI companies ($100B+ valuations)
+        - Communities get zero benefit (no NLP tools in their languages, no compensation, no governance voice)
+        - Communities' languages/cultures used as RAW MATERIAL for others' profit
+
+        KANTIAN VERDICT: **VIOLATED**
+
+        Low-resource language communities treated as MEANS (data sources) to AI industry's ENDS (profits), not as
+        ENDS in themselves (autonomous agents deserving respect, consent, compensation).
+
+        Kant's Categorical Imperative: "Act in such a way that you treat humanity, whether in your own person or
+        in the person of any other, never merely as a means to an end, but always at the same time as an end."
+
+        Common Crawl's universal crawl treats billions of people as DATA SOURCES, not as stakeholders deserving
+        voice in decisions affecting their linguistic futures.
+
+      rawlsian_justice: |
+        RAWLSIAN TEST (Original Position): Would rational agents behind veil of ignorance (not knowing which
+        language community they'll be born into) agree to Common Crawl's constitutive decisions?
+
+        ANALYSIS:
+        - Probability of being born into low-resource language community: 80% (4-5 billion of 6 billion)
+        - Probability of being born into English-speaking community: 20% (1 billion of 6 billion)
+
+        Behind veil of ignorance, 80% chance you'll be harmed (language extinction, economic exclusion) for
+        20%'s benefit (AI tools, productivity gains).
+
+        Rational agent would demand linguistic diversity targets (S2) or radical equity (S3) to protect against
+        80% risk of being born into harmed community.
+
+        RAWLSIAN VERDICT: **VIOLATED**
+
+        No rational agent would agree to universal crawl (S1) behind veil of ignorance. S2 (targeted diversity)
+        is minimum acceptable (reduces harm to 49% of languages vs 80%). S3 (radical equity) is preferable
+        (reduces harm to 21% of languages).
+
+      rights_based_analysis: |
+        RIGHTS POTENTIALLY VIOLATED:
+
+        1. CULTURAL RIGHTS (UN Declaration on Rights of Indigenous Peoples, Article 13):
+           "Indigenous peoples have the right to revitalize, use, develop and transmit to future generations their
+           histories, languages, oral traditions, philosophies, writing systems and literatures."
+
+           Common Crawl's digital exclusion of indigenous languages (1,000+ languages, <0.1% representation each)
+           VIOLATES right to transmit languages to future generations (AI trained on corpus where languages don't exist).
+
+        2. LINGUISTIC RIGHTS (UNESCO Universal Declaration on Cultural Diversity, Article 5):
+           "All persons should be able to express themselves and to create and disseminate their work in the language
+           of their choice... particularly through mother tongue schooling."
+
+           Common Crawl's English dominance creates economic pressure to abandon mother tongues for English (to access
+           AI tools), VIOLATING linguistic rights.
+
+        3. RIGHT TO INFORMED CONSENT (GDPR Article 6, though Common Crawl pre-dates GDPR):
+           Web publishers not informed content would be used for AI training (robots.txt predates AI use case).
+
+        4. INTERGENERATIONAL EQUITY (Rio Declaration, Principle 3):
+           "The right to development must be fulfilled so as to equitably meet developmental and environmental needs
+           of present and future generations."
+
+           Common Crawl's decisions (2008-2024) sacrifice future generations' linguistic diversity for present
+           generation's AI development, VIOLATING intergenerational equity.
+
+    recommended_framework: |
+      UTILITARIANISM INSUFFICIENT for evaluating Common Crawl's constitutive decisions because:
+      - Tier 1 existential harms (language extinction) not tradeable against economic benefits
+      - Incommensurable values (cultural heritage vs AI profits)
+      - Distributional injustice (privileged benefit, vulnerable harmed)
+
+      DEONTOLOGY REQUIRED:
+      - Kantian dignity: Treat linguistic communities as ENDS, not MEANS (require consent, compensation, voice)
+      - Rawlsian justice: Behind veil of ignorance, protect worst-off from irreversible harms
+      - Rights-based: Cultural rights, linguistic rights, intergenerational equity all violated by S1 (actual)
+
+      RECOMMENDED INTERVENTION:
+      S2 (Targeted Linguistic Diversity) is MINIMUM ethically required:
+      - Cost: $60M over 15 years (+50% budget)
+      - Benefit: 3,185 languages saved (57% reduction in extinction)
+      - Rawlsian: Reduces harm to 49% of languages (vs 80% in S1)
+      - Kantian: Treats linguistic communities as stakeholders deserving voice (partnerships with UNESCO, SIL)
+      - Rights: Partially protects cultural/linguistic rights (100+ major languages preserved)
+
+      S3 (Radical Equity) is IDEAL:
+      - Cost: $570M over 15 years (5x budget, but 0.6% of AI value created)
+      - Benefit: 4,165 languages saved (74% reduction in extinction)
+      - Rawlsian: Reduces harm to 21% of languages (vs 80% in S1)
+      - Kantian: Proactive digitization treats linguistic communities as partners (funding, voice, compensation)
+      - Rights: Strongly protects cultural/linguistic/intergenerational rights (1,000+ languages preserved)
+
+  notes: |
+    LAYER 3 KEY FINDINGS:
+
+    1. ABSENT NODE PATTERN: Largest harmed population (4-5 billion low-resource language speakers) has ZERO
+       governance representation in Common Crawl. Decisions made by 15-20 people affecting 8 billion.
+
+    2. MINORITY STRESS TEST FAILED: Worst-off stakeholders (vulnerable populations: endangered languages,
+       indigenous communities, future generations) bear HIGHEST harm (Tier 1 existential) for benefit of
+       best-off stakeholders (Western AI companies, English speakers).
+
+    3. TIER 1 EXISTENTIAL HARM: Language extinction is IRREVERSIBLE (unlike LAION-5B CSAM remediation).
+       Once last speaker dies, no amount of money or AI can reconstruct language from Common Crawl (never there).
+
+    4. DEONTOLOGICAL FAILURE: Kantian dignity violated (communities treated as MEANS not ENDS), Rawlsian
+       justice violated (worst-off harmed for others' benefit), rights violated (cultural, linguistic,
+       intergenerational).
+
+    5. UTILITARIAN ANALYSIS INADEQUATE: Tier 1 harms not tradeable against economic benefits, incommensurable
+       values (cultural heritage vs profits), distributional injustice ignored.
+
+    6. ORP'S COUNTERFACTUAL VALUE: If Common Crawl conducted Layer 3 empathy mapping in 2008, minority stress
+       test would TRIGGER policy reconsideration. Cost-benefit: $1-5M/year prevents Tier 1 harm to 2-3 billion
+       people. Ethical conclusion: Linguistic diversity targets REQUIRED (Rawlsian justice, Kantian dignity).
+
+       RESULT: 15 years of linguistic hegemony avoided, 3,000+ languages preserved, billions benefit from
+       multilingual AI tools.
+
+# ============================================================================
+# LAYER 4: ACCOUNTABILITY LEDGER
+# ============================================================================
+
+l4_accountability_ledger:
+
+  decisions:
+    - decision_id: "D1"
+      decision_type: "constitutive_methodology"
+      date: "2008-09"
+      decision: "Universal crawl of World Wide Web (no linguistic diversity targets, no geographic targeting)"
+      decision_makers:
+        - name: "Gil Elbaz"
+          role: "Founder, Common Crawl"
+          affiliation: "Common Crawl Foundation"
+        - name: "Common Crawl Board of Directors"
+          role: "Governance body"
+          affiliation: "Common Crawl Foundation"
+      rationale: |
+        STATED: "Reflect the web as it is, not as we think it should be" - neutral archive philosophy
+
+        UNSTATED/INFERRED: Cost minimization (targeted crawls more expensive), technical simplicity (universal
+        crawl easier than linguistic balancing), ideological commitment to "neutrality" (let web distribution
+        determine dataset distribution)
+      alternatives_considered: "UNKNOWN - no public documentation of alternatives considered"
+      accountability_gap: |
+        MOST CONSEQUENTIAL DECISION (affects 8 billion people, 6,900+ languages, entire AI ecosystem for decades),
+        yet ZERO public documentation of:
+        - What alternatives were considered (targeted crawls? linguistic partnerships? minimum representation thresholds?)
+        - What cost estimates were made (if any)
+        - Whether linguistic consequences were even discussed (AI training not primary use case until 2018)
+        - Who made final decision (founder? board? consensus? default by omission?)
+
+        This is EXACTLY why ORP exists: Layer 4 would REQUIRE constitutive decisions be logged BEFORE deployment.
+      consequences:
+        - "90%+ English/WEIRD language representation (2008-2024, 15 years)"
+        - "<0.1% representation for 6,900+ low-resource languages"
+        - "ALL major LLMs (GPT-3, GPT-4, LLaMA, Claude, Gemini) trained on English-dominant data"
+        - "5,635 languages projected extinct by 2100 (80% of living languages) - Tier 1 existential harm"
+        - "4-5 billion people whose native languages have <1% representation"
+      harm_tier: "TIER 1 - EXISTENTIAL (language extinction, irreversible)"
+      source: "Common Crawl founding documents, inferred from stated 'neutrality' philosophy"
+      notes: |
+        DECISION BY OMISSION: Universal crawl may have been DEFAULT choice (easiest technically) rather than
+        DELIBERATE choice after alternatives considered. This is WORSE accountability failure - constitutive
+        decisions made by NOT deciding (letting technical defaults determine ethical outcomes).
+
+    - decision_id: "D2"
+      decision_type: "constitutive_methodology"
+      date: "2008-2024"
+      decision: "NO linguistic diversity targets (zero minimum representation thresholds for any language)"
+      decision_makers:
+        - name: "Common Crawl Board of Directors"
+          role: "Governance body"
+          affiliation: "Common Crawl Foundation"
+        - name: "Common Crawl Engineering Team"
+          role: "Technical implementation"
+          affiliation: "Common Crawl Foundation"
+      rationale: "UNKNOWN - never publicly documented or debated despite 15 years of operation"
+      alternatives_considered: |
+        UNKNOWN - no public documentation
+
+        PLAUSIBLE ALTERNATIVES (not considered or rejected without documentation):
+        - Minimum 1% representation for 100+ languages with 1M+ speakers each (cost: $1-5M/year)
+        - Minimum 0.1% representation for 1,000+ languages with 10K+ speakers each (cost: $10-50M/year)
+        - Partnership with UNESCO, SIL International, linguistic communities
+        - Targeted crawls of African, Asian, Pacific Island web domains
+      accountability_gap: |
+        COMPLETE ACCOUNTABILITY FAILURE: Decision affects 4-5 billion people bearing Tier 1 existential harm
+        (language extinction), yet:
+        - NO public record of who decided (board? staff? decision by omission?)
+        - NO documentation of why (cost? ideology? technical complexity? ignorance?)
+        - NO response to 15 years of academic criticism (Joshi 2020, Kreutzer 2022, Bender 2021 'Stochastic Parrots')
+        - NO cost-benefit analysis (what would linguistic diversity cost vs benefit?)
+
+        Common Crawl HAS language identification capability (tags every page with ISO 639 code), proving linguistic
+        balancing is TECHNICALLY FEASIBLE. Choice not to implement is POLICY decision, not technical limitation.
+
+        Policy decision affecting billions, made with ZERO transparency.
+      consequences:
+        - "6,900+ languages <0.1% representation each (vs 100+ could have 1%+ if D2 reversed)"
+        - "LLM performance 60% lower for low-resource languages vs English SOTA"
+        - "Economic exclusion: 4-5 billion people forced to use English for AI tools or accept degraded performance"
+        - "Language extinction accelerated: Digital absence → no NLP tools → economic pressure → language switching"
+        - "3,185 languages could be saved with $60M investment (S2 targeted diversity) - cost equivalent to 0.1% of AI valuations enabled"
+      harm_tier: "TIER 1 - EXISTENTIAL (preventable language extinction via $1-5M/year intervention)"
+      source: "Absence of linguistic diversity targets documented in Common Crawl operations (2008-2024)"
+      notes: |
+        CRITICAL MISSED OPPORTUNITY: Decision D2 is REVERSIBLE as of 2024-2026. Common Crawl could implement
+        linguistic diversity targets TODAY. But 15 years of linguistic hegemony (2008-2024) already baked into
+        GPT-3, GPT-4, LLaMA, Claude, Gemini, BLOOM, etc. Models cannot be untrained. This is PARTIAL irreversibility.
+
+    - decision_id: "D3"
+      decision_type: "safety_compliance"
+      date: "2008-2024"
+      decision: "NO CSAM filtering pre-distribution (archive web as-is, users responsible for downstream filtering)"
+      decision_makers:
+        - name: "Common Crawl Board of Directors"
+          role: "Governance body (decision by omission)"
+          affiliation: "Common Crawl Foundation"
+      rationale: |
+        STATED: "We archive web as-is; users responsible for filtering their use cases"
+        UNSTATED: Legal liability concerns? Cost ($50-100K/year)? Ideological "neutrality"?
+      alternatives_considered: "UNKNOWN - no public documentation"
+      accountability_gap: |
+        LAION-5B (March 2022) scraped Common Crawl URLs, inherited 3,226 CSAM URLs, distributed for 21 months
+        (March 2022 - Dec 2023), resulting in 1,008 confirmed child victims re-victimized.
+
+        Common Crawl's decision NOT to implement PhotoDNA hash matching ($50-100K/year, 1% of budget) enabled
+        downstream Tier 1 harm (federal crime distribution).
+
+        Common Crawl's response (2023): "We're just an archive, not responsible for downstream use."
+
+        ACCOUNTABILITY QUESTION: If you distribute dataset knowing it will be used for AI training (95% of major
+        LLMs use Common Crawl), are you responsible for enabling foreseeable harms (CSAM training)?
+
+        No public deliberation of this question exists.
+      consequences:
+        - "LAION-5B inherited 3,226 CSAM URLs from Common Crawl sources (Stanford 2023)"
+        - "1,008 confirmed child victims re-victimized for 21 months (Tier 1 safety harm)"
+        - "Stable Diffusion trained on LAION-2B (subset), inherited CSAM"
+        - "Re-LAION-5B (Aug 2024) removed 2,236 CSAM URLs, but cannot fix cached images or trained models"
+      harm_tier: "TIER 1 - SAFETY (federal crime enablement, 18 U.S.C. § 2252)"
+      source: "Stanford Internet Observatory CSAM report (Dec 2023), LAION blog posts (Dec 2023, Aug 2024)"
+      notes: |
+        COMMON CRAWL vs LAION ACCOUNTABILITY: LAION faced massive criticism and took down dataset (Dec 2023).
+        Common Crawl faced NO consequences (dataset still distributed). Why?
+
+        Common Crawl positioned as "neutral archive" vs LAION as "AI training data curator" creates accountability
+        shield. But if 95% of use case is AI training, is "archive" framing honest?
+
+    - decision_id: "D4"
+      decision_type: "legal_compliance"
+      date: "2008-2024"
+      decision: "NO consent mechanism for AI training use case (rely on robots.txt opt-out from 1994, no AI-specific directive)"
+      decision_makers:
+        - name: "Common Crawl Board of Directors"
+          role: "Governance body"
+          affiliation: "Common Crawl Foundation"
+      rationale: |
+        STATED: "Robots.txt provides opt-out mechanism; we respect publisher preferences"
+        UNSTATED: Robots.txt created 1994 for search indexing, NOT AI training (which didn't exist until 2018)
+      alternatives_considered: "UNKNOWN - no public documentation of AI-specific consent mechanisms considered"
+      accountability_gap: |
+        New York Times lawsuit (2023): "OpenAI used decades of our journalism without permission or payment."
+        Getty Images lawsuit (2023): "Stability AI trained on millions of copyrighted images via Common Crawl/LAION."
+
+        Common Crawl's defense: "We don't claim copyright; users must respect originals."
+
+        ACCOUNTABILITY QUESTION: If robots.txt predates AI use case by 24 years (1994-2018), is it valid consent
+        mechanism for AI training? Many publishers unaware content used until lawsuits (2020-2023).
+
+        No public deliberation of whether AI-specific consent directive needed (e.g., "User-agent: AI-Training, Disallow: /").
+      consequences:
+        - "Billions of web pages used for AI training without notification or consent"
+        - "Copyright lawsuits: $1-10B in potential damages (NYT, Getty, authors)"
+        - "Publishers not compensated despite content creating $100B+ AI valuations"
+        - "Journalism sustainability crisis (news content used without payment)"
+      harm_tier: "TIER 2 - LEGAL (copyright infringement, potential $1-10B liability)"
+      source: "Copyright lawsuits (NYT v. OpenAI, Getty v. Stability AI, Andersen v. Stability AI, 2023)"
+      notes: |
+        LEGAL UNSETTLED: US courts have not ruled on whether AI training is "fair use" (transformative use vs
+        commercial exploitation). EU Copyright Directive Article 4 permits text/data mining for research but
+        unclear if commercial AI development qualifies.
+
+        If courts rule training is NOT fair use, Common Crawl's distribution creates massive liability.
+
+    - decision_id: "D5"
+      decision_type: "economic_fairness"
+      date: "2008-2024"
+      decision: "NO compensation mechanism for publishers/content creators (free data distribution, zero revenue sharing)"
+      decision_makers:
+        - name: "Common Crawl Board of Directors"
+          role: "Governance body"
+          affiliation: "Common Crawl Foundation"
+        - name: "Common Crawl Sponsors (AWS, foundations)"
+          role: "Funding sources (influence via sponsorship)"
+          affiliation: "Amazon Web Services, various foundations"
+      rationale: |
+        STATED: "Open data for public good - free access enables research and innovation"
+        UNSTATED: AI companies benefit from free data (reduces costs, increases profits)
+      alternatives_considered: "UNKNOWN - no public documentation of compensation mechanisms considered"
+      accountability_gap: |
+        WEALTH TRANSFER PATTERN:
+        - Publishers/content creators: Create content → scraped for free → get $0
+        - Common Crawl: Distributes data → $5-10M/year budget → AWS sponsors S3 hosting
+        - AI companies: Train models → $100B+ valuations → capture 99%+ of economic value
+
+        $100B+ in AI company valuations enabled by FREE data from publishers who get ZERO compensation.
+
+        New York Times: "Journalism is expensive to produce. OpenAI built $80B company on our work without payment."
+
+        No public deliberation of whether revenue sharing, micropayments, or licensing fees appropriate.
+      consequences:
+        - "Publishers: $0 compensation despite content creating $100B+ AI valuations"
+        - "Journalism sustainability crisis: $1-10B/year revenue loss (advertising + subscriptions)"
+        - "Economic injustice: 99%+ of value captured by AI companies, 0% by content creators"
+        - "Perverse incentives: Publishers may stop producing quality content (unsustainable economically)"
+      harm_tier: "TIER 3 - ECONOMIC (unfair value distribution, sustainability crisis)"
+      source: "AI company valuations (OpenAI $80B, Anthropic $18B, etc.), publisher lawsuits (NYT 2023)"
+      notes: |
+        COUNTERFACTUAL S4: If Common Crawl implemented compensation ($0.001/page, ~$50-500M/year), publishers
+        could sustain journalism, AI companies would pay <5% of valuations, consent likely higher, lawsuits avoided.
+
+        But Common Crawl's "open data" framing treats compensation as antithetical to mission. This is POLICY
+        choice (open vs sustainable), not TECHNICAL requirement.
+
+  post_hoc_reconstruction_notes: |
+    This Layer 4 (Accountability Ledger) represents POST-HOC RECONSTRUCTION. Common Crawl did NOT document
+    constitutive decisions (D1-D5) in real-time (2008-2024).
+
+    Accountability gaps marked "UNKNOWN" indicate:
+    - NO public record of who made decisions
+    - NO documentation of alternatives considered
+    - NO cost-benefit analysis conducted (or published)
+    - NO deliberation of ethical consequences
+
+    Rationales are INFERRED from:
+    - Stated philosophy ("archive web as-is", "neutrality")
+    - Industry context (AI training became use case 2018, after D1-D5 defaults set)
+    - Economic incentives (sponsors benefit from free data distribution)
+
+    ORP'S VALUE: If Common Crawl had conducted ORP documentation in 2008 (BEFORE 15 years of deployment):
+    - Layer 4 would REQUIRE D1-D5 be logged with rationales, alternatives, cost-benefit
+    - Decision makers would be ACCOUNTABLE (named, attributable, auditable)
+    - Linguistic communities could have CHALLENGED D2 (no diversity targets) BEFORE harm occurred
+    - Public comment period would identify Tier 1 existential harm BEFORE 6,900+ languages excluded
+
+    Result: Constitutive transparency → proactive harm prevention → 15 years of linguistic hegemony avoided.
+
+  attested_by:
+    - name: "Asbjørn Ras"
+      role: "analyst"
+      affiliation: "Public Reason Project"
+      date: "2026-04-07"
+      statement: |
+        Layer 4 accountability gaps are REAL GAPS (not analyst oversight). Common Crawl has not published:
+        - Internal deliberations or meeting minutes
+        - Cost-benefit analyses for linguistic diversity alternatives
+        - Ethical review processes (if any)
+        - Decision-making criteria or frameworks
+
+        Marked "UNKNOWN" indicates NO public documentation exists. This is ACCOUNTABILITY FAILURE, not incomplete research.
+
+# ============================================================================
+# LAYER 5: FORK REGISTRY
+# ============================================================================
+
+l5_fork_registry:
+
+  known_forks: []
+
+  potential_forks:
+    - fork_id: "common-crawl-linguistic-equity-v1"
+      fork_type: "methodology_improvement"
+      proposed_by: "Hypothetical (Public Reason Project analysis)"
+      description: |
+        Common Crawl Linguistic Equity - implements Decision D2 reversal (linguistic diversity targets)
+
+        INTERVENTION (Scenario S2 from Layer 2):
+        - Partner with UNESCO, SIL International, linguistic communities
+        - Targeted crawls of non-English web (Africa, Asia, Pacific Islands)
+        - Minimum 1% representation for 100+ languages with 1M+ speakers
+        - Language-specific quality filtering (remove machine translation, boilerplate, porn per-language)
+        - Cost: $1-5M/year additional (20-50% budget increase)
+
+        RESULT:
+        - 50% English/WEIRD, 50% other languages (100+ languages with 1%+ representation)
+        - LLM performance gap reduced from 60% to 20% (major languages)
+        - 3,185 languages saved from extinction (57% reduction vs actual)
+        - 2-3 billion people benefit from AI tools in native languages
+
+      motivation: |
+        S2 (Targeted Linguistic Diversity) is MOST COST-EFFECTIVE intervention:
+        - Cost: $60M over 15 years (+50% budget)
+        - Benefit: 3,185 languages saved (57% extinction reduction)
+        - Cost per language saved: $18,848 (10-20x cheaper than UNESCO programs)
+        - Feasibility: PROVEN (UNESCO, SIL partnerships exist)
+
+        Rawlsian justice: Reduces harm to 49% of languages (vs 80% in actual)
+        Kantian dignity: Treats linguistic communities as stakeholders (partnerships, voice)
+
+      changes_from_parent:
+        - "Decision D2 REVERSED: Linguistic diversity targets implemented"
+        - "Crawl methodology: Add targeted non-English crawls"
+        - "Quality filtering: Language-specific (not universal thresholds)"
+        - "Partnerships: UNESCO, SIL International, linguistic communities"
+        - "Budget: +$1-5M/year (20-50% increase)"
+
+      expected_benefits:
+        - "3,185 languages saved from digital extinction (vs actual S1)"
+        - "2-3 billion people benefit from multilingual AI tools"
+        - "LLM performance gap reduced 60% → 20% for 100+ major languages"
+        - "Economic inclusion: Non-English speakers capture AI productivity gains"
+        - "Cultural preservation: 100+ languages have viable NLP tools → economic incentive to preserve"
+
+      estimated_cost: "$60M over 15 years (2008-2024) - $1-5M/year additional"
+
+      feasibility: "HIGH - UNESCO/SIL partnerships exist, targeted crawls technically proven, language ID capability already implemented"
+
+      call_to_action: |
+        If you believe Common Crawl should prioritize linguistic equity over "neutral" web reflection,
+        FORK THIS ANALYSIS and propose Common Crawl Linguistic Equity.
+
+        Implementation steps:
+        1. Partner with UNESCO World Atlas of Languages
+        2. Identify 100 major languages (1M+ speakers each)
+        3. Targeted crawls of African (.za, .ng, .ke), Asian (.in, .id, .th), Pacific (.fj, .to) domains
+        4. Language-specific quality classifiers (Kreutzer et al. 2022 framework)
+        5. Minimum 1% representation threshold enforced monthly
+
+        Cost: $1-5M/year (equivalent to 0.1% of AI company valuations enabled by Common Crawl)
+
+        If Common Crawl refuses, community could build ALTERNATIVE linguistic-equity web crawl.
+
+    - fork_id: "common-crawl-radical-equity-v1"
+      fork_type: "mission_redefinition"
+      proposed_by: "Hypothetical (Public Reason Project analysis)"
+      description: |
+        Common Crawl Radical Equity - treats linguistic preservation as CORE MISSION (not byproduct)
+
+        INTERVENTION (Scenario S3 from Layer 2):
+        - Proactive digitization: Fund linguistic communities to create Wikipedia, news, literature
+        - Transcribe oral traditions: Record storytelling, oral histories, cultural knowledge
+        - Minimum 0.1% representation for 1,000+ languages (10K+ speakers each)
+        - Partner with national governments, indigenous communities
+        - Host hybrid model: Store content (not just URLs) to prevent link rot
+        - Cost: $10-50M/year (2-5x current budget)
+
+        RESULT:
+        - 30% English, 70% other languages (1,000+ languages with 0.1%+ representation)
+        - LLM performance gap reduced from 60% to 10% (1,000+ languages)
+        - 4,165 languages saved from extinction (74% reduction vs actual)
+        - Cultural knowledge preserved (oral traditions, indigenous worldviews in AI corpus)
+
+      motivation: |
+        S3 has HIGHEST benefit (4,165 languages saved) at cost of $570M (0.6% of AI value created).
+
+        Treats language extinction as EXISTENTIAL THREAT (Tier 1 harm) requiring proactive intervention,
+        not passive "archive as-is" approach.
+
+      changes_from_parent:
+        - "Mission: From 'archive web' to 'preserve linguistic diversity for AI era'"
+        - "Funding model: Proactive digitization (not just crawl existing web)"
+        - "Partnerships: National governments, UNESCO, indigenous communities"
+        - "Storage: Hybrid (host content + URLs) to prevent link rot"
+        - "Budget: $10-50M/year (2-5x increase, but <1% of AI value created)"
+
+      expected_benefits:
+        - "4,165 languages saved from digital extinction (74% reduction vs actual)"
+        - "4 billion people benefit from AI tools in 1,000+ languages"
+        - "Oral traditions preserved: Transcribe storytelling, indigenous knowledge"
+        - "AI learns from 1,000+ cultural perspectives (vs 10-20 in actual S1)"
+        - "Language extinction SLOWED: Digital presence creates economic incentive to preserve"
+
+      estimated_cost: "$570M over 15 years (2008-2024) - $10-50M/year"
+
+      feasibility: "MEDIUM - requires 2-5x budget increase, partnerships with 50+ national governments, complex logistics for oral tradition transcription"
+
+      call_to_action: |
+        If you believe language extinction is EXISTENTIAL THREAT requiring proactive intervention (not passive archiving),
+        FORK THIS ANALYSIS and propose Common Crawl Radical Equity.
+
+        Argue: $570M (0.6% of AI valuations) is NEGLIGIBLE cost to prevent 4,000+ language extinctions.
+
+        If Common Crawl refuses (budget constraints, mission creep), propose SEPARATE organization:
+        "Linguistic Heritage AI Foundation" - proactive digitization, transcription, multilingual corpus building.
+
+    - fork_id: "common-crawl-consent-v1"
+      fork_type: "legal_remediation"
+      proposed_by: "Hypothetical (Public Reason Project analysis)"
+      description: |
+        Common Crawl Consent - shifts from opt-out (robots.txt) to opt-in (explicit AI training consent + compensation)
+
+        INTERVENTION (Scenario S4 from Layer 2):
+        - AI-specific robots.txt directive ("Allow: /AI-Training" required for inclusion)
+        - Micropayment mechanism (compensate publishers ~$0.001/page for AI training use)
+        - Consent dashboard (publishers control which AI companies access, set prices)
+        - Linguistic diversity bonus (10x payment for low-resource language content)
+        - Cost: $10-50M infrastructure + $50-500M/year publisher compensation
+
+        RESULT:
+        - Dataset size reduced 80-95% (only consenting publishers included)
+        - Copyright lawsuits avoided ($1-10B in settlements)
+        - Publishers compensated ($4.5B over 15 years)
+        - Linguistic diversity improved (economic incentive for low-resource content)
+        - UNKNOWN: Whether 5-20% dataset trains viable LLMs (needs empirical testing)
+
+      motivation: |
+        Resolves copyright crisis ($1-10B lawsuit risk), enables sustainable journalism ($4.5B to publishers),
+        treats content creators as STAKEHOLDERS (consent, compensation, voice).
+
+        Kantian dignity: Publishers treated as ENDS (partners), not MEANS (data sources).
+
+      changes_from_parent:
+        - "Consent: From opt-out (robots.txt) to opt-in (AI-specific directive)"
+        - "Compensation: Micropayments to publishers (~$0.001/page)"
+        - "Dataset size: 80-95% reduction (only consenting publishers)"
+        - "Legal: Copyright-clean, lawsuit-proof"
+        - "Budget: +$50-500M/year (40x increase, but <5% of AI value created)"
+
+      expected_benefits:
+        - "Copyright lawsuits avoided ($1-10B in settlements saved)"
+        - "Publishers compensated ($4.5B over 15 years - sustainable journalism)"
+        - "Linguistic diversity improved (10x payment bonus for low-resource languages)"
+        - "Ethical: Consent-based, fair value distribution"
+        - "3,185 languages saved (economic incentive reverses digital extinction feedback loop)"
+
+      estimated_cost: "$4.62B over 15 years (2008-2024) - $50-500M/year"
+
+      feasibility: "LOW-MEDIUM - requires 40x budget increase, complex micropayment infrastructure, UNKNOWN if 5-20% dataset trains viable LLMs"
+
+      call_to_action: |
+        If you believe copyright law applies to AI training (not fair use), consent-based crawl is LEGALLY REQUIRED.
+
+        UNTESTED HYPOTHESIS: Can LLMs train on 5-20% dataset (high-quality, consented, diverse) and match 100% dataset performance?
+
+        If yes: S4 is superior (ethical, legal, sustainable, linguistically diverse)
+        If no: Trade-off between dataset size vs consent/compensation (ethical dilemma)
+
+        FORK and test empirically: Train LLM on consent-based Common Crawl subset, benchmark against GPT-3/4/LLaMA.
+
+  notes: |
+    LAYER 5 KEY INSIGHT: Common Crawl has NO known forks (2008-2024, 15 years).
+
+    Why? Barriers to forking:
+    1. Scale: 250B pages, 3PB data - cannot fork on laptop (requires AWS-scale infrastructure)
+    2. Cost: $5-10M/year to operate web crawl at Common Crawl scale
+    3. Network effects: All major LLMs use Common Crawl (switching costs high)
+    4. "Open data" framing: Forking appears unnecessary (just use Common Crawl as-is)
+
+    But POTENTIAL FORKS demonstrate:
+    - S2 (Linguistic Equity): $60M prevents 3,185 language extinctions (FEASIBLE)
+    - S3 (Radical Equity): $570M prevents 4,165 extinctions (TRANSFORMATIVE)
+    - S4 (Consent): $4.6B resolves copyright + saves 3,185 languages (ETHICAL but EXPENSIVE)
+
+    ORP'S FORK-FIRST PHILOSOPHY: Disagreement resolved through DEMONSTRATION (build alternative), not debate.
+
+    If linguistic communities disagree with Common Crawl's D2 (no diversity targets), they should build
+    LINGUISTIC HERITAGE AI FOUNDATION - proactive digitization, transcription, multilingual corpus.
+
+    If publishers disagree with D5 (no compensation), they should build CONSENT-BASED CRAWL - micropayments,
+    AI-specific opt-in, fair value distribution.
+
+    Fork-first enables PLURALISM: Multiple datasets with different values (neutrality vs equity vs consent)
+    can coexist, letting AI developers choose.

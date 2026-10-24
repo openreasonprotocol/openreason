@@ -93,9 +93,10 @@ export function attestedContent(document: Doc): Doc {
 }
 
 async function sha256Hex(bytes: Uint8Array): Promise<string> {
-  const subtle =
-    (typeof globalThis !== "undefined" && (globalThis.crypto as Crypto | undefined)?.subtle) ||
-    ((await import("node:crypto")).webcrypto.subtle as SubtleCrypto);
+  // WebCrypto is global in every browser and in Node >= 19; no "node:crypto" import, so bundlers
+  // (webpack/Next, Vite) can ship this file to the browser untouched.
+  const subtle = (globalThis.crypto as Crypto | undefined)?.subtle;
+  if (!subtle) throw new Error("WebCrypto (globalThis.crypto.subtle) is required: use Node >= 19 or a modern browser");
   const digest = await subtle.digest("SHA-256", bytes as unknown as BufferSource);
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, "0"))

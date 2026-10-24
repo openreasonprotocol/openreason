@@ -21,31 +21,6 @@ A strong ORP example document:
 
 ## Available Examples
 
-### ORP v0.1: Policy Analysis
-
-#### Danish Property Tax Reform (ORP-Full)
-
-<div className="orp-card">
-  <div className="orp-card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-    <Home size={20} style={{ flexShrink: 0, color: 'var(--orp-blue-600)' }} />
-    <span>Danish Property Tax Reform: LVT + Smoothed Profit Tax</span>
-  </div>
-  <div className="orp-card-desc" style={{ marginTop: '0.5rem' }}>
-    A complete ORP-Full proposal replacing Denmark's current property tax system with a Land Value Tax (LVT) combined with a profit tax on gains at sale. Demonstrates all five layers with real economic modeling, stakeholder analysis, and transparent decision documentation.
-  </div>
-  <div style={{ marginTop: '1rem' }}>
-    <strong>Compliance:</strong> ORP-Full (all 5 layers)<br />
-    <strong>Status:</strong> Open for comment<br />
-    <strong>Author:</strong> Asbjørn<br />
-    <strong>Domain:</strong> Policy — Tax reform
-  </div>
-  <div style={{ marginTop: '1rem' }}>
-    <a href="/examples/danish-property-tax" style={{ color: 'var(--orp-blue-600)', textDecoration: 'none', fontWeight: 500 }}>
-      Read the full walkthrough →
-    </a>
-  </div>
-</div>
-
 ### ORP v0.2: AI Training Datasets (Post-Hoc Reconstruction)
 
 The following examples demonstrate **post-hoc reconstruction** of major AI training datasets using ORP v0.2. These show how ORP can be applied retrospectively to document datasets that lack adequate transparency documentation.
@@ -189,13 +164,13 @@ All examples in this section are validated ORP documents. You can verify them yo
 
 ```bash
 # Download the example
-curl -O https://publicreasonproject.org/examples/danish_property_tax_reform.yaml
+curl -O https://publicreasonproject.org/examples/my-document.yaml
 
 # Validate it
-orp validate danish_property_tax_reform.yaml
+orp validate my-document.yaml
 
 # Check compliance level
-orp check danish_property_tax_reform.yaml
+orp check my-document.yaml
 ```
 
 Expected output:
@@ -229,4 +204,4 @@ You can use whichever format is most helpful for your needs.
 
 ---
 
-**Next:** [Danish Property Tax Reform →](/examples/danish-property-tax)
+**Next:** [AI Training Datasets →](/examples/ai-training-analysis)

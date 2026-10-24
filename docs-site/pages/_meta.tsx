@@ -2,6 +2,8 @@ import { Rocket, FileText, Boxes, Wrench, BookOpen, Users, BarChart3 } from 'luc
 
 export default {
   "index": "Home",
+  "story": { "display": "hidden" },
+  "embed": { "display": "hidden" },
   "what-it-is": { "display": "hidden" },
   "how-it-works": { "display": "hidden" },
   "about": { "display": "hidden" },

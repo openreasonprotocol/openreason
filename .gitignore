@@ -114,3 +114,6 @@ local/
 TRUST-GRAPH-STRATEGY.md
 pipeline_model.xlsx
 docs/governance/AGENT-RAIL-AND-USE-CASE-TREE.md
+
+# Cloudflare local state
+.wrangler/

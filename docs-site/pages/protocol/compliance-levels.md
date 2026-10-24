@@ -320,5 +320,5 @@ Yes. The validator will show warnings if you could achieve a higher compliance l
 
 - **[Get started](/getting-started/installation)** - Install the validator
 - **[Create your first document](/getting-started/first-document)** - Step-by-step ORP-Standard example
-- **[See examples](/examples)** - Real ORP-Full document (Danish Property Tax)
+- **[See examples](/examples)** - Real ORP documents across policy and AI datasets
 - **[Read the specification](/protocol/specification)** - Full technical details

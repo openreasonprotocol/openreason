@@ -30,9 +30,9 @@ This is not an edge case. This is the default condition of data production in th
 
 ## Why Everything We've Built to Fix This Misses the Point
 
-We are not ignorant of the problem. We have built frameworks. We have written regulations. We have funded research centres and convened expert panels and published guidelines.
+The problem is not for lack of effort. Frameworks have been built, regulations written, research centres funded, expert panels convened, guidelines published.
 
-They all share one fatal assumption: that the data already exists, and the ethical work begins downstream of it.
+They share one fatal assumption: that the data already exists, and the ethical work begins downstream of it.
 
 Data protection law tells us who can access the data. It does not ask how the data was constituted or whose interests shaped its production.
 

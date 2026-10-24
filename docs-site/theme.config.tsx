@@ -1,4 +1,5 @@
 import { DocsThemeConfig, useConfig } from 'nextra-theme-docs'
+import { useRouter } from 'next/router'
 
 const config: DocsThemeConfig = {
   // ─── Logo ─────────────────────────────────────────────────────────────────
@@ -7,7 +8,7 @@ const config: DocsThemeConfig = {
       <svg width="27" height="27" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <polygon points="16,3 27,9.5 27,22.5 16,29 5,22.5 5,9.5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinejoin="round" strokeLinecap="round" />
       </svg>
-      <span style={{ fontFamily: "'Funnel Display', sans-serif", fontWeight: 700, fontSize: '16px', letterSpacing: '0.005em' }}>Public Reason Project</span>
+      <span style={{ fontFamily: "'Funnel Display', sans-serif", fontWeight: 700, fontSize: '16px', letterSpacing: '0.005em' }}>OpenReason</span>
     </div>
   ),
   logoLink: '/',
@@ -28,12 +29,17 @@ const config: DocsThemeConfig = {
   head() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { frontMatter, title } = useConfig()
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { asPath } = useRouter()
     const pageTitle = title ? `${title} — OpenReason Protocol` : 'OpenReason Protocol'
     const description =
       frontMatter.description ??
       'OpenReason Protocol (ORP) — A standard for transparent, reproducible, and accountable policy reasoning.'
-    const ogImage = 'https://docs.publicreasonproject.org/og-image.png'
-    const siteUrl = 'https://docs.publicreasonproject.org'
+    const ogImage = 'https://openreasonprotocol.org/og-image.png'
+    const siteUrl = 'https://openreasonprotocol.org'
+    // Per-page canonical + og:url (strip hash/query); homepage = bare siteUrl.
+    const path = (asPath || '/').split('#')[0].split('?')[0]
+    const pageUrl = path === '/' ? siteUrl : siteUrl + path
 
     return (
       <>
@@ -46,7 +52,7 @@ const config: DocsThemeConfig = {
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={siteUrl} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
@@ -59,7 +65,7 @@ const config: DocsThemeConfig = {
         <meta name="twitter:image" content={ogImage} />
 
         {/* Canonical URL */}
-        <link rel="canonical" href={siteUrl} />
+        <link rel="canonical" href={pageUrl} />
 
         {/* Favicons */}
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -122,6 +128,7 @@ const config: DocsThemeConfig = {
   navbar: {
     extraContent: (
       <div className="pr-navlinks">
+        <a href="/protocol/overview">Protocol</a>
         <a href="/what-it-is">What it is</a>
         <a href="/how-it-works">How it works</a>
         <a href="/about">About</a>
@@ -137,7 +144,7 @@ const config: DocsThemeConfig = {
 
   // ─── Search ───────────────────────────────────────────────────────────────
   search: {
-    placeholder: 'Search docs…',
+    placeholder: 'Search the protocol…',
   },
 
   // ─── Feedback ─────────────────────────────────────────────────────────────

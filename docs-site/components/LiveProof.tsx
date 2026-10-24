@@ -9,10 +9,10 @@ import demo from './attested-demo.json'
 type Verdict = { valid: boolean; tier: string | null; computed_hash: string | null; errors: string[] }
 
 const EXAMPLES = [
-  { id: 'github_copilot_training_data', label: 'GitHub Copilot training data' },
-  { id: 'laion5b_training_data', label: 'LAION-5B' },
-  { id: 'common_crawl_training_data', label: 'Common Crawl' },
-  { id: 'imagenet_training_data', label: 'ImageNet' },
+  { id: 'danish_property_tax_reform', label: 'Policy · full', hint: 'All five layers, prospective' },
+  { id: 'github_copilot_training_data', label: 'AI training · post-hoc', hint: 'Reconstructed after the fact' },
+  { id: 'minimal_basic', label: 'Minimal · L1 only', hint: 'What `orp new --compliance basic` gives you' },
+  { id: 'broken_record', label: 'Broken', hint: 'Required fields deleted' },
 ]
 
 const LAYERS: [string, string][] = [
@@ -145,12 +145,13 @@ export default function LiveProof() {
         <div className="pr-live-head">
           <span className="pr-k">Hosted API · live</span>
           <h3>Validate a real document</h3>
-          <p>These are real ORP documents from the <a href="/examples/overview">examples</a>, sent to the public validator at
-          <code>api.publicreasonproject.org</code>. The response is whatever the API says right now.</p>
+          <p>Four different documents — a full policy analysis, a post-hoc AI-training reconstruction, a bare minimum, and a
+          broken one — sent to the public validator at <code>api.publicreasonproject.org</code>. The response is whatever the
+          API says right now, and it should differ.</p>
         </div>
         <div className="pr-live-pick">
           {EXAMPLES.map(e => (
-            <button key={e.id} className={`pr-live-chip ${exampleId === e.id ? 'is-on' : ''}`} onClick={() => { setExampleId(e.id); setApiResult(null) }}>{e.label}</button>
+            <button key={e.id} title={e.hint} className={`pr-live-chip ${exampleId === e.id ? 'is-on' : ''}`} onClick={() => { setExampleId(e.id); setApiResult(null); setApiErr(null) }}>{e.label}</button>
           ))}
         </div>
         <div className="pr-cta-row pr-live-actions">
@@ -169,7 +170,12 @@ export default function LiveProof() {
                 <span key={k} className={`pr-live-layer ${apiResult.layers_present?.[k] ? 'is-on' : ''}`}>{label}</span>
               ))}
             </div>
-            {apiResult.warnings?.length ? <div className="pr-live-mono">{apiResult.warnings.length} warning{apiResult.warnings.length > 1 ? 's' : ''} · {apiResult.errors?.length ?? 0} errors</div> : null}
+            <div className="pr-live-mono">{apiResult.metadata?.title ? `“${apiResult.metadata.title}”` : 'untitled'}{apiResult.metadata?.domain ? ` · ${apiResult.metadata.domain}` : ''}{apiResult.metadata?.orp_version ? ` · v${apiResult.metadata.orp_version}` : ''}</div>
+            {apiResult.errors?.length
+              ? <div className="pr-live-mono">{apiResult.errors.length} error{apiResult.errors.length > 1 ? 's' : ''} — {apiResult.errors[0]}</div>
+              : apiResult.warnings?.length
+                ? <div className="pr-live-mono">{apiResult.warnings.length} warning{apiResult.warnings.length > 1 ? 's' : ''} — {String(apiResult.warnings[0]).slice(0, 110)}{String(apiResult.warnings[0]).length > 110 ? '…' : ''}</div>
+                : <div className="pr-live-mono">0 warnings · 0 errors</div>}
           </div>
         )}
         <div className="pr-live-foot">Spec: <a href="/tools/rest-api">REST API</a> · validates v0.1 and v0.2 today; v0.3 profiles via the <a href="/tools/cli">CLI</a>.</div>

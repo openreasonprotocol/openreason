@@ -1,0 +1,94 @@
+orp_version: '0.1'
+document_id: minimal-basic-001
+title: Minimal provenance record (L1 only)
+domain: other
+authors:
+- name: OpenReason demo
+  role: author
+created: '2026-10-25'
+last_modified: '2026-10-25'
+status: draft
+forked_from: null
+compliance_level: ORP-Basic
+summary: 'Write a plain-language summary of what this document proposes or analyzes.
+
+
+  Aim for 3-5 sentences that a non-expert can understand. This is what appears
+
+  in search results and document lists. Make it count.
+
+  '
+l1_data_provenance:
+- dataset_id: dataset-001
+  name: Descriptive name for this dataset
+  description: 'What does this dataset contain? Why did you use it?
+
+
+    Be specific. "Government data" is not specific enough.
+
+    "2024 Danish household income data from Statistics Denmark" is better.
+
+    '
+  source: Where did this data come from? (government | academic | commercial | synthetic
+    | other)
+  collection_method: 'How was this data gathered?
+
+
+    Examples:
+
+    - Census survey (mandatory response)
+
+    - Voluntary online survey
+
+    - Administrative records from tax filings
+
+    - Web scraping from public sources
+
+    - Simulated using model X with assumptions Y
+
+    '
+  date_range: What time period does this data cover? (e.g., 2020-2024 or Q1 2024)
+  geographic_scope: What geographic area? (e.g., Denmark national, Copenhagen municipality,
+    Global)
+  inclusion_criteria:
+    description: 'What was included in this dataset and why?
+
+
+      If you used all available data, say so explicitly.
+
+      If you filtered or selected, explain the criteria.
+
+      '
+  exclusion_criteria:
+  - excluded: What was left out?
+    reason: Why did you exclude it?
+    potential_impact: 'How might excluding this affect your conclusions?
+
+
+      This is the honesty field. If you don''t know, say "Unknown - should be investigated."
+
+      '
+  cleaning_decisions:
+  - decision: What did you do to the data?
+    reason: Why was this necessary?
+    alternatives_considered: What else could you have done instead?
+  synthetic_elements:
+    present: false
+  known_limitations:
+  - What does this dataset NOT capture well?
+  - What blind spots or biases might it have?
+  - What would you ideally want that this dataset doesn't provide?
+  access:
+    public: true
+    url: null
+    license: Specify the data license if known
+  attested_by:
+  - name: OpenReason demo
+    role: Data analyst
+    date: '2026-10-25'
+    statement: 'I confirm the above documentation is accurate to the best of my knowledge.
+
+      I understand that this attestation creates accountability for data provenance
+      claims.
+
+      '

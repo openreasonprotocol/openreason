@@ -109,3 +109,8 @@ local/
 # Keep empty directories
 !.gitkeep
 .venv/
+
+# Confidential — strategy/business docs, never publish
+TRUST-GRAPH-STRATEGY.md
+pipeline_model.xlsx
+docs/governance/AGENT-RAIL-AND-USE-CASE-TREE.md

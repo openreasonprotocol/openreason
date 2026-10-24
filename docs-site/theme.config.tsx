@@ -17,7 +17,7 @@ const config: DocsThemeConfig = {
   project: {},
 
   // ─── Edit link ────────────────────────────────────────────────────────────
-  docsRepositoryBase: 'https://gitlab.com/publicreason/orp/-/blob/main/docs-site/pages',
+  docsRepositoryBase: 'https://github.com/openreasonprotocol/openreason/blob/main/docs-site/pages',
   editLink: { content: () => null },
 
   // ─── Last-updated timestamp ───────────────────────────────────────────────
@@ -116,7 +116,7 @@ const config: DocsThemeConfig = {
       >
         <span>© {new Date().getFullYear()} OpenReason Protocol</span>
         <span style={{ display: 'flex', gap: '24px' }}>
-          <a href="https://gitlab.com/publicreason/orp">GitLab</a>
+          <a href="https://github.com/openreasonprotocol/openreason">GitHub</a> · <a href="https://gitlab.com/publicreason/orp" title="Mirror">GitLab</a>
           <a href="https://pypi.org/project/orp-validator/">PyPI</a>
           <a href="mailto:hello@publicreasonproject.org">Contact</a>
         </span>

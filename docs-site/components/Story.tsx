@@ -39,7 +39,7 @@ export default function Story() {
 
   useEffect(() => {
     if (paused) return
-    const t = setInterval(() => setI((x) => (x + 1) % SLIDES.length), 5200)
+    const t = setInterval(() => setI((x) => (x + 1) % SLIDES.length), 8000)
     return () => clearInterval(t)
   }, [paused])
 
@@ -61,7 +61,6 @@ export default function Story() {
       </div>
 
       <div className="pr-story-ctrl">
-        <button aria-label="Previous slide" onClick={() => go(i - 1)}>←</button>
         <div className="pr-story-dots">
           {SLIDES.map((_, k) => (
             <button
@@ -72,7 +71,6 @@ export default function Story() {
             />
           ))}
         </div>
-        <button aria-label="Next slide" onClick={() => go(i + 1)}>→</button>
       </div>
     </div>
   )

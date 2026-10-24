@@ -20,8 +20,8 @@
   --pr-accent-dim:#C9431C;
   --pr-bone:      #F5F4F0;
 
-  --pr-maxw: 1320px;   /* shared content width — nav, landing, docs all align to this */
-  --pr-pad: 32px;
+  --pr-cell: 90px;     /* grid square */
+  --pr-pad: calc(var(--pr-cell) * 2);   /* side margin = 2 grid squares */
 
   --pr-display: 'Funnel Display', 'Funnel Sans', -apple-system, system-ui, sans-serif;
   --pr-sans:    'Funnel Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -72,12 +72,12 @@ h1, h2, h3, h4, .pr-display { font-family: var(--pr-display); letter-spacing: -0
 .nextra-nav-container-blur { background: color-mix(in srgb, var(--pr-bg) 86%, transparent) !important; }
 .nextra-nav-container nav {
   border-bottom: 1px solid var(--pr-line);
-  max-width: var(--pr-maxw) !important;
-  margin-inline: auto !important;
+  max-width: none !important;
+  margin-inline: 0 !important;
   padding-inline: var(--pr-pad) !important;
 }
-/* Align the docs body to the same width/grid as the header */
-.nextra-container, main > .nextra-container { max-width: var(--pr-maxw) !important; margin-inline: auto !important; }
+/* Align the docs body to the same 2-square margins as the header */
+.nextra-container, main > .nextra-container { max-width: none !important; margin-inline: 0 !important; padding-inline: var(--pr-pad) !important; }
 
 aside.nextra-sidebar-container,
 .nextra-sidebar-container { background: var(--pr-bg) !important; border-right: 1px solid var(--pr-line); }
@@ -147,7 +147,7 @@ pre, .nextra-code pre {
    LANDING — full-bleed industrial grid
    ═════════════════════════════════════════════════════════════════════════ */
 .pr-landing {
-  --cell: 90px;
+  --cell: var(--pr-cell);
   margin: -1.5rem calc(50% - 50vw) -5rem;   /* full-bleed; pull footer up so the grid reaches it */
   padding-bottom: 5rem;                      /* ...and extend the grid down into that space */
   width: 100vw;
@@ -159,7 +159,7 @@ pre, .nextra-code pre {
   color: var(--pr-text);
   border-top: 1px solid var(--pr-line);
 }
-.pr-landing .pr-wrap { max-width: var(--pr-maxw); margin: 0 auto; padding: 0 var(--pr-pad); }
+.pr-landing .pr-wrap { max-width: none; margin: 0; padding: 0 var(--pr-pad); }
 
 /* faint grid: dim the lines */
 .pr-landing { background-color: var(--pr-bg); }
@@ -242,15 +242,15 @@ pre, .nextra-code pre {
 /* ─── Story slideshow ────────────────────────────────────────────────────── */
 .pr-story {
   border: 1px solid var(--pr-line); border-radius: 8px; background: var(--pr-bg-2);
-  padding: 34px 38px; min-height: 320px; margin: 10px 0 4px;
+  padding: 48px 52px; min-height: 480px; margin: 10px 0 4px;
   display: flex; flex-direction: column; justify-content: space-between;
-  position: relative; overflow: hidden; transition: background .45s ease, border-color .45s ease;
+  position: relative; overflow: hidden; transition: background .6s ease, border-color .6s ease;
 }
 .pr-story.is-accent { background: var(--pr-accent); border-color: var(--pr-accent); }
 .pr-story-top { display: flex; justify-content: space-between; font-family: var(--pr-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--pr-muted-2); }
 .pr-story.is-accent .pr-story-top { color: rgba(11,12,14,.55); }
-.pr-story-body { padding: 30px 0; animation: prFade .5s ease; }
-.pr-story-text { font-family: var(--pr-display); font-weight: 700; font-size: clamp(1.7rem, 3.6vw, 2.9rem); line-height: 1.12; letter-spacing: -0.02em; color: var(--pr-text); max-width: 22ch; margin: 0; }
+.pr-story-body { padding: 44px 0; animation: prFade .85s cubic-bezier(.22,.72,.2,1); }
+.pr-story-text { font-family: var(--pr-display); font-weight: 700; font-size: clamp(2rem, 4.2vw, 3.6rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--pr-text); max-width: 24ch; margin: 0; }
 .pr-story-text b { color: var(--pr-accent); font-weight: 700; }
 .pr-story-text u { text-decoration-thickness: 3px; text-underline-offset: 5px; }
 .pr-story.is-accent .pr-story-text { color: #0B0C0E; max-width: 24ch; }
@@ -266,7 +266,7 @@ pre, .nextra-code pre {
 .pr-story-dots button.on { background: var(--pr-accent); width: 22px; border-radius: 4px; }
 .pr-story.is-accent .pr-story-dots button { background: rgba(11,12,14,.3); }
 .pr-story.is-accent .pr-story-dots button.on { background: #0B0C0E; }
-@keyframes prFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes prFade { from { opacity: 0; transform: translateY(18px); filter: blur(2px); } to { opacity: 1; transform: none; filter: blur(0); } }
 
 /* ─── "What it is" — animated ORP object (no code) ───────────────────────── */
 .pr-show { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 44px; align-items: center; }

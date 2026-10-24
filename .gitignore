@@ -64,7 +64,6 @@ yarn-debug.log*
 yarn-error.log*
 .npm
 .eslintcache
-package-lock.json
 yarn.lock
 
 # Build outputs
@@ -117,3 +116,5 @@ docs/governance/AGENT-RAIL-AND-USE-CASE-TREE.md
 
 # Cloudflare local state
 .wrangler/
+
+# Lockfiles for the published JS packages and the API worker are committed (reproducible CI); docs-site keeps its own ignore.

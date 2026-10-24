@@ -7,346 +7,108 @@ import { CheckCircle, Loader, Calendar, X } from 'lucide-react'
 
 # OpenReason Roadmap
 
-The planned development of OpenReason — from core protocol through tooling, agents, side protocols, and integrations.
+The planned development of OpenReason — from the core reasoning protocol, through tooling, to the
+machine-verifiable data-product layer and the agents that build on top.
 
-This is a living document subject to OpenReason principles. **If you disagree with the sequencing or priorities, open a discussion or fork it.**
-
----
-
-## Philosophy of Sequencing
-
-Good open source infrastructure earns adoption in layers:
-
-1. **Protocol must be implementable manually** before tooling is built
-2. **Tooling must be stable** before agents are layered on top
-3. **Agents must be trustworthy** before integrations embed them in workflows
-
-Each phase must be **genuinely complete** before the next begins — not feature-complete, but stable enough that contributors can build on it without fear of breaking changes.
+This is a living document subject to OpenReason principles. **If you disagree with the sequencing or
+priorities, open a discussion or fork it.**
 
 ---
 
-## Phase 0 — Foundation
+## Two tracks, one object
 
-**Status:** <CheckCircle size={16} className="orp-status-icon" style={{ color: '#10b981', display: 'inline' }} /> Complete
-**Target:** Specification and philosophical foundation
+Since v0.3, OpenReason serves [two readers](/protocol/overview#two-ways-to-use-orp) — people and machines —
+and the roadmap runs on two tracks that share the same object:
 
-The goal: Produce documents coherent enough to invite rigorous challenge before any code is written.
-
-### Completed
-
-- ORP v0.1 specification
-- REE philosophical foundation
-- README and project overview
-- CONTRIBUTING guide
-- Danish Property Tax Reform (worked example, ORP-Full)
-- ORP_META.md (protocol's own provenance)
-- Governance model v0.1
-
-**Public comment period:** Open for community challenge ongoing
+- **Public reasoning** — making it easy for humans to write, read, fork and challenge the reasoning behind
+  decisions (the original civic mission).
+- **Data products** — making an ORP document a verifiable passport a machine can check and enforce on
+  agent-to-agent rails.
 
 ---
 
-## Phase 1 — Core Tooling
+## Phase 0 — Foundation &nbsp;<CheckCircle size={16} style={{ color: '#10b981', display: 'inline', verticalAlign: 'middle' }} /> Complete
 
-**Status:** <CheckCircle size={16} className="orp-status-icon" style={{ color: '#10b981', display: 'inline' }} /> Complete (v0.6.0)
-**Completed:** April 2026
+Specification and philosophical foundation: ORP v0.1, the REE foundation, the governance model, and the
+first worked example (Danish Property Tax Reform, ORP-Full).
 
-The minimum viable toolkit that makes ORP documents easy to produce, validate, and compare.
+## Phase 1 — Core Tooling &nbsp;<CheckCircle size={16} style={{ color: '#10b981', display: 'inline', verticalAlign: 'middle' }} /> Complete
 
-### Completed (Sprints 1.1-1.7)
+The toolkit that makes ORP documents easy to produce, validate and compare.
 
-**Core Infrastructure (Sprint 1.1-1.5)**:
-- ORP CLI (`orp`) — Commands: new, validate, check, diff
-- ORP Validator (Python package) — pip install orp-validator v0.4.0
-- ORP Schema (JSON Schema for v0.1 and v0.2)
-- Reference implementation (Danish Property Tax Reform)
-- REST API — api.publicreasonproject.org (v0.4.0)
-- 43 automated tests with 96.5% coverage
+- **ORP v0.2** — post-hoc reconstruction, domain extensions, flexible schema
+- **CLI** (`orp new / validate / check / diff`) and the **Python validator** (`pip install orp-validator`)
+- **REST API** — api.publicreasonproject.org
+- **Documentation site** and four worked AI-training-dataset analyses (ImageNet, LAION-5B, Common Crawl, Copilot)
 
-**Documentation Site (Sprint 1.6)**:
-- Documentation website — docs.publicreasonproject.org
-  - Getting Started guides
-  - Protocol specification (web-friendly)
-  - Tool documentation (CLI, Python API, REST API)
-  - Examples showcase
-  - Community pages
+## Phase 2 — Machine-verifiable data products (v0.3) &nbsp;<CheckCircle size={16} style={{ color: '#10b981', display: 'inline', verticalAlign: 'middle' }} /> Complete
 
-**ORP v0.2 Implementation (Sprint 1.7.3)**:
-- ORP v0.2 specification (post-hoc reconstruction, extensions, flexible schema)
-- 4 comprehensive AI training dataset examples (ImageNet, LAION-5B, Common Crawl, GitHub Copilot)
-- 8,328 lines of ORP documentation showcasing v0.2 capabilities
-- PyPI release v0.4.0 with v0.2 support
-- REST API updated to support both v0.1 and v0.2 (auto-detection)
-- Docs site updated with v0.2 examples and comparative analysis
+The layer that lets an agent or rail that has never met the publisher verify an ORP document, enforce what
+may be done with the data, and prove use — without inventing new crypto. Shipped in `orp-validator` 0.5.0.
 
-**Status**: Production-ready ecosystem with comprehensive tooling, documentation, and real-world examples.
-
-### Phase 1 Retrospective
-
-**What worked well**:
-- Test-driven development (96.5% coverage)
-- Sprint-based planning enabled rapid iteration
-- Real-world examples (AI training datasets) demonstrated practical value
-- Backward compatibility maintained throughout v0.2 development
-
-**What we learned**:
-- Post-hoc reconstruction fills critical transparency gap
-- Extension system enables domain-specific fields without breaking core protocol
-- Automated testing essential for production API
-- Documentation site dramatically improves accessibility
+- [Attestation](/data-products/attestation) — offline Ed25519 verification, AdCP #4441-aligned
+- [Profiles](/data-products/profiles) — ORP-Core / Policy / Ads / AI
+- [Trust tiers](/data-products/trust-tiers) — `self_declared` → `attested` → `verified` → `full`, with an accredited-verifier gate
+- [Usage policy](/data-products/usage-policy) — an enforceable ODRL profile + reference evaluator
+- [Lineage](/data-products/lineage) — a derivation graph that carries ancestors' constraints
+- [Usage records](/data-products/usage-records) — a rail's signed receipt as proof-of-use
+- [Conformance suite](/data-products/conformance) — `orp conform`, gated in CI
+- **Relicensed to Apache-2.0** — patent grant for a protocol others implement
 
 ---
 
-## Phase 2 — Developer Experience
+## Phase 3 — Developer experience &nbsp;<Calendar size={16} style={{ color: '#6b7280', display: 'inline', verticalAlign: 'middle' }} /> Planned
 
-**Status:** <Calendar size={16} className="orp-status-icon" style={{ color: '#6b7280', display: 'inline' }} /> Planned
-**Target:** v0.6-v0.8
+Make ORP native to existing workflows, on both tracks.
 
-Making ORP feel native to existing developer workflows.
+- **GitLab/GitHub integration** — templates + CI that validates ORP compliance (and `orp conform`) on merge
+- **VS Code extension** — schema-aware autocomplete, inline validation, profile/tier indicator
+- **ORP Registry + Viewer** — a public, searchable index of documents and their forks; a clean reader UI
+- **Reference rail binding** — a worked example of a rail verifying an ORP passport and emitting a usage
+  record, alongside the [AdCP](https://adcontextprotocol.org) alignment
+- **Accredited-verifier process** — how a `verifier` key gets on the list for the `verified` tier
 
-### Planned Features
+## Phase 4 — Agent layer &nbsp;<Calendar size={16} style={{ color: '#6b7280', display: 'inline', verticalAlign: 'middle' }} /> Planned
 
-#### GitLab Integration
-- ORP document templates for repositories
-- GitLab CI pipeline validating ORP compliance on merge requests
-- Automatic fork registry updates
-- Issue templates for critique and amendments
+AI assistance that lowers the cost of producing high-quality ORP documents.
 
-#### VS Code Extension
-- Schema-aware autocomplete for ORP YAML
-- Inline validation with error highlighting
-- Field documentation on hover
-- Compliance level indicator in status bar
+> **Agents assist, they do not attest.** Anything an agent drafts must be reviewed and signed off by a
+> human before a document reaches `attested` or above.
 
-#### ORP Registry
-- Public registry of ORP-compliant documents
-- Searchable by domain, compliance level, author, topic
-- Forks and responses linked automatically
-- The public ledger that makes forking visible
+Provenance (L1), simulation (L2) and empathy-mapping (L3) drafting assistants; a conversational ORP
+assistant for non-technical authors; and a fork analyser that makes disagreement locatable.
 
-#### ORP Viewer
-- Clean web interface for reading ORP documents
-- Renders five layers in plain language
-- Shows fork tree
-- Interface for non-technical stakeholders
+## Phase 5 — Domain packs &nbsp;<Calendar size={16} style={{ color: '#6b7280', display: 'inline', verticalAlign: 'middle' }} /> Planned
 
-**Target:** Q2 2026
+Domain-specific profiles and methodology standards, backward-compatible with core ORP: ORP-Env, ORP-Econ,
+ORP-Health, ORP-Edu — and a **flagship civic data pack** applying the protocol to a real legislative corpus,
+with provenance attested and an interface for people and agents to inspect and improve what governs society.
 
 ---
 
-## Phase 3 — Agent Layer
-
-**Status:** <Calendar size={16} className="orp-status-icon" style={{ color: '#6b7280', display: 'inline' }} /> Planned
-**Target:** v1.0
-
-AI-assisted tooling that dramatically reduces the cost of producing high-quality ORP documents.
-
-### Critical Principle
-
-**Agents assist, they do not attest.**
-
-Every field produced by an agent must be reviewed and signed off by a human before a document reaches ORP-Standard or ORP-Full compliance.
-
-### Planned Agents
-
-#### Provenance Agent (L1)
-Given a policy domain and brief description:
-- Identifies commonly used datasets
-- Researches known limitations and coverage gaps
-- Flags likely exclusions
-- Drafts L1 with sources cited for review
-
-**Most valuable agent** — L1 is where most documents are weakest and where bias lives.
-
-#### Simulation Agent (L2)
-Given a proposal and variable definitions:
-- Identifies standard modeling approaches
-- Suggests affected population segments
-- Runs basic scenario analysis
-- Flags assumptions requiring human decision
-
-#### Empathy Mapping Agent (L3)
-Given a proposal and affected population:
-- Identifies stakeholder groups including non-obvious minorities
-- Estimates differential impacts
-- Flags groups whose impacts couldn't be modeled
-- Prompts for explicit minority stress-testing
-
-#### ORP Assistant
-Conversational interface for producing ORP documents. Asks the right questions in the right order, explains why each field matters.
-
-**Designed for:**
-- Politicians and policy staff without technical backgrounds
-- Students using ORP in educational contexts
-- Journalists investigating public decisions
-
-#### Fork Analyser
-Given original and fork:
-- Identifies specific assumptions that differ
-- Explains in plain language why differences matter
-- Estimates outcome differences if fork's assumptions are correct
-- Generates structured debate brief for each position
-
-**Makes policy disagreement locatable and productive.**
-
-**Target:** Q3-Q4 2026
-
----
-
-## Phase 4 — Side Protocols
-
-**Status:** <Calendar size={16} className="orp-status-icon" style={{ color: '#6b7280', display: 'inline' }} /> Planned
-**Target:** v1.x extensions
-
-Domain-specific extensions adding fields and methodology standards. All backwards compatible with core ORP.
-
-### Planned Extensions
-
-#### ORP-AI (AI Training Data)
-Extends L1 for AI and machine learning:
-- Dataset lineage and chain of custody
-- Demographic coverage analysis and gaps
-- Synthetic data generation methodology
-- Model training decisions and data implications
-- Fine-tuning data documentation
-
-**Addresses core REE insight:** Bias lives in data selection and cleaning, not algorithms. Makes that layer auditable.
-
-#### ORP-Econ (Economic Modelling)
-Extends L2 with econometric fields:
-- Model specification and identification strategy
-- Causal vs correlational claims
-- Confidence intervals and sensitivity analysis
-- Peer review status of methodology
-
-#### ORP-Env (Environmental Impact)
-Extends L2 and L3 for environmental/climate policy:
-- Carbon accounting methodology
-- Intergenerational impact modeling
-- Ecosystem stakeholder mapping (non-human sentient beings)
-- Uncertainty ranges for long-horizon projections
-
-#### ORP-Health (Healthcare Policy)
-Extends L3 with healthcare-specific fields:
-- Clinical outcome measures
-- Health equity analysis across demographics
-- Access and affordability modeling
-
-#### ORP-Edu (Educational Use)
-Simplified implementation for classroom use:
-- Same five layers with age-appropriate language
-- Guided examples
-- Scoring rubric for educational assessment
-- Interface between OpenReason and policy simulation games
-
-**Target:** 2027
-
----
-
-## Phase 5 — Platform and API
-
-**Status:** <Calendar size={16} className="orp-status-icon" style={{ color: '#6b7280', display: 'inline' }} /> Planned
-**Target:** v2.0
-
-Hosted infrastructure making OpenReason accessible without local tooling.
-
-### Planned Services
-
-#### ORP API
-REST API accepting policy proposal in plain text, returning AI-assisted first draft across all five layers.
-
-```
-POST /api/v1/draft
-{
-  "title": "Policy Title",
-  "domain": "policy",
-  "description": "...",
-  "compliance_target": "standard"
-}
-
-→ Returns: Partially populated ORP document
-          with agent-drafted fields flagged for review
-```
-
-#### ORP Registry API
-Programmatic access to public document registry — search, retrieve, compare, track forks.
-
-Infrastructure for third-party tools to build on.
-
-#### OpenReason for Education
-Hosted platform for schools/universities:
-- Classroom management
-- Student submissions
-- Peer review workflows
-- Teacher assessment tools
-- Built on ORP-Edu
-
-#### OpenReason for Government
-Hosted enterprise implementation:
-- Audit trails
-- Multi-party attestation
-- Integration with document management systems
-- Compliance reporting (e.g. EU AI Act)
-
-**Target:** 2027-2028
-
----
-
-## What We Are Explicitly NOT Building
-
-To stay focused:
+## What we are explicitly NOT building
 
 <div style={{ marginLeft: '1rem' }}>
-  <div style={{ marginBottom: '0.5rem' }}><X size={16} className="orp-status-icon" style={{ color: '#ef4444', display: 'inline' }} /> **Policy recommendation engine** — OpenReason exposes reasoning, not conclusions</div>
-  <div style={{ marginBottom: '0.5rem' }}><X size={16} className="orp-status-icon" style={{ color: '#ef4444', display: 'inline' }} /> **Fact-checking service** — ORP attests to reasoning, not truth of data</div>
-  <div style={{ marginBottom: '0.5rem' }}><X size={16} className="orp-status-icon" style={{ color: '#ef4444', display: 'inline' }} /> **Voting or consensus mechanism** — Surfaces disagreement, doesn't resolve it</div>
-  <div style={{ marginBottom: '0.5rem' }}><X size={16} className="orp-status-icon" style={{ color: '#ef4444', display: 'inline' }} /> **Proprietary data hosting** — Registry indexes metadata, not underlying datasets</div>
+  <div style={{ marginBottom: '0.5rem' }}><X size={16} style={{ color: '#ef4444', display: 'inline' }} /> **Policy recommendation engine** — OpenReason exposes reasoning, not conclusions</div>
+  <div style={{ marginBottom: '0.5rem' }}><X size={16} style={{ color: '#ef4444', display: 'inline' }} /> **Fact-checking / truth service** — ORP attests to provenance and reasoning, not the truth of a claim</div>
+  <div style={{ marginBottom: '0.5rem' }}><X size={16} style={{ color: '#ef4444', display: 'inline' }} /> **Voting or consensus mechanism** — surfaces disagreement, doesn't resolve it</div>
+  <div style={{ marginBottom: '0.5rem' }}><X size={16} style={{ color: '#ef4444', display: 'inline' }} /> **Proprietary data hosting** — the registry indexes metadata, not underlying datasets</div>
 </div>
 
 ---
 
-## Current Sprint Status
+## How to influence the roadmap
 
-**Phase 1 Progress:**
+**This roadmap is itself an ORP-style document** — it has assumptions and priorities, and it will be wrong
+about some things. The right response to disagreement is not a comment, it's a **fork**: show your reasoning.
 
-| Sprint | Version | Status | Description |
-|--------|---------|--------|-------------|
-| 1.1.0 | v0.1.0 | Complete | JSON Schema + Python Validator |
-| 1.2.0 | v0.2.0 | Complete | CLI scaffolding (new, check, diff) |
-| 1.3.0 | v0.2.1 | Complete | Danish example as valid YAML |
-| 1.4.0 | v0.3.0 | Complete | PyPI publication |
-| 1.5.0 | v0.4.0 | Complete | REST API validator service |
-| 1.6.0 | v0.5.0 | In Progress | Documentation website |
-
-**Next:** Sprint 1.7.0 — Interactive validator widget
-
----
-
-## How to Influence the Roadmap
-
-**This roadmap is an ORP document.** It has assumptions, priorities, and will be wrong about some things.
-
-The right response to disagreement is not a comment — **it's a fork.**
-
-- Think Phase 3 should come before Phase 2? Fork and show your reasoning.
-- Think ORP-AI should be in Phase 1? Make the case.
-- Have a different priority? Propose it.
-
-The roadmap evolves through the same transparent, forkable reasoning OpenReason enables everywhere else.
-
-**See [Contributing Guide](/community/contributing) for how to propose changes.**
-
----
+See the [Contributing Guide](/community/contributing) for how to propose changes.
 
 ## Resources
 
 - **Repository:** [gitlab.com/publicreason/orp](https://gitlab.com/publicreason/orp)
 - **Issue Tracker:** [gitlab.com/publicreason/orp/-/issues](https://gitlab.com/publicreason/orp/-/issues)
-- **Full Roadmap:** [ROADMAP.md](https://gitlab.com/publicreason/orp/-/blob/main/docs/ROADMAP.md)
-- **Sprint Plans:** [docs/sprints/](https://gitlab.com/publicreason/orp/-/tree/main/docs/sprints)
 
 ---
 
-*OpenReason Roadmap v0.1 — February 2026*
-*This document is subject to ORP principles.*
-***Fork it.***
+*OpenReason Roadmap — October 2026. Subject to ORP principles.* ***Fork it.***

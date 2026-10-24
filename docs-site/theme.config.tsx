@@ -29,6 +29,11 @@ const config: DocsThemeConfig = {
   docsRepositoryBase: 'https://gitlab.com/publicreason/orp/-/blob/main/docs-site/pages',
   editLink: { content: () => null },
 
+  // ─── Last-updated timestamp ───────────────────────────────────────────────
+  // Disabled: the per-page git timestamp made every unchanged page read as stale
+  // ("Last updated on April 8"). The spec version is the meaningful currency marker.
+  gitTimestamp: null,
+
   // ─── Head / SEO ───────────────────────────────────────────────────────────
   head() {
     // eslint-disable-next-line react-hooks/rules-of-hooks

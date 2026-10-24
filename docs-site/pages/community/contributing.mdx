@@ -203,7 +203,7 @@ If you're contributing to the validator, CLI, or REST API:
 - Python 3.9+ for core validator
 - FastAPI for REST API
 - Next.js + Nextra for documentation site
-- GitLab CI/CD for testing and deployment
+- GitHub Actions for tests, conformance and releases (GitLab CI runs on the mirror)
 
 **Before submitting code:**
 
@@ -229,7 +229,7 @@ orp validate examples/danish_property_tax_reform.yaml
 We support Python 3.9+. See [Development Practices](https://github.com/openreasonprotocol/openreason/blob/main/CONTRIBUTING.md#development-practices) for resource loading patterns.
 
 **CI/CD:**
-GitLab CI runs on all merge requests. Tests must pass before merging.
+GitHub Actions runs on every pull request: lint, tests on Python 3.9–3.12, conformance and package build must pass before merging.
 
 ---
 

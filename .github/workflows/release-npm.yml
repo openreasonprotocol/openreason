@@ -1,0 +1,56 @@
+name: Release to npm
+
+# Publishes a JS package with npm trusted publishing (OIDC, provenance attached) when its tag is pushed:
+#   sdk-js-v0.1.1  → @openreason/sdk
+#   mcp-v0.1.1     → @openreason/mcp
+# One-time setup on npmjs.com for EACH package (Package → Settings → Trusted publisher → GitHub Actions):
+#   organization: openreasonprotocol · repository: openreason · workflow: release-npm.yml · environment: npm
+# No npm token or one-time code is involved after that.
+
+on:
+  push:
+    tags: ["sdk-js-v*", "mcp-v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", registry-url: "https://registry.npmjs.org" }
+      - name: npm >= 11.5 is required for trusted publishing
+        run: npm install -g npm@latest && npm --version
+      - name: Resolve package dir and version from the tag
+        id: t
+        run: |
+          case "$GITHUB_REF_NAME" in
+            sdk-js-v*) echo "dir=sdk-js" >> "$GITHUB_OUTPUT"; echo "ver=${GITHUB_REF_NAME#sdk-js-v}" >> "$GITHUB_OUTPUT" ;;
+            mcp-v*)    echo "dir=mcp"    >> "$GITHUB_OUTPUT"; echo "ver=${GITHUB_REF_NAME#mcp-v}"    >> "$GITHUB_OUTPUT" ;;
+            *) echo "unexpected tag $GITHUB_REF_NAME"; exit 1 ;;
+          esac
+      - name: Tag must match package.json version
+        working-directory: ${{ steps.t.outputs.dir }}
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          test "$PKG" = "${{ steps.t.outputs.ver }}" || { echo "package.json $PKG != tag ${{ steps.t.outputs.ver }}"; exit 1; }
+      - name: Build the SDK first (the MCP server depends on it)
+        working-directory: sdk-js
+        run: npm ci && npm run build
+      - name: Build the package
+        if: steps.t.outputs.dir != 'sdk-js'
+        working-directory: ${{ steps.t.outputs.dir }}
+        run: npm ci && npm run build
+      - name: Point the MCP server at the published SDK, not the local folder
+        if: steps.t.outputs.dir == 'mcp'
+        working-directory: mcp
+        run: npm pkg set "dependencies.@openreason/sdk=^$(node -p "require('../sdk-js/package.json').version")"
+      - name: Publish with provenance
+        working-directory: ${{ steps.t.outputs.dir }}
+        run: npm publish --provenance --access public

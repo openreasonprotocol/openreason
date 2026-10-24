@@ -1,0 +1,53 @@
+import { Callout } from 'nextra/components'
+
+# Lineage
+
+v0.2's Layer 5 tracked **forks** of a document — alternative reasoning about the same question. Data
+products are also **derived** from other data products (a subset, an overlap, a lookalike, a model trained
+on a corpus), and each derivative must carry its ancestors' usage constraints. v0.3 turns Layer 5 into a
+**derivation graph** that records both.
+
+```yaml
+lineage:
+  forks: [ ... ]                 # v0.2 semantics, unchanged: alternative reasoning
+  derivations:
+    - parent_id: "https://..."
+      parent_hash: "sha256:..."
+      transformation: subset | overlap | lookalike | aggregation | enrichment | training | other
+      inherits: full | relaxed
+      relaxation_basis: "<ancestor permission_id>"   # REQUIRED if inherits == relaxed
+  this_document: { forking_permitted: true, derivation_permitted: none | internal | licensed }
+```
+
+## Inheritance rule
+
+A derivative's effective policy is the **intersection** of its own `usage_policy` and every ancestor's —
+an activation is allowed only if **every** policy in the ancestry allows it.
+
+- The walk descends **every** `derivations` edge (a true graph, not just one parent).
+- It stops at the root, or at the nearest ancestor whose attestation tier is `verified`+ (that ancestor
+  vouches for everything above it), whichever comes first.
+- An **unresolved ancestor fails closed** (deny).
+
+<Callout type="info">
+**Licensed relaxation.** If an ancestor granted `derivation: licensed` via the permission named in a
+`relaxed` edge's `relaxation_basis`, that ancestor is enforced via its `derivative_policy` instead of its
+`usage_policy`. If the relaxation isn't legitimately backed, the walk falls back to the full policy — the
+safe direction.
+</Callout>
+
+## Reference walk
+
+```python
+from orp_validator.lineage import resolve_effective_decision
+
+# fetch(parent_id) -> the ancestor document, or None if unavailable
+res = resolve_effective_decision(doc, {"purpose": "analytics"}, fetch=my_fetch)
+res.decision    # "allow" | "deny"
+res.denied_by   # which node in the chain denied, if any
+```
+
+## Next steps
+
+- [Usage Policy](/data-products/usage-policy) — the per-node rules the intersection combines
+- [Usage Records](/data-products/usage-records) — proof of what was used

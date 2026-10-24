@@ -1,23 +1,14 @@
 import { DocsThemeConfig, useConfig } from 'nextra-theme-docs'
+import { useRouter } from 'next/router'
 
 const config: DocsThemeConfig = {
   // ─── Logo ─────────────────────────────────────────────────────────────────
   logo: (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-      <svg width="24" height="24" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-        <line x1="16" y1="30" x2="16" y2="16" stroke="#1a5490" strokeWidth="3" strokeLinecap="round"/>
-        <path d="M 16 16 Q 10 13, 4 10" fill="none" stroke="#1a5490" strokeWidth="3" strokeLinecap="round"/>
-        <circle cx="4" cy="10" r="3" fill="#1a5490"/>
-        <path d="M 16 16 Q 22 13, 28 10" fill="none" stroke="#1a5490" strokeWidth="3" strokeLinecap="round"/>
-        <circle cx="28" cy="10" r="3" fill="#1a5490"/>
-        <line x1="16" y1="16" x2="16" y2="2" stroke="#1a5490" strokeWidth="3" strokeLinecap="round"/>
-        <circle cx="16" cy="2" r="3" fill="#1a5490"/>
-        <circle cx="16" cy="16" r="3.5" fill="#d97706"/>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '11px' }}>
+      <svg width="27" height="27" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <polygon points="16,3 27,9.5 27,22.5 16,29 5,22.5 5,9.5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinejoin="round" strokeLinecap="round" />
       </svg>
-      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
-        <span style={{ fontWeight: 700, fontSize: '16px' }}>Public Reason Project</span>
-        <span style={{ fontSize: '12px', color: '#666' }}>OpenReason Protocol</span>
-      </div>
+      <span style={{ fontFamily: "'Funnel Display', sans-serif", fontWeight: 700, fontSize: '16px', letterSpacing: '0.005em' }}>OpenReason</span>
     </div>
   ),
   logoLink: '/',
@@ -29,16 +20,26 @@ const config: DocsThemeConfig = {
   docsRepositoryBase: 'https://gitlab.com/publicreason/orp/-/blob/main/docs-site/pages',
   editLink: { content: () => null },
 
+  // ─── Last-updated timestamp ───────────────────────────────────────────────
+  // Disabled: the per-page git timestamp made every unchanged page read as stale
+  // ("Last updated on April 8"). The spec version is the meaningful currency marker.
+  gitTimestamp: null,
+
   // ─── Head / SEO ───────────────────────────────────────────────────────────
   head() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { frontMatter, title } = useConfig()
-    const pageTitle = title ? `${title} — OpenReason Protocol` : 'OpenReason Protocol'
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { asPath } = useRouter()
+    const pageTitle = title && title !== 'OpenReason Protocol' ? `${title} — OpenReason Protocol` : 'OpenReason Protocol'
     const description =
       frontMatter.description ??
       'OpenReason Protocol (ORP) — A standard for transparent, reproducible, and accountable policy reasoning.'
-    const ogImage = 'https://docs.publicreasonproject.org/og-image.png'
-    const siteUrl = 'https://docs.publicreasonproject.org'
+    const ogImage = 'https://openreasonprotocol.org/og-image.png'
+    const siteUrl = 'https://openreasonprotocol.org'
+    // Per-page canonical + og:url (strip hash/query); homepage = bare siteUrl.
+    const path = (asPath || '/').split('#')[0].split('?')[0]
+    const pageUrl = path === '/' ? siteUrl : siteUrl + path
 
     return (
       <>
@@ -46,12 +47,12 @@ const config: DocsThemeConfig = {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content={description} />
         <meta name="keywords" content="OpenReason, ORP, policy reasoning, transparency, accountability, data provenance, public policy, AI ethics, decision making" />
-        <meta name="author" content="Public Reason Project" />
+        <meta name="author" content="OpenReason" />
         <meta name="robots" content="index, follow" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={siteUrl} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
@@ -64,7 +65,7 @@ const config: DocsThemeConfig = {
         <meta name="twitter:image" content={ogImage} />
 
         {/* Canonical URL */}
-        <link rel="canonical" href={siteUrl} />
+        <link rel="canonical" href={pageUrl} />
 
         {/* Favicons */}
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -78,8 +79,9 @@ const config: DocsThemeConfig = {
   },
 
   // ─── Dark mode ────────────────────────────────────────────────────────────
-  // Force light mode
+  // Force dark (industrial console) mode
   darkMode: false,
+  nextThemes: { defaultTheme: 'dark', forcedTheme: 'dark' },
 
   // ─── Sidebar ──────────────────────────────────────────────────────────────
   sidebar: {
@@ -112,7 +114,7 @@ const config: DocsThemeConfig = {
           color: '#4A4A4A',
         }}
       >
-        <span>© {new Date().getFullYear()} Public Reason Project — OpenReason Protocol</span>
+        <span>© {new Date().getFullYear()} OpenReason Protocol</span>
         <span style={{ display: 'flex', gap: '24px' }}>
           <a href="https://gitlab.com/publicreason/orp">GitLab</a>
           <a href="https://pypi.org/project/orp-validator/">PyPI</a>
@@ -124,7 +126,14 @@ const config: DocsThemeConfig = {
 
   // ─── Top Navigation ───────────────────────────────────────────────────────
   navbar: {
-    extraContent: null
+    extraContent: (
+      <div className="pr-navlinks">
+        <a href="/protocol/overview">Protocol</a>
+        <a href="/what-it-is">What it is</a>
+        <a href="/how-it-works">How it works</a>
+        <a href="/about">About</a>
+      </div>
+    )
   },
 
   // ─── Navigation arrows ────────────────────────────────────────────────────
@@ -135,7 +144,7 @@ const config: DocsThemeConfig = {
 
   // ─── Search ───────────────────────────────────────────────────────────────
   search: {
-    placeholder: 'Search docs…',
+    placeholder: 'Search the protocol…',
   },
 
   // ─── Feedback ─────────────────────────────────────────────────────────────

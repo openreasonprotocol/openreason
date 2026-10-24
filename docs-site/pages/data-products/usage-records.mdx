@@ -1,0 +1,53 @@
+import { Callout } from 'nextra/components'
+
+# Usage Records
+
+The v0.2 Accountability Ledger (Layer 4) records methodological *decisions* by named people. A traded data
+product also needs a record of *use*: who activated it, for what, under which policy, when. v0.3 adds a
+`usage_records` entry type to Layer 4.
+
+```yaml
+accountability_ledger:
+  usage_records:
+    - record_id: "..."
+      timestamp: "..."
+      dataset_id: "https://..."
+      dataset_hash: "sha256:..."
+      policy_hash: "sha256:..."
+      counterparty: "principal id or DID"
+      purpose: "advertising_targeting"
+      context: { geo, media, execution_id, volume }
+      fee: { amount, currency }
+      signatures: [ { kid, alg, sig, role: rail | licensee | licensor } ]
+```
+
+<Callout type="info">
+**Receipt equivalence.** A rail's signed clearing receipt that carries the dataset and policy hashes **is**
+a usage record by construction. The ledger may live at the rail rather than inside the document — in which
+case Layer 4 carries a pointer (`usage_ledger: { url, query }`).
+</Callout>
+
+## From a rail receipt
+
+```python
+from orp_validator.usage import usage_record_from_receipt, verify_usage_record
+
+record = usage_record_from_receipt(
+    receipt,                       # the rail's signed clearing receipt
+    dataset_id="https://ds/1",
+    dataset_hash="sha256:...",
+    policy_hash="sha256:...",
+    purpose="advertising_targeting",
+)
+
+# verify the record's signatures with the same offline machinery as attestation
+verify_usage_record(record, resolve_key=my_resolver)["valid"]  # True
+```
+
+This is the concrete integration point between ORP and a clearing rail: the receipt the rail already signs,
+reinterpreted as a provable record of use that either counterparty can check.
+
+## Next steps
+
+- [Attestation](/data-products/attestation) — the signature posture reused here
+- [Conformance](/data-products/conformance)

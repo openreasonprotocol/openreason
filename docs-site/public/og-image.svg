@@ -1,33 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
-  <!-- Background -->
-  <rect width="1200" height="630" fill="#ffffff"/>
+  <rect width="1200" height="630" fill="#0B0C0E"/>
+  <defs>
+    <pattern id="grid" width="90" height="90" patternUnits="userSpaceOnUse">
+      <path d="M90 0 H0 V90" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="glow" cx="18%" cy="40%" r="40%">
+      <stop offset="0%" stop-color="#FF5D2A" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FF5D2A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
 
-  <!-- Fork icon (large, centered-left) -->
-  <g transform="translate(150, 200)">
-    <!-- Main trunk -->
-    <line x1="80" y1="200" x2="80" y2="100" stroke="#1a5490" stroke-width="12" stroke-linecap="round"/>
+  <!-- orange hexagon -->
+  <polygon points="150,150 230,196 230,288 150,334 70,288 70,196"
+    fill="none" stroke="#FF5D2A" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
 
-    <!-- Left branch -->
-    <path d="M 80 100 Q 40 70, 0 40" fill="none" stroke="#1a5490" stroke-width="12" stroke-linecap="round"/>
-    <circle cx="0" cy="40" r="12" fill="#1a5490"/>
+  <!-- eyebrow -->
+  <text x="300" y="180" font-family="'Funnel Display','Inter',sans-serif" font-size="25" letter-spacing="4" fill="#8F9BA8">THE PUBLIC REASON PROJECT</text>
 
-    <!-- Right branch -->
-    <path d="M 80 100 Q 120 70, 160 40" fill="none" stroke="#1a5490" stroke-width="12" stroke-linecap="round"/>
-    <circle cx="160" cy="40" r="12" fill="#1a5490"/>
+  <!-- headline -->
+  <text x="298" y="268" font-family="'Funnel Display','Inter',sans-serif" font-size="74" font-weight="700" fill="#F5F5F5">Reasoning you can <tspan fill="#FF5D2A">verify</tspan></text>
+  <text x="298" y="350" font-family="'Funnel Display','Inter',sans-serif" font-size="74" font-weight="700" fill="#F5F5F5">— by people and machines.</text>
 
-    <!-- Center continuation -->
-    <line x1="80" y1="100" x2="80" y2="0" stroke="#1a5490" stroke-width="12" stroke-linecap="round"/>
-    <circle cx="80" cy="0" r="12" fill="#1a5490"/>
-
-    <!-- Fork point -->
-    <circle cx="80" cy="100" r="14" fill="#d97706"/>
-  </g>
-
-  <!-- Text content -->
-  <text x="450" y="250" font-family="'Inter', -apple-system, sans-serif" font-size="72" font-weight="700" fill="#1a1a1a">OpenReason Protocol</text>
-  <text x="450" y="330" font-family="'Inter', -apple-system, sans-serif" font-size="36" fill="#666666">A standard for transparent, reproducible, and</text>
-  <text x="450" y="380" font-family="'Inter', -apple-system, sans-serif" font-size="36" fill="#666666">accountable policy reasoning</text>
-
-  <!-- Bottom badge -->
-  <text x="450" y="480" font-family="'Inter', -apple-system, sans-serif" font-size="24" font-weight="600" fill="#1a5490">docs.publicreasonproject.org</text>
+  <!-- badge -->
+  <text x="300" y="438" font-family="'Funnel Display','Inter',sans-serif" font-size="29" fill="#8F9BA8">OpenReason Protocol · open standard · Apache-2.0</text>
 </svg>

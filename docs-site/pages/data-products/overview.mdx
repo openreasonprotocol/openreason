@@ -1,0 +1,61 @@
+import { Callout } from 'nextra/components'
+
+# Data Products (v0.3)
+
+ORP v0.1/v0.2 is a document standard for transparent, human-attested, human-read policy reasoning.
+**v0.3 keeps all of that and adds a second reader: a machine.** An ORP document can now be used as a
+**verifiable data product** — an audience segment, a dataset, a training corpus — that an agent or a rail
+on the other side of a trade can verify, enforce terms on, and prove use of, without ever having met the
+publisher.
+
+<Callout type="info">
+Everything on these pages is **optional** and **additive**. A plain v0.2 policy document is still valid —
+it simply validates as the [ORP-Policy profile](/data-products/profiles) under `orp_version: "0.3"`.
+See the [migration guide](/protocol/specification#migrating-from-v02) for the one-field upgrade.
+</Callout>
+
+## One object, two readers
+
+| | Human reader | Machine reader |
+|---|---|---|
+| **Reads** | the full document: inspect, fork, re-run with different assumptions | a minimal attestation core it can verify in milliseconds |
+| **Trusts via** | argument and sources | a cryptographic signature it checks itself, offline |
+| **Acts by** | deliberating | deciding allow/deny against an enforceable usage policy |
+
+The two never cannibalise each other: the machine verifies a small signed core that is hash-linked to the
+rich document a person reads.
+
+## What v0.3 adds
+
+| Capability | Page | What it gives a machine |
+|---|---|---|
+| **Attestation** | [Attestation](/data-products/attestation) | Offline Ed25519 verification of the document, AdCP #4441-aligned |
+| **Profiles** | [Profiles](/data-products/profiles) | A domain-neutral core + ORP-Policy / ORP-Ads / ORP-AI |
+| **Trust tiers** | [Trust Tiers](/data-products/trust-tiers) | How much a reader may rely on a passport, and how it was verified |
+| **Usage policy** | [Usage Policy](/data-products/usage-policy) | What may be done with the data, in a form a rail enforces |
+| **Lineage** | [Lineage](/data-products/lineage) | Derivatives carry their ancestors' constraints |
+| **Usage records** | [Usage Records](/data-products/usage-records) | An append-only record of *use* — a rail receipt is one by construction |
+| **Legal provenance** | [Profiles](/data-products/profiles) | Legal basis, rights holders, opt-out signals, access, freshness, reach |
+
+## Why this matters for agent rails
+
+As advertising and data move to agent-to-agent rails, a buying agent needs to decide — fast, and without a
+human in the loop — whether a data product is what it claims, whether it may be used for the purpose at
+hand, and be able to prove afterward what it did. v0.3 is designed so that a rail which already verifies
+[AdCP](https://adcontextprotocol.org) signed provenance can verify an ORP passport **with no new crypto**:
+same canonicalisation, same Ed25519 posture, same key discovery.
+
+## Tooling
+
+```bash
+pip install "orp-validator[attestation]"
+
+orp validate segment.yaml --profile ORP-Ads   # validate + report profile and trust tier
+orp conform                                    # run the v0.3 conformance suite
+```
+
+## Next steps
+
+- [Attestation](/data-products/attestation) — make a document verifiable
+- [Profiles](/data-products/profiles) — pick Core / Policy / Ads / AI
+- [A worked data-product passport](/examples/data-product-ctv-segment)

@@ -1,0 +1,71 @@
+---
+title: How it works
+description: The mechanism — a simulatable object, five layers, fork, re-run, verify.
+theme:
+  sidebar: false
+  toc: false
+  layout: full
+  breadcrumb: false
+  pagination: false
+---
+
+<div className="pr-landing">
+<div className="pr-wrap">
+
+<section className="pr-hero" style={{ paddingBottom: '36px' }}>
+<div className="pr-eyebrow">OpenReason · How it works</div>
+<h1 className="pr-h1">A document you can re-run — and <span className="accent">verify</span>.</h1>
+<p className="pr-lead">An ORP document is structured so each part of the reasoning is separately inspectable and
+auditable. Assumptions are explicit, so it can be forked and re-run; and it can carry a signature, so it can
+be checked offline by a person or a machine.</p>
+<div className="pr-cta-row">
+  <a className="pr-btn primary" href="/protocol/specification">Read the spec →</a>
+  <a className="pr-btn" href="/data-products/overview">Data products</a>
+</div>
+</section>
+
+<section className="pr-sec">
+<div className="pr-tag">A document, in five layers <b>01</b></div>
+<div className="pr-grid">
+  <div className="pr-cell"><div className="n">L1</div><div className="t">Data provenance</div><div className="d">Where did the data come from — and what was excluded or cleaned?</div></div>
+  <div className="pr-cell"><div className="n">L2</div><div className="t">Consequence simulation</div><div className="d">What outcomes were modelled, under which assumptions?</div></div>
+  <div className="pr-cell"><div className="n">L3</div><div className="t">Empathy mapping</div><div className="d">Who is affected, and were minorities stress-tested?</div></div>
+  <div className="pr-cell"><div className="n">L4</div><div className="t">Accountability</div><div className="d">Who decided what, when, and why?</div></div>
+  <div className="pr-cell"><div className="n">L5</div><div className="t">Lineage</div><div className="d">What is this derived from, and what forks exist?</div></div>
+</div>
+</section>
+
+<section className="pr-sec">
+<div className="pr-tag">Fork and re-run <b>02</b></div>
+<p className="pr-body">Because assumptions are explicit, anyone can <strong>fork</strong> a document, change one
+assumption, and <strong>re-run</strong> it. Disagreement becomes <em>locatable</em> — you can point to the
+exact assumption or source where two parties diverge, instead of talking past each other.</p>
+</section>
+
+<section className="pr-sec" style={{ borderBottom: 'none' }}>
+<div className="pr-tag">Verify · v0.3 <b>03</b></div>
+<p className="pr-body">A document can carry a cryptographic <strong>attestation</strong> — a detached Ed25519
+signature over its canonical form. A reader (a person, or an agent on a rail) verifies it <strong>offline</strong>:
+recompute the hash, check the signature against a key it resolves itself, confirm the key hasn't expired. No
+need to trust, or even contact, the publisher.</p>
+<p className="pr-body" style={{ marginTop: '14px' }}>Verification yields a <strong>trust tier</strong> —
+<code>self_declared → attested → verified → full</code> — and a claimed tier never exceeds what the signatures
+prove. For data products, a <strong>usage policy</strong> then says what may be done, which a rail enforces at
+activation.</p>
+
+<div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', marginTop: '28px', fontFamily: 'var(--pr-mono)', fontSize: '13px' }}>
+  <span style={{ padding: '9px 15px', border: '1px solid var(--pr-line-2)', borderRadius: '6px', color: 'var(--pr-muted)' }}>hash ✓</span>
+  <span style={{ color: 'var(--pr-muted-2)' }}>→</span>
+  <span style={{ padding: '9px 15px', border: '1px solid var(--pr-line-2)', borderRadius: '6px', color: 'var(--pr-muted)' }}>signature ✓</span>
+  <span style={{ color: 'var(--pr-muted-2)' }}>→</span>
+  <span style={{ padding: '9px 15px', border: '1px solid var(--pr-accent)', borderRadius: '6px', color: 'var(--pr-accent)' }}>⬡ verified · attested</span>
+</div>
+
+<div className="pr-cta-row" style={{ marginTop: '30px' }}>
+  <a className="pr-btn primary" href="/protocol/specification">Read the spec →</a>
+  <a className="pr-btn" href="/about">Why it matters</a>
+</div>
+</section>
+
+</div>
+</div>

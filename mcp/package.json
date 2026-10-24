@@ -1,0 +1,27 @@
+{
+  "name": "@openreason/mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for the OpenReason Protocol — lets any AI agent validate and cryptographically verify ORP documents.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": { "openreason-mcp": "./dist/index.js" },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": ["openreason", "orp", "mcp", "model-context-protocol", "attestation", "verifiable", "agent"],
+  "homepage": "https://openreasonprotocol.org",
+  "repository": { "type": "git", "url": "https://github.com/PublicReasonProject/openreason.git", "directory": "mcp" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.5.0",
+    "@openreason/sdk": "file:../sdk-js",
+    "js-yaml": "^4.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.6.0"
+  }
+}

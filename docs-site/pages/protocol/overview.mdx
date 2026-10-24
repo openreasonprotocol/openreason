@@ -11,6 +11,21 @@ ORP provides a structured format for documenting:
 - **Who decided what and why** (accountability)
 - **How proposals can be forked** (versioning)
 
+## Two ways to use ORP
+
+The same ORP object serves two readers — use it either way, or both.
+
+| | Public reasoning | Verifiable data product |
+|---|---|---|
+| **Reader** | people — policymakers, analysts, citizens | machines — agents and rails |
+| **You use it to** | document, inspect, fork and challenge the reasoning behind a decision | verify a dataset, enforce what may be done with it, and prove use |
+| **Profile** | [ORP-Policy](/data-products/profiles) — the v0.1/v0.2 shape | [ORP-Ads / ORP-AI / ORP-Core](/data-products/profiles) |
+| **Trust comes from** | argument and cited sources | a [signature](/data-products/attestation) a reader verifies offline |
+| **Added in** | v0.1 / v0.2 | **v0.3** |
+
+The rest of this page describes the layered document all uses share. For the machine-facing capabilities —
+attestation, profiles, trust tiers, usage policy, lineage — see **[Data Products](/data-products/overview)**.
+
 ## Design Principles
 
 1. **Transparency First** - Every assumption, data source, and decision is documented
@@ -82,7 +97,7 @@ See [Specification](/protocol/specification) for full ORP v0.1 details.
 
 ## Governance
 
-ORP is developed as an open standard by the Public Reason Project.
+ORP is developed as an open standard by OpenReason.
 
 - **Open Development** - All discussions happen in public
 - **Community Input** - Anyone can propose changes via GitLab issues
@@ -99,6 +114,6 @@ See [Governance](/community/governance) for decision-making process.
 
 ## Further Reading
 
-- [Philosophy](/protocol/philosophy) - Reasoning, Empathy, Evaluation framework
+- [Philosophy](/about) - Reasoning, Empathy, Evaluation framework
 - [Compliance Levels](/protocol/compliance-levels) - Choosing the right level
 - [Contributing](/community/contributing) - Help improve the protocol

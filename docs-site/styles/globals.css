@@ -245,12 +245,14 @@ pre, .nextra-code pre {
 }
 .pr-layer b { font-family: var(--pr-mono); color: var(--pr-accent); font-weight: 600; font-size: 11px; width: 22px; }
 .pr-layer span { color: var(--pr-text); font-size: 12.5px; flex: 1; }
-.pr-layer i { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid var(--pr-muted-2); }
-.pr-layers .pr-layer:nth-child(1) { animation-delay: 0s; }
-.pr-layers .pr-layer:nth-child(2) { animation-delay: .45s; }
-.pr-layers .pr-layer:nth-child(3) { animation-delay: .9s; }
-.pr-layers .pr-layer:nth-child(4) { animation-delay: 1.35s; }
-.pr-layers .pr-layer:nth-child(5) { animation-delay: 1.8s; }
+.pr-layer i { width: 15px; height: 15px; border-radius: 3px; border: 1.5px solid var(--pr-muted-2); display: flex; align-items: center; justify-content: center; background: transparent; flex: none; animation: prBox 6.5s ease infinite; }
+.pr-layer i svg { width: 9px; height: 9px; display: block; }
+.pr-layer i svg path { stroke: #0B0C0E; stroke-dasharray: 14; stroke-dashoffset: 14; animation: prCk 6.5s ease infinite; }
+.pr-layers .pr-layer:nth-child(1), .pr-layers .pr-layer:nth-child(1) i, .pr-layers .pr-layer:nth-child(1) i path { animation-delay: 0s; }
+.pr-layers .pr-layer:nth-child(2), .pr-layers .pr-layer:nth-child(2) i, .pr-layers .pr-layer:nth-child(2) i path { animation-delay: .45s; }
+.pr-layers .pr-layer:nth-child(3), .pr-layers .pr-layer:nth-child(3) i, .pr-layers .pr-layer:nth-child(3) i path { animation-delay: .9s; }
+.pr-layers .pr-layer:nth-child(4), .pr-layers .pr-layer:nth-child(4) i, .pr-layers .pr-layer:nth-child(4) i path { animation-delay: 1.35s; }
+.pr-layers .pr-layer:nth-child(5), .pr-layers .pr-layer:nth-child(5) i, .pr-layers .pr-layer:nth-child(5) i path { animation-delay: 1.8s; }
 .pr-seal-row { display: flex; align-items: center; gap: 13px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--pr-line); }
 .pr-seal svg { width: 34px; height: 34px; display: block; }
 .pr-seal polygon { fill: none; stroke: var(--pr-accent); stroke-width: 2.2; stroke-linejoin: round; stroke-dasharray: 120; stroke-dashoffset: 120; animation: prDraw 6.5s ease-in-out infinite; }
@@ -260,8 +262,11 @@ pre, .nextra-code pre {
 @keyframes prDraw  { 0%,34% { stroke-dashoffset: 120; } 48%,86% { stroke-dashoffset: 0; } 95%,100% { stroke-dashoffset: 120; } }
 @keyframes prChip  { 0%,44% { opacity: 0; transform: translateY(4px); } 56%,86% { opacity: 1; transform: none; } 94%,100% { opacity: 0; } }
 @keyframes prPulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+@keyframes prBox   { 0%,18% { background: transparent; border-color: var(--pr-muted-2); } 26%,84% { background: var(--pr-accent); border-color: var(--pr-accent); } 93%,100% { background: transparent; border-color: var(--pr-muted-2); } }
+@keyframes prCk    { 0%,20% { stroke-dashoffset: 14; } 30%,84% { stroke-dashoffset: 0; } 93%,100% { stroke-dashoffset: 14; } }
 @media (prefers-reduced-motion: reduce) {
-  .pr-layer, .pr-seal polygon, .pr-verified, .pr-obj-head .pr-dot { animation: none !important; opacity: 1 !important; stroke-dashoffset: 0 !important; }
+  .pr-layer, .pr-seal polygon, .pr-verified, .pr-obj-head .pr-dot, .pr-layer i, .pr-layer i path { animation: none !important; opacity: 1 !important; stroke-dashoffset: 0 !important; }
+  .pr-layer i { background: var(--pr-accent) !important; border-color: var(--pr-accent) !important; }
 }
 
 @media (max-width: 860px) { .pr-show { grid-template-columns: 1fr; } }

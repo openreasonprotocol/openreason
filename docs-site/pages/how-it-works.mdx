@@ -1,0 +1,51 @@
+---
+title: How it works
+description: The mechanism — a simulatable object, five layers, fork, re-run, verify.
+theme:
+  sidebar: false
+  toc: false
+  breadcrumb: false
+---
+
+# How it works
+
+## 1. A document, in five layers
+
+An ORP document is structured so that each part of the reasoning is separately inspectable and auditable:
+
+| | Layer | Answers |
+|---|---|---|
+| **L1** | Data provenance | Where did the data come from — and what was excluded or cleaned? |
+| **L2** | Consequence simulation | What outcomes were modelled, under which assumptions? |
+| **L3** | Empathy mapping | Who is affected, and were minorities stress-tested? |
+| **L4** | Accountability | Who decided what, when, and why? |
+| **L5** | Lineage | What is this derived from, and what forks exist? |
+
+## 2. Fork and re-run
+
+Because assumptions are explicit, anyone can **fork** a document, change one assumption, and **re-run** it.
+Disagreement becomes *locatable* — you can point to the exact assumption or source where two parties diverge,
+instead of talking past each other.
+
+## 3. Verify (v0.3)
+
+A document can carry a cryptographic **attestation** — a detached Ed25519 signature over its canonical form.
+A reader (a person, or an agent on a rail) verifies it **offline**: recompute the hash, check the signature
+against a key it resolves itself, confirm the key hasn't expired. No need to trust, or even contact, the
+publisher.
+
+Verification yields a **trust tier** — `self_declared → attested → verified → full` — and a claimed tier
+never exceeds what the signatures prove. For data products, a **usage policy** then says what may be done,
+which a rail enforces at activation.
+
+<div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '1.5rem 0', fontFamily: 'var(--pr-mono)', fontSize: '13px' }}>
+  <span style={{ padding: '8px 14px', border: '1px solid var(--pr-line)', borderRadius: '4px', color: 'var(--pr-muted)' }}>hash ✓</span>
+  <span style={{ color: 'var(--pr-muted-2)' }}>→</span>
+  <span style={{ padding: '8px 14px', border: '1px solid var(--pr-line)', borderRadius: '4px', color: 'var(--pr-muted)' }}>signature ✓</span>
+  <span style={{ color: 'var(--pr-muted-2)' }}>→</span>
+  <span style={{ padding: '8px 14px', border: '1px solid var(--pr-accent)', borderRadius: '4px', color: 'var(--pr-accent)' }}>⬡ verified · attested</span>
+</div>
+
+---
+
+**Next:** [Specification →](/protocol/specification) · [Data products →](/data-products/overview) · [Why it matters →](/about)

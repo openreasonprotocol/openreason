@@ -1,7 +1,11 @@
 import { Rocket, FileText, Boxes, Wrench, BookOpen, Users, BarChart3 } from 'lucide-react'
 
 export default {
-  "index": "Home",
+  "index": { "type": "page", "display": "hidden" },
+  "what-it-is": { "type": "page", "title": "What it is" },
+  "how-it-works": { "type": "page", "title": "How it works" },
+  "docs": { "type": "page", "title": "Docs", "href": "/getting-started/quickstart" },
+  "about": { "type": "page", "title": "About" },
   "---getting-started": {
     "type": "separator",
     "title": (

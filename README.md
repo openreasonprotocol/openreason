@@ -6,6 +6,8 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![GitLab Pipeline](https://gitlab.com/publicreason/orp/badges/main/pipeline.svg)](https://gitlab.com/publicreason/orp/-/pipelines)
 
+**Repositories:** [GitHub](https://github.com/PublicReasonProject/openreason) (public mirror) · [GitLab](https://gitlab.com/publicreason/orp) (CI, merge requests) · **Site:** [openreasonprotocol.org](https://openreasonprotocol.org) · **Founded by** the [Public Reason Project](https://publicreasonproject.org)
+
 > A public protocol for transparent, simulatable reasoning in policy, AI, and democratic decision-making.
 
 ---
@@ -342,7 +344,7 @@ OpenReason is not owned by any individual, company, or government. It is steward
 
 ```bash
 # Clone the repository
-git clone git@gitlab.com:publicreason/orp.git
+git clone https://github.com/PublicReasonProject/openreason.git   # or git@gitlab.com:publicreason/orp.git
 cd orp
 
 # Create virtual environment

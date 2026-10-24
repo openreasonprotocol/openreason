@@ -30,7 +30,7 @@ import base64
 import hashlib
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 ATTESTATION_USE = "orp-attestation"  # the key-purpose constraint value (mirrors AdCP `adcp_use: provenance-claim`)
 SUPPORTED_ALG = "Ed25519"
@@ -73,7 +73,7 @@ def _canon_string(s: str) -> str:
         elif ch == "\r":
             out.append("\\r")
         elif code < 0x20:
-            out.append("\\u%04x" % code)
+            out.append(f"\\u{code:04x}")
         else:
             # Everything else (including non-ASCII) is emitted literally as UTF-8. Forward slash is NOT escaped.
             out.append(ch)
@@ -208,15 +208,15 @@ def b64u_encode(b: bytes) -> str:
 class SignatureVerdict:
     kid: str
     valid: bool
-    role: Optional[str] = None
+    role: str | None = None
     errors: list[str] = field(default_factory=list)
 
 
 @dataclass
 class AttestationResult:
     valid: bool
-    tier: Optional[str] = None
-    computed_hash: Optional[str] = None
+    tier: str | None = None
+    computed_hash: str | None = None
     errors: list[str] = field(default_factory=list)
     signatures: list[SignatureVerdict] = field(default_factory=list)
 
@@ -248,7 +248,7 @@ def _parse_iso(ts: str) -> datetime:
 def verify_attestation(
     document: dict[str, Any],
     resolve_key: ResolveKey,
-    now: Optional[datetime] = None,
+    now: datetime | None = None,
     skew_seconds: int = DEFAULT_SKEW_SECONDS,
 ) -> AttestationResult:
     """Verify a v0.3 `attestation` block against the document it attests (RFC §2, change C1).

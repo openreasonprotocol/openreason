@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 # RFC §5.3 — normative purpose taxonomy. Profiles MAY restrict but MUST NOT extend; extension goes via the spec.
 PURPOSES = frozenset(
@@ -43,7 +43,7 @@ KNOWN_SCOPE_KEYS = frozenset({"geo", "media", "time"})
 @dataclass
 class PolicyDecision:
     decision: str  # "allow" | "deny"
-    permission_id: Optional[str] = None
+    permission_id: str | None = None
     duties: list[str] = field(default_factory=list)
     reason: str = ""
 
@@ -98,7 +98,7 @@ def _in_scope(scope: dict[str, Any], context: dict[str, Any]) -> tuple[bool, str
     return True, ""
 
 
-def _assignee_matches(assignee: Any, who: Optional[str]) -> bool:
+def _assignee_matches(assignee: Any, who: str | None) -> bool:
     if assignee in (None, "any"):
         return True
     ids = assignee if isinstance(assignee, list) else [assignee]
@@ -232,7 +232,7 @@ def is_wellformed_usage_record(record: dict[str, Any]) -> tuple[bool, list[str]]
 def verify_usage_record(
     record: dict[str, Any],
     resolve_key: Callable[[str], Any],
-    now: Optional[datetime] = None,
+    now: datetime | None = None,
 ) -> dict[str, Any]:
     """Verify a usage record's signatures with the R1 attestation machinery. The signing input is the
     canonical form of the record minus its `signatures` array (same construction as attestation)."""

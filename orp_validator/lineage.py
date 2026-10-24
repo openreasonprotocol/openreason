@@ -17,7 +17,7 @@ Pure + offline. Fetching an ancestor document is the caller's job (`fetch(parent
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 from .usage import evaluate_policy
 
@@ -29,7 +29,7 @@ DEFAULT_MAX_DEPTH = 32
 class LineageResult:
     decision: str  # "allow" | "deny"
     reason: str = ""
-    denied_by: Optional[str] = None
+    denied_by: str | None = None
     chain: list[str] = field(default_factory=list)  # node ids visited, DFS order
     truncated_at_verified: bool = False
 
@@ -47,7 +47,7 @@ class LineageResult:
         }
 
 
-def _claimed_tier(doc: dict[str, Any]) -> Optional[str]:
+def _claimed_tier(doc: dict[str, Any]) -> str | None:
     att = doc.get("attestation")
     return att.get("tier") if isinstance(att, dict) else None
 
@@ -62,8 +62,8 @@ def _derivations(doc: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _policy_for_node(
-    node: dict[str, Any], inbound_edge: Optional[dict[str, Any]]
-) -> tuple[Optional[dict], str]:
+    node: dict[str, Any], inbound_edge: dict[str, Any] | None
+) -> tuple[dict | None, str]:
     """Which policy enforces at this node: its usage_policy, or — when the inbound edge legitimately
     relaxed it under a licensed grant — its derivative_policy (RFC §5.4)."""
     if (
@@ -97,7 +97,7 @@ def _relaxation_is_legitimate(ancestor: dict[str, Any], edge: dict[str, Any]) ->
 def resolve_effective_decision(
     doc: dict[str, Any],
     context: dict[str, Any],
-    fetch: Callable[[str], Optional[dict[str, Any]]],
+    fetch: Callable[[str], dict[str, Any] | None],
     max_depth: int = DEFAULT_MAX_DEPTH,
 ) -> LineageResult:
     """Evaluate `context` against `doc` AND its entire derivation ancestry (DAG intersection, RFC §6.3)."""
@@ -106,8 +106,8 @@ def resolve_effective_decision(
     state = {"truncated": False}
 
     def walk(
-        node: dict[str, Any], inbound_edge: Optional[dict[str, Any]], depth: int
-    ) -> Optional[LineageResult]:
+        node: dict[str, Any], inbound_edge: dict[str, Any] | None, depth: int
+    ) -> LineageResult | None:
         nid = _node_id(node, f"node{len(visited)}")
         if nid in seen:
             return None  # cycle / diamond: already constrained on another path

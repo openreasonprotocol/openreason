@@ -1,11 +1,13 @@
 """Core validation logic for ORP documents."""
 
+from __future__ import annotations
+
 import json
 import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable
 
 if sys.version_info >= (3, 10):
     from importlib.resources import files
@@ -105,10 +107,8 @@ class ValidationResult:
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     layers_present: dict[str, bool] = field(default_factory=dict)
-    profile: Optional[str] = (
-        None  # v0.3: the ORP profile validated against (ORP-Core/Policy/Ads/AI)
-    )
-    trust_tier: Optional["TrustTier"] = (
+    profile: str | None = None  # v0.3: the ORP profile validated against (ORP-Core/Policy/Ads/AI)
+    trust_tier: TrustTier | None = (
         None  # v0.3: trust tier (RFC C7); None for v0.1/v0.2-only callers
     )
 
@@ -132,7 +132,7 @@ class ValidationResult:
 class ORPValidator:
     """Validator for OpenReason Protocol documents."""
 
-    def __init__(self, schema_path: Optional[Path] = None, version: str = "0.1") -> None:
+    def __init__(self, schema_path: Path | None = None, version: str = "0.1") -> None:
         """Initialize validator with JSON Schema.
 
         Args:
@@ -179,10 +179,10 @@ class ORPValidator:
 
     def validate(
         self,
-        document: Union[str, Path, dict[str, Any]],
-        profile: Optional[str] = None,
-        resolve_key: Optional[Callable[[str], Any]] = None,
-        accredited_verifiers: Optional[set] = None,
+        document: str | Path | dict[str, Any],
+        profile: str | None = None,
+        resolve_key: Callable[[str], Any] | None = None,
+        accredited_verifiers: set | None = None,
     ) -> ValidationResult:
         """Validate an ORP document.
 
@@ -302,9 +302,9 @@ class ORPValidator:
     def _validate_v03(
         self,
         doc_data: dict[str, Any],
-        profile: Optional[str],
-        resolve_key: Optional[Callable[[str], Any]],
-        accredited_verifiers: Optional[set] = None,
+        profile: str | None,
+        resolve_key: Callable[[str], Any] | None,
+        accredited_verifiers: set | None = None,
     ) -> ValidationResult:
         self.version = "0.3"
         if "extensions" in doc_data:
@@ -354,8 +354,8 @@ class ORPValidator:
         self,
         doc_data: dict[str, Any],
         schema_valid: bool,
-        resolve_key: Optional[Callable[[str], Any]],
-        accredited_verifiers: Optional[set] = None,
+        resolve_key: Callable[[str], Any] | None,
+        accredited_verifiers: set | None = None,
     ) -> tuple[TrustTier, list[str]]:
         """Determine the v0.3 trust tier. Starts at self_declared; a verified attestation signature
         raises it to attested; a signature whose role is `verifier` AND whose `kid` is on the accredited
@@ -634,10 +634,10 @@ class ORPValidator:
 
 
 def validate(
-    document: Union[str, Path, dict[str, Any]],
-    profile: Optional[str] = None,
-    resolve_key: Optional[Callable[[str], Any]] = None,
-    accredited_verifiers: Optional[set] = None,
+    document: str | Path | dict[str, Any],
+    profile: str | None = None,
+    resolve_key: Callable[[str], Any] | None = None,
+    accredited_verifiers: set | None = None,
 ) -> ValidationResult:
     """Validate an ORP document.
 

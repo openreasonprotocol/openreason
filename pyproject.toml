@@ -111,7 +111,11 @@ select = [
     "C4",  # flake8-comprehensions
     "UP",  # pyupgrade
 ]
-ignore = []
+# E501 (line-too-long) is owned by the Black formatter: Black wraps code to line-length 100 but
+# intentionally does not reflow comments, docstrings, or string literals. Enabling E501 on top of a
+# formatter is redundant and only nags about prose the formatter can't split (ruff's own docs recommend
+# disabling it when a formatter is in use). Black still guarantees code stays within 100.
+ignore = ["E501"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["orp_validator"]

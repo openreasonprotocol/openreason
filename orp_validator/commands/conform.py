@@ -4,9 +4,10 @@ An implementation claims conformance to the protocol by passing this suite. Exit
 any failure, so it can gate CI or a release.
 """
 
+from __future__ import annotations
+
 import json as _json
 import sys
-from typing import Optional
 
 import click
 
@@ -21,7 +22,7 @@ from orp_validator import conformance
     default=None,
     help="Filter the schema suite to one profile (policy + lineage suites always run)",
 )
-def conform(output_json: bool, profile: Optional[str]) -> None:
+def conform(output_json: bool, profile: str | None) -> None:
     """Run the ORP v0.3 conformance suite (schema + usage-policy + lineage fixtures)."""
     report = conformance.run(profile=profile)
 

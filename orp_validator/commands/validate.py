@@ -1,9 +1,11 @@
 """Validate command for ORP CLI."""
 
+from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import click
 
@@ -30,7 +32,7 @@ from orp_validator import validate as validate_document
     default=None,
     help="v0.3 only: validate against a specific profile (default: the document's own `profile` field, else ORP-Core)",
 )
-def validate(document: Path, output_json: bool, verbose: bool, profile: Optional[str]) -> None:
+def validate(document: Path, output_json: bool, verbose: bool, profile: str | None) -> None:
     """Validate an OpenReason Protocol (ORP) document.
 
     DOCUMENT: Path to the ORP document to validate

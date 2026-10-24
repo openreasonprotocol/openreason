@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 if sys.version_info >= (3, 10):
     from importlib.resources import files
@@ -100,7 +100,7 @@ def _run_lineage_cases() -> list[dict[str, Any]]:
     return out
 
 
-def run(profile: Optional[str] = None) -> dict[str, Any]:
+def run(profile: str | None = None) -> dict[str, Any]:
     """Run the full conformance suite. `profile` filters the schema cases to one profile (policy/lineage
     suites always run — they are profile-independent)."""
     validator = ORPValidator()
@@ -126,5 +126,5 @@ def run(profile: Optional[str] = None) -> dict[str, Any]:
 
 def _case_profile(
     _name: str,
-) -> Optional[str]:  # placeholder hook for future per-profile filtering by name
+) -> str | None:  # placeholder hook for future per-profile filtering by name
     return None

@@ -20,6 +20,9 @@
   --pr-accent-dim:#C9431C;
   --pr-bone:      #F5F4F0;
 
+  --pr-maxw: 1320px;   /* shared content width — nav, landing, docs all align to this */
+  --pr-pad: 32px;
+
   --pr-display: 'Funnel Display', 'Funnel Sans', -apple-system, system-ui, sans-serif;
   --pr-sans:    'Funnel Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --pr-mono:    'IBM Plex Mono', 'Menlo', 'Cascadia Code', monospace;
@@ -52,7 +55,15 @@ h1, h2, h3, h4, .pr-display { font-family: var(--pr-display); letter-spacing: -0
 /* ─── Nextra chrome skin ─────────────────────────────────────────────────── */
 .nextra-nav-container,
 .nextra-nav-container-blur { background: color-mix(in srgb, var(--pr-bg) 86%, transparent) !important; }
-.nextra-nav-container nav { border-bottom: 1px solid var(--pr-line); }
+.nextra-nav-container nav {
+  border-bottom: 1px solid var(--pr-line);
+  max-width: var(--pr-maxw) !important;
+  margin-inline: auto !important;
+  padding-inline: var(--pr-pad) !important;
+}
+/* Align the docs body to the same width/grid as the header */
+.nextra-container, main > .nextra-container { max-width: var(--pr-maxw) !important; margin-inline: auto !important; }
+
 aside.nextra-sidebar-container,
 .nextra-sidebar-container { background: var(--pr-bg) !important; border-right: 1px solid var(--pr-line); }
 .nextra-toc { color: var(--pr-muted); }
@@ -121,19 +132,19 @@ pre, .nextra-code pre {
    LANDING — full-bleed industrial grid
    ═════════════════════════════════════════════════════════════════════════ */
 .pr-landing {
-  --cell: 64px;
-  margin: -1.5rem calc(50% - 50vw) 0;   /* break out of the prose column */
+  --cell: 90px;
+  margin: -1.5rem calc(50% - 50vw) -5rem;   /* full-bleed; pull footer up so the grid reaches it */
+  padding-bottom: 5rem;                      /* ...and extend the grid down into that space */
   width: 100vw;
   max-width: 100vw;
   background:
     linear-gradient(to right, var(--pr-line) 1px, transparent 1px) 0 0 / var(--cell) var(--cell),
     linear-gradient(to bottom, var(--pr-line) 1px, transparent 1px) 0 0 / var(--cell) var(--cell),
     var(--pr-bg);
-  background-blend-mode: normal;
   color: var(--pr-text);
   border-top: 1px solid var(--pr-line);
 }
-.pr-landing .pr-wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+.pr-landing .pr-wrap { max-width: var(--pr-maxw); margin: 0 auto; padding: 0 var(--pr-pad); }
 
 /* faint grid: dim the lines */
 .pr-landing { background-color: var(--pr-bg); }

@@ -4,14 +4,10 @@ const config: DocsThemeConfig = {
   // ─── Logo ─────────────────────────────────────────────────────────────────
   logo: (
     <div style={{ display: 'flex', alignItems: 'center', gap: '11px' }}>
-      <svg width="26" height="26" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <polygon points="16,3 27,9.5 27,22.5 16,29 5,22.5 5,9.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-        <circle cx="16" cy="16" r="3" fill="#FF5D2A" />
+      <svg width="27" height="27" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <polygon points="16,3 27,9.5 27,22.5 16,29 5,22.5 5,9.5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinejoin="round" strokeLinecap="round" />
       </svg>
-      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.15' }}>
-        <span style={{ fontFamily: "'Funnel Display', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.02em' }}>PUBLIC REASON</span>
-        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--pr-muted-2)' }}>OpenReason Protocol</span>
-      </div>
+      <span style={{ fontFamily: "'Funnel Display', sans-serif", fontWeight: 700, fontSize: '16px', letterSpacing: '0.005em' }}>Public Reason Project</span>
     </div>
   ),
   logoLink: '/',

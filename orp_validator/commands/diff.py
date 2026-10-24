@@ -81,9 +81,10 @@ def _load_document(path: Path) -> dict[str, Any]:
     """Load document from file."""
     with open(path, encoding="utf-8") as f:
         if path.suffix in [".yaml", ".yml"]:
-            return yaml.safe_load(f)  # type: ignore[no-any-return]
+            loaded: dict[str, Any] = yaml.safe_load(f)
         else:
-            return json.load(f)  # type: ignore[no-any-return]
+            loaded = json.load(f)
+        return loaded
 
 
 def _is_fork(doc1: dict[str, Any], doc2: dict[str, Any]) -> bool:

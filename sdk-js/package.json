@@ -19,7 +19,7 @@
   },
   "keywords": ["openreason", "orp", "attestation", "provenance", "ed25519", "data-governance", "verifiable", "reasoning"],
   "homepage": "https://openreasonprotocol.org",
-  "repository": { "type": "git", "url": "https://github.com/PublicReason/orp.git", "directory": "sdk-js" },
+  "repository": { "type": "git", "url": "https://github.com/PublicReasonProject/openreason.git", "directory": "sdk-js" },
   "dependencies": {
     "@noble/ed25519": "^2.1.0",
     "ajv": "^8.17.1",

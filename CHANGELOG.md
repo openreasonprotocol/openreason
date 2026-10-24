@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-25
+
+v0.3 protocol spine complete: attestation, L1 extension fields, usage policy + usage records, lineage, profiles + trust tiers, conformance suite; Apache-2.0 relicense.
+
 ### Changed
 - **License: MIT → Apache-2.0** (2026-10-24). Spec + code now under Apache-2.0 (express patent grant +
   standards-body alignment for a protocol others implement). `LICENSE`, `NOTICE`, `pyproject.toml`, README
@@ -539,6 +543,7 @@ Code changes follow conventional commits and semantic versioning:
 
 ---
 
-[Unreleased]: https://gitlab.com/publicreason/orp/-/compare/v0.1.0...main
+[Unreleased]: https://gitlab.com/publicreason/orp/-/compare/v0.5.0...main
+[0.5.0]: https://gitlab.com/publicreason/orp/-/tags/v0.5.0
 [0.1.0]: https://gitlab.com/publicreason/orp/-/tags/v0.1.0
 [0.0.0]: https://gitlab.com/publicreason/orp/-/commits/fefd565

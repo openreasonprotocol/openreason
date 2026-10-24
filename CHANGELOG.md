@@ -9,6 +9,95 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **License: MIT → Apache-2.0** (2026-10-24). Spec + code now under Apache-2.0 (express patent grant +
+  standards-body alignment for a protocol others implement). `LICENSE`, `NOTICE`, `pyproject.toml`, README
+  badge, `CLAUDE.md` updated. CC-BY-4.0 dual-licensing of spec prose remains an open refinement. See
+  `docs/governance/AGENT-RAIL-AND-USE-CASE-TREE.md`.
+
+### Added — v0.3 R1: cryptographic attestation (RFC change C1), AdCP #4441-aligned
+- `orp_validator/attestation.py`: pure, offline verifier — RFC 8785 JCS canonicalisation, sha256 content
+  hash, detached Ed25519 signature verification, key-purpose constraint (`use: orp-attestation`),
+  short-lived-key expiry with skew, `did:key`/JWK/raw key loading. Key *resolution* is the caller's job
+  (portable; no network in core). Crypto is an optional `[attestation]` extra; degrades to a clear
+  `crypto_unavailable` error rather than crashing.
+- `orp_validator/schemas/attestation.schema.json`: shape schema for the `attestation` block (incl. v0.3 trust tiers).
+- `tests/test_attestation.py`: 15 tests — tampered/unknown-key/wrong-use/expired/bad-sig all fail; good offline
+  verify + did:key round-trip pass. Full suite 84 passed.
+- This is the keystone that makes an ORP document verifiable by a rail (Railu/Yumipop) with no new crypto.
+
+### Added — v0.3 R6/R7: profiles + trust tiers
+- **Profiles (R6):** `schemas/orp-v0.3-core.schema.json` (domain-neutral; header + L1 + optional attestation/L2-L5;
+  reuses the stable v0.2 layer definitions by `$ref` so there is one source of truth) and three overlays that
+  `allOf`-extend it — `orp-v0.3-policy` (L2+L3 required — the Danish-legislation profile), `orp-v0.3-ads`
+  (reach+freshness per dataset), `orp-v0.3-ai` (rights_holders+optout_signals_honoured per dataset). Validator builds
+  a profile validator with an in-memory `RefResolver` (no network). `orp validate --profile ORP-Policy|ORP-Ads|ORP-AI`;
+  profile auto-detected from the document's `profile` field, default ORP-Core.
+- **Trust tiers (R7):** `TrustTier` enum (`self_declared`/`attested`/`verified`/`full`/`posthoc`) replacing compliance
+  levels as the v0.3 vocabulary. A claimed tier never exceeds what signatures prove: without a key resolver a v0.3 doc
+  caps at `self_declared`; a verified owner signature → `attested`; an accredited `verifier`-role signature →
+  `verified` (+ L3 → `full`). Surfaced in CLI output and `ValidationResult.to_dict()` (v0.3 keys only). 13 tests.
+- Package bumped to `0.5.0`; `SUPPORTED_ORP_VERSIONS` now includes `0.3`. v0.1/v0.2 paths untouched; full suite 97 passed.
+
+### Added — v0.3 R3/R5: usage policy + usage records (the rail enforce/prove pair)
+- **usage_policy (R3, Layer 6):** `orp_validator/usage.py::evaluate_policy` — the pure reference ODRL-profile
+  evaluator (RFC §5.5): deny on any matching prohibition, deny if no permission matches, unknown purpose or unknown
+  scope key fails closed; handles assignee (`any`/list), geo/media/time scope, derivation ordering (none<internal<licensed),
+  duties, and policy expiry. Normative purpose taxonomy as a constant. `schemas/usage-policy.schema.json` wired into
+  ORP-Core as an optional Layer 6. 11 conformance fixtures in `tests/fixtures/usage_policy_cases.json`.
+- **usage_records (R5, Layer 4):** `usage_record_from_receipt` makes the RFC §7.2 receipt-equivalence explicit — a rail's
+  signed clearing receipt (dataset_hash + policy_hash + rail signature) maps to a usage record by construction (the
+  concrete Railu ↔ ORP integration point); `is_wellformed_usage_record` + `verify_usage_record` (signatures checked with
+  the R1 attestation machinery). `schemas/usage-record.schema.json`. 5 unit tests. Full suite 113 passed.
+
+### Added — v0.3 R4/R2: lineage (derivation graph) + Layer-1 legal/identifier fields
+- **lineage (R4, Layer 5):** `orp_validator/lineage.py` — `resolve_effective_decision` walks a derivative's
+  ancestry and allows an activation only if **every** ancestor policy allows it (intersection, RFC §6.3), stops at
+  the first `verified`+ ancestor (trust short-circuit), honours a `relaxed` edge by enforcing the ancestor's
+  `derivative_policy` when a licensed grant backs it, and fails closed on an unresolved ancestor or a cycle.
+  `schemas/orp-v0.3-lineage.schema.json` wired into Core (a `relaxed` edge requires `relaxation_basis`). 7 tests.
+- **Layer-1 fields (R2, C2+C8):** `schemas/orp-v0.3-l1-ext.schema.json` — legal_basis, consent_scope,
+  sensitive_categories, rights_holders, optout_signals_honoured, data_subject_contact, and access/freshness/reach —
+  `allOf`-merged onto each Core L1 dataset entry. Additive: existing v0.2-style datasets still validate. 6 tests.
+- Full suite 126 passed. v0.1/v0.2 paths untouched.
+
+### Added — v0.3 R8: conformance suite
+- `orp_validator/conformance.py` runner + `orp conform` CLI (exit 0/1) + bundled fixtures under
+  `schemas/conformance/` — 26 cases across three families: per-profile schema (positive/negative for
+  Core/Policy/Ads/AI), usage-policy evaluation (RFC §5.5), and lineage inheritance (RFC §6.3). An implementation
+  claims conformance by passing `orp conform`. `tests/test_conformance.py` + a GitLab CI `conformance:v0.3` job
+  enforce it; `cryptography` added to the `[dev]` extra so the signature/tier tests run in CI instead of skipping.
+  Full suite 128 passed; `orp conform` → 26/26 CONFORMANT.
+
+### Added — v0.3 enforcement completions (R4 + R7 hardening) + worked example
+- **Multi-parent lineage DAG (R4):** `lineage.resolve_effective_decision` rewritten as a recursive DAG walk —
+  a derivative with several `derivations` parents is allowed only if every branch's ancestry allows it; cycle +
+  depth guards; trust short-circuit and licensed-relaxation preserved. New multi-parent fixtures + tests.
+- **Accredited-verifier key list (R7):** the `verified`/`full` tier now requires the `verifier`-role signature's
+  `kid` to be on an accredited list (`schemas/accredited_verifiers.json`, empty by default = fail safe) AND the
+  verifier not to be the dataset's own owner ("a verifier cannot verify its own datasets", RFC §9.1).
+  `validate(..., accredited_verifiers=...)` overrides the bundled list.
+- **Worked v0.3 example:** `examples/data_product_ctv_segment.v0.3.yaml` — an ORP-Ads CTV-segment passport with
+  reach/freshness, legal basis, an enforceable usage_policy (ads allowed, model_training/resale prohibited), and a
+  derivation edge. Validated in CI (`validate:examples`). Full suite 132 passed; `orp conform` → 27/27 CONFORMANT.
+
+### Added — v0.3 docs (R9/R10, repo)
+- `docs/specs/ORP_V0.3_SPEC.md` — consolidated **as-built normative spec** for v0.3 (attestation, Layer-1
+  fields, usage policy, lineage, usage records, profiles, trust tiers, conformance, backward-compat).
+- `docs/specs/MIGRATION_V0.2_TO_V0.3.md` — v0.2→v0.3 **migration guide** (one-field minimal migration;
+  optional data-product adoption path).
+- `CLAUDE.md` refreshed from the stale "v0.1 draft" status to v0.3. *Deferred to a later larger update:
+  the public Nextra docs site (`docs-site/`) and a v0.3 `orp new` template.*
+
+### v0.3 status — COMPLETE for the Railu-facing spine
+R1 attestation · R2 Layer-1 fields · R3 usage_policy · R4 lineage · R5 usage_records · R6 profiles · R7 trust tiers ·
+R8 conformance — all done. Remaining are non-blocking follow-ups (see below) and the separate Danish flagship pack.
+
+### Planned (non-blocking follow-ups)
+- Deployed TS CF worker reporting profile+tier (deploy surface, owner-gated); accredited-verifier key list;
+  `usage_ledger` pointer schema; multi-parent lineage DAG; R9 docs "Data products" section; R10 migration guide.
+- The Danish environmental-law `policy.dk.v1` flagship pack (separate workstream).
+
 ### Planned (Phase 2)
 - GitLab CI/CD integration examples
 - VS Code extension

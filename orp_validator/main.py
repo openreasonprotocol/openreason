@@ -3,7 +3,7 @@
 import click
 
 from orp_validator import __version__
-from orp_validator.commands import check, diff, new, validate
+from orp_validator.commands import check, conform, diff, new, validate
 
 
 @click.group()
@@ -19,6 +19,7 @@ def cli() -> None:
       orp validate <file>      Validate an existing document
       orp check <file>         Quick compliance level check
       orp diff <file1> <file2> Compare two documents
+      orp conform              Run the v0.3 conformance suite
 
     For help on a specific command:
       orp <command> --help
@@ -31,6 +32,7 @@ cli.add_command(new.new)
 cli.add_command(validate.validate)
 cli.add_command(check.check)
 cli.add_command(diff.diff)
+cli.add_command(conform.conform)
 
 
 def main() -> None:

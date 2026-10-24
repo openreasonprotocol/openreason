@@ -3,7 +3,7 @@
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fdocs.publicreasonproject.org&label=docs)](https://docs.publicreasonproject.org)
 [![PyPI version](https://badge.fury.io/py/orp-validator.svg)](https://badge.fury.io/py/orp-validator)
 [![Python Support](https://img.shields.io/pypi/pyversions/orp-validator.svg)](https://pypi.org/project/orp-validator/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![GitLab Pipeline](https://gitlab.com/publicreason/orp/badges/main/pipeline.svg)](https://gitlab.com/publicreason/orp/-/pipelines)
 
 > A public protocol for transparent, simulatable reasoning in policy, AI, and democratic decision-making.

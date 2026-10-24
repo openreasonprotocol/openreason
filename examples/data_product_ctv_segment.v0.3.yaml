@@ -1,0 +1,87 @@
+# ORP v0.3 — ORP-Ads data-product passport (worked example).
+# A CTV audience segment described as a tradeable data product: reach + freshness (segment vocabulary),
+# legal provenance (C2), a usage_policy a rail can enforce (C3/§5.5), and a derivation edge (C4).
+# Validate: orp validate examples/data_product_ctv_segment.v0.3.yaml --profile ORP-Ads
+# Trust tier here is self_declared (no signature attached); add an `attestation` block + an accredited
+# verifier to reach attested/verified.
+orp_version: "0.3"
+profile: ORP-Ads
+document_id: "https://segments.example.org/dk-ctv-sports-households"
+title: "DK CTV sports-interested households"
+domain: ads
+authors:
+  - name: "Segments Team"
+    role: author
+    affiliation: "Example Data Co"
+created: "2026-10-24"
+last_modified: "2026-10-24"
+status: draft
+summary: >
+  A Danish connected-TV audience segment of households with observed sports-content affinity, offered as
+  a tradeable data product with an enforceable usage policy and stated legal basis. Provided for
+  advertising targeting and measurement only; model training and resale are prohibited.
+
+l1_data_provenance:
+  - dataset_id: "https://segments.example.org/dk-ctv-sports-households"
+    name: "DK CTV sports-interested households"
+    source: "First-party CTV viewership logs, consented panel"
+    collection_method: "Consented SDK telemetry from partner CTV apps"
+    legal_basis: consent
+    consent_scope:
+      purposes: [advertising_targeting, measurement]
+      collected_via: "In-app consent prompt (TCF v2.2)"
+      withdrawal_mechanism: "https://example.org/privacy/opt-out"
+    sensitive_categories: []
+    data_subject_contact: "dpo@example.org"
+    access:
+      visibility: restricted
+      endpoints:
+        - kind: sample
+          url: "https://segments.example.org/dk-ctv-sports-households/sample"
+          auth: "bearer"
+        - kind: activation
+          url: "https://segments.example.org/dk-ctv-sports-households/activate"
+          auth: "bearer"
+      sample_hash: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    freshness:
+      collected_to: "2026-10-20"
+      refreshed_at: "2026-10-23"
+      decay_days: 30
+    reach:
+      estimate: 1420000
+      unit: devices
+      confidence: medium
+      as_of: "2026-10-23"
+
+usage_policy:
+  policy_id: "https://segments.example.org/dk-ctv-sports-households/policy"
+  permissions:
+    - permission_id: "ads-dk-ctv"
+      purpose: advertising_targeting
+      assignee: any
+      scope:
+        geo: ["DK"]
+        media: ["ctv"]
+      derivation: internal
+      duties: [report_usage, delete_on_expiry]
+    - permission_id: "measure-dk"
+      purpose: measurement
+      assignee: any
+      scope:
+        geo: ["DK"]
+  prohibitions:
+    - purpose: model_training
+    - purpose: resale
+  expiry: "2027-10-24T00:00:00Z"
+  revocable: true
+  governing_law: "DK"
+
+lineage:
+  this_document:
+    forking_permitted: false
+    derivation_permitted: internal
+  derivations:
+    - parent_id: "https://segments.example.org/dk-ctv-all-households"
+      transformation: subset
+      transformation_detail: "Filtered the all-households base to sports-affinity via content-category model."
+      inherits: full

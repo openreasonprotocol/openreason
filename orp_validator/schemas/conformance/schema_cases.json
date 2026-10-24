@@ -1,0 +1,131 @@
+{
+  "description": "ORP v0.3 per-profile schema conformance fixtures (RFC §9.2). Positive cases MUST validate; negative cases MUST NOT.",
+  "_header": "Each doc inlines the required v0.3 header; profiles add their own requirements.",
+  "cases": [
+    {
+      "name": "core_minimal_valid",
+      "profile": "ORP-Core",
+      "expect_valid": true,
+      "doc": {
+        "orp_version": "0.3", "document_id": "c:1", "title": "Core", "domain": "data",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "Minimal ORP-Core v0.3 document used as a positive conformance fixture.",
+        "l1_data_provenance": [{"dataset_id": "d1", "name": "DS", "source": "https://ex.org"}]
+      }
+    },
+    {
+      "name": "core_missing_l1_invalid",
+      "profile": "ORP-Core",
+      "expect_valid": false,
+      "error_contains": "l1_data_provenance",
+      "doc": {
+        "orp_version": "0.3", "document_id": "c:2", "title": "Core", "domain": "data",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "ORP-Core document missing the required L1 data provenance layer."
+      }
+    },
+    {
+      "name": "policy_valid",
+      "profile": "ORP-Policy",
+      "expect_valid": true,
+      "doc": {
+        "orp_version": "0.3", "profile": "ORP-Policy", "document_id": "p:1", "title": "Policy", "domain": "policy",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "An ORP-Policy document carrying L1, L2 and L3 as the profile requires.",
+        "l1_data_provenance": [{"dataset_id": "d1", "name": "DS", "source": "https://ex.org"}],
+        "l2_consequence_simulation": {"affected_population": {"description": "all", "size": 100}},
+        "l3_empathy_mapping": {"stakeholder_map": {"g": {"benefits": "x"}}}
+      }
+    },
+    {
+      "name": "policy_missing_l3_invalid",
+      "profile": "ORP-Policy",
+      "expect_valid": false,
+      "error_contains": "l3_empathy_mapping",
+      "doc": {
+        "orp_version": "0.3", "profile": "ORP-Policy", "document_id": "p:2", "title": "Policy", "domain": "policy",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "An ORP-Policy document missing L3, which the profile requires.",
+        "l1_data_provenance": [{"dataset_id": "d1", "name": "DS", "source": "https://ex.org"}],
+        "l2_consequence_simulation": {"affected_population": {"description": "all", "size": 100}}
+      }
+    },
+    {
+      "name": "ads_valid",
+      "profile": "ORP-Ads",
+      "expect_valid": true,
+      "doc": {
+        "orp_version": "0.3", "profile": "ORP-Ads", "document_id": "a:1", "title": "Segment", "domain": "ads",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "An ORP-Ads segment carrying reach and freshness as the profile requires.",
+        "l1_data_provenance": [{
+          "dataset_id": "seg1", "name": "Segment", "source": "https://ex.org",
+          "reach": {"estimate": 1000000, "unit": "devices"}, "freshness": {"refreshed_at": "2026-10-20"}
+        }]
+      }
+    },
+    {
+      "name": "ads_missing_reach_invalid",
+      "profile": "ORP-Ads",
+      "expect_valid": false,
+      "error_contains": "reach",
+      "doc": {
+        "orp_version": "0.3", "profile": "ORP-Ads", "document_id": "a:2", "title": "Segment", "domain": "ads",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "An ORP-Ads segment missing the required reach field.",
+        "l1_data_provenance": [{"dataset_id": "seg2", "name": "Segment", "source": "https://ex.org", "freshness": {"refreshed_at": "2026-10-20"}}]
+      }
+    },
+    {
+      "name": "ai_valid",
+      "profile": "ORP-AI",
+      "expect_valid": true,
+      "doc": {
+        "orp_version": "0.3", "profile": "ORP-AI", "document_id": "ai:1", "title": "Corpus", "domain": "ai-training",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "An ORP-AI corpus carrying rights_holders and optout_signals_honoured.",
+        "l1_data_provenance": [{
+          "dataset_id": "corp1", "name": "Corpus", "source": "https://ex.org",
+          "rights_holders": [{"name": "Author X", "role": "author", "licence": "CC-BY-4.0"}],
+          "optout_signals_honoured": {"robots_txt": true}
+        }]
+      }
+    },
+    {
+      "name": "ai_missing_optout_invalid",
+      "profile": "ORP-AI",
+      "expect_valid": false,
+      "error_contains": "optout_signals_honoured",
+      "doc": {
+        "orp_version": "0.3", "profile": "ORP-AI", "document_id": "ai:2", "title": "Corpus", "domain": "ai-training",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "An ORP-AI corpus missing optout_signals_honoured.",
+        "l1_data_provenance": [{"dataset_id": "corp2", "name": "Corpus", "source": "https://ex.org", "rights_holders": [{"name": "X", "role": "author"}]}]
+      }
+    },
+    {
+      "name": "bad_legal_basis_invalid",
+      "profile": "ORP-Core",
+      "expect_valid": false,
+      "doc": {
+        "orp_version": "0.3", "document_id": "c:3", "title": "Core", "domain": "data",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "A document with an out-of-enum legal_basis, which must fail validation.",
+        "l1_data_provenance": [{"dataset_id": "d1", "name": "DS", "source": "https://ex.org", "legal_basis": "vibes"}]
+      }
+    },
+    {
+      "name": "lineage_relaxed_requires_basis_invalid",
+      "profile": "ORP-Core",
+      "expect_valid": false,
+      "error_contains": "relaxation_basis",
+      "doc": {
+        "orp_version": "0.3", "document_id": "c:4", "title": "Core", "domain": "data",
+        "authors": [{"name": "A", "role": "author"}], "created": "2026-10-24", "last_modified": "2026-10-24",
+        "status": "draft", "summary": "A lineage with a relaxed edge missing relaxation_basis, which must fail.",
+        "l1_data_provenance": [{"dataset_id": "d1", "name": "DS", "source": "https://ex.org"}],
+        "lineage": {"derivations": [{"parent_id": "p", "transformation": "subset", "inherits": "relaxed"}]}
+      }
+    }
+  ]
+}

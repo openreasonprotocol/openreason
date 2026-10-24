@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/v0.3/l1-ext.schema.json",
+  "title": "ORP v0.3 Layer 1 extension — legal provenance (C2) + identifier/access/freshness/reach (C8)",
+  "description": "Additive v0.3 fields on each L1 dataset entry. All optional in ORP-Core (RFC: 'new required fields in profiles only'); the Ads/AI profiles require their relevant subsets. Shape only.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "legal_basis": {
+      "type": "string",
+      "enum": ["consent", "contract", "legitimate_interest", "public_task", "public_source", "licence", "other"]
+    },
+    "legal_basis_detail": { "type": "string", "description": "Required (by convention) if legal_basis == other." },
+    "consent_scope": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "purposes": { "type": "array", "items": { "type": "string" } },
+        "collected_via": { "type": "string" },
+        "withdrawal_mechanism": { "type": "string" }
+      }
+    },
+    "sensitive_categories": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Empty list is a valid, meaningful answer. A non-empty value raises the minimum tier for some purposes."
+    },
+    "rights_holders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "role"],
+        "additionalProperties": true,
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string", "enum": ["author", "publisher", "licensor"] },
+          "licence": { "type": "string", "description": "SPDX id or URL" }
+        }
+      }
+    },
+    "optout_signals_honoured": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "robots_txt": { "type": ["boolean", "string"] },
+        "tdm_reservation": { "type": ["boolean", "string"] },
+        "ai_txt": { "type": ["boolean", "string"] }
+      }
+    },
+    "data_subject_contact": { "type": "string" },
+    "access": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "visibility": { "type": "string", "enum": ["public", "restricted", "private"] },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "kind": { "type": "string", "enum": ["sample", "schema", "full", "activation"] },
+              "url": { "type": "string" },
+              "auth": { "type": "string" }
+            }
+          }
+        },
+        "sample_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "collected_to": { "type": "string", "format": "date" },
+        "refreshed_at": { "type": "string", "format": "date" },
+        "decay_days": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "reach": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "estimate": { "type": "integer", "minimum": 0 },
+        "unit": { "type": "string", "enum": ["people", "devices", "records", "tokens"] },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+        "as_of": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}

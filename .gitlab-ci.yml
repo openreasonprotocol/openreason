@@ -124,6 +124,16 @@ validate:examples:
   stage: test
   script:
     - orp validate examples/danish_property_tax_reform.yaml --verbose
+    - orp validate examples/data_product_ctv_segment.v0.3.yaml --profile ORP-Ads
+  only:
+    - merge_requests
+    - main
+
+# ORP v0.3 conformance suite (RFC §9.2): schema + usage-policy + lineage fixtures must all pass.
+conformance:v0.3:
+  stage: test
+  script:
+    - orp conform
   only:
     - merge_requests
     - main

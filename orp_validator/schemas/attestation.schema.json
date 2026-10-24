@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://publicreasonproject.org/schemas/orp-attestation-v0.3.schema.json",
+  "title": "ORP v0.3 attestation block (RFC change C1)",
+  "description": "Cryptographic attestation over an ORP document, aligned with AdCP #4441. A detached Ed25519 signature over the RFC 8785 canonical form of the document minus this block, with a purpose-constrained short-lived key. This schema validates SHAPE only; semantic verification (hash recompute, signature, expiry, key-purpose) is performed by orp_validator.attestation.verify_attestation.",
+  "type": "object",
+  "required": ["hash", "version", "signatures", "tier"],
+  "additionalProperties": false,
+  "properties": {
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "sha256 over the canonical serialisation of the attested content (RFC 8785)."
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Monotonically increasing per dataset_id / document."
+    },
+    "previous_hash": {
+      "type": ["string", "null"],
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Hash of the prior version; null for version 1."
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["self_declared", "attested", "verified", "full", "posthoc"],
+      "description": "Trust tier (RFC change C7). self_declared needs no valid signature; attested/verified/full do."
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["kid", "alg", "use", "sig", "role"],
+        "additionalProperties": true,
+        "properties": {
+          "kid": {
+            "type": "string",
+            "description": "Key id resolvable to an Ed25519 public key: a did:web / did:key, or a JWKS key id on the kid's host."
+          },
+          "alg": { "type": "string", "enum": ["Ed25519"] },
+          "use": {
+            "type": "string",
+            "const": "orp-attestation",
+            "description": "Key-purpose constraint (mirrors AdCP adcp_use: provenance-claim). A key MUST NOT be accepted for a purpose it is not marked for."
+          },
+          "sig": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "base64url detached Ed25519 signature over the RFC 8785 canonical bytes of the attested content."
+          },
+          "role": {
+            "type": "string",
+            "description": "Who this key speaks for, e.g. data_steward / verifier / rail / licensee / licensor."
+          },
+          "signed_at": { "type": "string", "format": "date-time" },
+          "key_expires": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Short-lived key posture (RFC §2.4): a verifier MUST reject a signature whose key_expires is in the past (with reasonable skew)."
+          }
+        }
+      }
+    }
+  }
+}

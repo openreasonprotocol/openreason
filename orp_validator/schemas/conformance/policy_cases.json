@@ -1,0 +1,75 @@
+{
+  "description": "ORP v0.3 usage_policy reference-evaluator conformance fixtures (RFC §5.5). Each case is self-contained: a policy, an activation context, and the expected decision.",
+  "cases": [
+    {
+      "name": "allow_in_scope",
+      "policy": {
+        "policy_id": "https://p/1",
+        "permissions": [{"permission_id": "p-ads-dk", "purpose": "advertising_targeting", "assignee": "any", "scope": {"geo": ["DK", "SE"], "media": ["ctv", "web"]}, "derivation": "internal", "duties": ["report_usage"]}],
+        "prohibitions": [{"purpose": "model_training"}, {"purpose": "resale"}]
+      },
+      "context": {"purpose": "advertising_targeting", "geo": "DK", "media": "ctv"},
+      "expect": {"decision": "allow", "permission_id": "p-ads-dk"}
+    },
+    {
+      "name": "deny_geo_out_of_scope",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"permission_id": "p-ads-dk", "purpose": "advertising_targeting", "scope": {"geo": ["DK"]}}]},
+      "context": {"purpose": "advertising_targeting", "geo": "US"},
+      "expect": {"decision": "deny", "reason": "no_matching_permission"}
+    },
+    {
+      "name": "deny_prohibited_training",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"purpose": "advertising_targeting"}], "prohibitions": [{"purpose": "model_training"}]},
+      "context": {"purpose": "model_training"},
+      "expect": {"decision": "deny", "reason": "prohibited:model_training"}
+    },
+    {
+      "name": "deny_unknown_purpose",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"purpose": "advertising_targeting"}]},
+      "context": {"purpose": "mind_control"},
+      "expect": {"decision": "deny"}
+    },
+    {
+      "name": "deny_no_permission_matches",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"purpose": "advertising_targeting"}]},
+      "context": {"purpose": "measurement"},
+      "expect": {"decision": "deny", "reason": "no_matching_permission"}
+    },
+    {
+      "name": "allow_derivation_below_grant",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"permission_id": "p1", "purpose": "model_training", "derivation": "internal"}]},
+      "context": {"purpose": "model_training", "derivation_requested": "none"},
+      "expect": {"decision": "allow", "permission_id": "p1"}
+    },
+    {
+      "name": "deny_derivation_above_grant",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"permission_id": "p1", "purpose": "model_training", "derivation": "internal"}]},
+      "context": {"purpose": "model_training", "derivation_requested": "licensed"},
+      "expect": {"decision": "deny", "reason": "no_matching_permission"}
+    },
+    {
+      "name": "deny_policy_expired",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"purpose": "analytics"}], "expiry": "2026-01-01T00:00:00Z"},
+      "context": {"purpose": "analytics", "time": "2026-06-01T00:00:00Z"},
+      "expect": {"decision": "deny", "reason": "policy_expired"}
+    },
+    {
+      "name": "allow_assignee_in_list",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"permission_id": "p1", "purpose": "analytics", "assignee": ["did:ex:a"]}]},
+      "context": {"purpose": "analytics", "assignee": "did:ex:a"},
+      "expect": {"decision": "allow", "permission_id": "p1"}
+    },
+    {
+      "name": "deny_assignee_not_in_list",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"permission_id": "p1", "purpose": "analytics", "assignee": ["did:ex:a"]}]},
+      "context": {"purpose": "analytics", "assignee": "did:ex:b"},
+      "expect": {"decision": "deny", "reason": "no_matching_permission"}
+    },
+    {
+      "name": "deny_unknown_scope_key_fails_closed",
+      "policy": {"policy_id": "https://p/1", "permissions": [{"permission_id": "p1", "purpose": "analytics", "scope": {"device": ["mobile"]}}]},
+      "context": {"purpose": "analytics"},
+      "expect": {"decision": "deny", "reason": "no_matching_permission"}
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/v0.3/core.schema.json",
+  "title": "OpenReason Protocol v0.3 — ORP-Core",
+  "description": "Domain-neutral core (RFC change C6). Header + L1 data provenance + optional attestation (C1) + optional L2/L3/L4/L5. Profiles (ORP-Policy, ORP-Ads, ORP-AI) extend this via allOf. Deep layer field definitions are reused by $ref from the stable v0.2 schema so there is one source of truth.",
+  "type": "object",
+  "required": [
+    "orp_version",
+    "document_id",
+    "title",
+    "domain",
+    "authors",
+    "created",
+    "last_modified",
+    "status",
+    "summary",
+    "l1_data_provenance"
+  ],
+  "properties": {
+    "orp_version": {
+      "type": "string",
+      "const": "0.3",
+      "description": "ORP specification version this document conforms to"
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["ORP-Core", "ORP-Policy", "ORP-Ads", "ORP-AI"],
+      "description": "Declared ORP v0.3 profile (RFC C6). Absent = ORP-Core."
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["policy", "ai-training", "governance", "research", "ads", "data", "other"],
+      "description": "Domain this document addresses. v0.3: adds 'ads' and 'data' for data-product profiles."
+    },
+    "attestation": {
+      "$ref": "https://publicreasonproject.org/schemas/orp-attestation-v0.3.schema.json",
+      "description": "Cryptographic attestation (RFC C1). Optional in the schema (shape only); semantic verification is done by orp_validator.attestation and feeds the trust tier."
+    },
+    "usage_policy": {
+      "$ref": "https://schemas.publicreasonproject.org/orp/v0.3/usage-policy.schema.json",
+      "description": "Layer 6 usage policy (RFC C3). Optional; what may be done with the data product. Enforced by orp_validator.usage.evaluate_policy."
+    },
+    "document_id": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/document_id" },
+    "title": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/title" },
+    "post_hoc": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/post_hoc" },
+    "extensions": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/extensions" },
+    "authors": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/authors" },
+    "created": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/created" },
+    "last_modified": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/last_modified" },
+    "status": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/status" },
+    "forked_from": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/forked_from" },
+    "summary": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/summary" },
+    "notes": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/notes" },
+    "l1_data_provenance": {
+      "type": "array",
+      "minItems": 1,
+      "description": "L1 Data Provenance. v0.3 extends each v0.2 dataset entry with legal-provenance (C2) and identifier/access/freshness/reach (C8) fields, all optional in Core.",
+      "items": {
+        "allOf": [
+          { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/l1_data_provenance/items" },
+          { "$ref": "https://schemas.publicreasonproject.org/orp/v0.3/l1-ext.schema.json" }
+        ]
+      }
+    },
+    "lineage": {
+      "$ref": "https://schemas.publicreasonproject.org/orp/v0.3/lineage.schema.json",
+      "description": "Layer 5 as a derivation graph (RFC C4). Optional; forks + derivations. v0.2 l5_fork_registry still accepted."
+    },
+    "l2_consequence_simulation": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/l2_consequence_simulation" },
+    "l3_empathy_mapping": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/l3_empathy_mapping" },
+    "l4_accountability_ledger": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/l4_accountability_ledger" },
+    "l5_fork_registry": { "$ref": "https://schemas.publicreasonproject.org/orp/v0.2/orp-v0.2.schema.json#/properties/l5_fork_registry" }
+  },
+  "additionalProperties": true
+}

@@ -25,10 +25,7 @@ const LAYERS: [string, string][] = [
 
 const MCP_SNIPPET = `{
   "mcpServers": {
-    "openreason": {
-      "command": "node",
-      "args": ["/path/to/openreason/mcp/dist/index.js"]
-    }
+    "openreason": { "command": "npx", "args": ["-y", "@openreason/mcp"] }
   }
 }`
 
@@ -195,13 +192,13 @@ export default function LiveProof() {
         </a>
         <button className="pr-live-rail-item" onClick={copy}>
           <span className="pr-k">MCP server</span>
-          <code>"openreason": {'{'} command … {'}'}</code>
+          <code>npx -y @openreason/mcp</code>
           <em>{copied ? 'Copied' : 'Copy agent config'}</em>
         </button>
         <a className="pr-live-rail-item" href="/tools/javascript-sdk">
           <span className="pr-k">JavaScript</span>
           <code>@openreason/sdk</code>
-          <em>Node + browser · npm coming</em>
+          <em>npm install @openreason/sdk</em>
         </a>
       </div>
     </div>

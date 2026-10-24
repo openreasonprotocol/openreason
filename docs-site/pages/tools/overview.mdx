@@ -73,7 +73,7 @@ console.log(verdict.valid, verdict.trust_tier);
 - Schema validation (v0.1, v0.2) and compliance check
 - Offline Ed25519 attestation verification, interoperable with the Python reference
 - RFC 8785 canonicalisation helpers
-- Source-available now; npm publication coming
+- `npm install @openreason/sdk`
 
 [JavaScript SDK Documentation →](/tools/javascript-sdk)
 
@@ -82,14 +82,14 @@ console.log(verdict.valid, verdict.trust_tier);
 **Best for:** AI agents — give any MCP host (Claude, Cursor, your own agent) native ORP tools
 
 ```json
-{ "mcpServers": { "openreason": { "command": "node", "args": ["/path/to/openreason/mcp/dist/index.js"] } } }
+{ "mcpServers": { "openreason": { "command": "npx", "args": ["-y", "@openreason/mcp"] } } }
 ```
 
 **Features:**
 - `orp_validate`, `orp_verify_attestation`, `orp_explain`
 - stdio transport, no infrastructure
 - Fail-closed key handling
-- Source-available now; npm publication coming
+- `npx -y @openreason/mcp`
 
 [MCP Server Documentation →](/tools/mcp)
 

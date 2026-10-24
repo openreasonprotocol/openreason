@@ -5,18 +5,16 @@ OpenReason capabilities: validate an ORP document, verify its cryptographic atte
 It wraps the [JavaScript SDK](/tools/javascript-sdk) and speaks stdio, so it plugs into Claude Desktop, Claude Code, Cursor
 and any other MCP host without extra infrastructure.
 
-> **Status:** source-available in the repository (`mcp/`), Apache-2.0. Publication to npm is **coming**; until then,
-> build from source as shown below.
+## Run
 
-## Build
+No install needed:
 
 ```bash
-git clone https://github.com/openreasonprotocol/openreason.git
-cd openreason/sdk-js && npm install && npm run build
-cd ../mcp && npm install && npm run build
+npx -y @openreason/mcp
 ```
 
-The server binary is `mcp/dist/index.js` (`openreason-mcp` once published).
+Or build from source: `git clone https://github.com/openreasonprotocol/openreason.git`, then `npm install && npm run build` in
+`sdk-js/` and `mcp/`; the binary is `mcp/dist/index.js`.
 
 ## Connect an agent
 
@@ -27,8 +25,8 @@ Add the server to your MCP host configuration. For Claude Desktop (`claude_deskt
 {
   "mcpServers": {
     "openreason": {
-      "command": "node",
-      "args": ["/absolute/path/to/openreason/mcp/dist/index.js"]
+      "command": "npx",
+      "args": ["-y", "@openreason/mcp"]
     }
   }
 }

@@ -45,7 +45,6 @@ lint:mypy:
   stage: lint
   script:
     - mypy orp_validator/
-  allow_failure: true  # Don't block on type errors initially
   only:
     - merge_requests
     - main

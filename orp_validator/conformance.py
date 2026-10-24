@@ -24,7 +24,7 @@ else:  # pragma: no cover
     try:
         from importlib_resources import files  # type: ignore
     except ImportError:
-        files = None  # type: ignore
+        files = None
 
 from . import lineage as _lineage
 from . import usage as _usage
@@ -41,11 +41,11 @@ def load_fixture(name: str) -> dict[str, Any]:
     3.10/3.11 (multi-arg landed in 3.12), so joinpath(FIXTURE_DIR, name) would TypeError there.
     """
     if files is not None:
-        return json.loads(
-            files("orp_validator.schemas").joinpath(FIXTURE_DIR).joinpath(name).read_text()
-        )
-    with open(Path(__file__).parent / "schemas" / FIXTURE_DIR / name, encoding="utf-8") as f:
-        return json.load(f)
+        text = files("orp_validator.schemas").joinpath(FIXTURE_DIR).joinpath(name).read_text()
+    else:
+        text = (Path(__file__).parent / "schemas" / FIXTURE_DIR / name).read_text(encoding="utf-8")
+    data: dict[str, Any] = json.loads(text)
+    return data
 
 
 def _run_schema_cases(validator: ORPValidator) -> list[dict[str, Any]]:

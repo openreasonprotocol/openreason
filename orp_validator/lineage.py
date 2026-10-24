@@ -63,7 +63,7 @@ def _derivations(doc: dict[str, Any]) -> list[dict[str, Any]]:
 
 def _policy_for_node(
     node: dict[str, Any], inbound_edge: dict[str, Any] | None
-) -> tuple[dict | None, str]:
+) -> tuple[dict[str, Any] | None, str]:
     """Which policy enforces at this node: its usage_policy, or — when the inbound edge legitimately
     relaxed it under a licensed grant — its derivative_policy (RFC §5.4)."""
     if (

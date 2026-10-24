@@ -70,7 +70,7 @@ LEVEL_TO_TIER = {
 }
 
 
-def load_accredited_verifiers() -> set:
+def load_accredited_verifiers() -> set[str]:
     """Accredited-verifier key ids for the `verified`/`full` tier (RFC C7 §9.1). Maintained as a list in
     the repo (`schemas/accredited_verifiers.json`). Empty by default — until a verifier is accredited,
     no document reaches `verified`, which fails safe. Callers may override via `accredited_verifiers`.
@@ -182,7 +182,7 @@ class ORPValidator:
         document: str | Path | dict[str, Any],
         profile: str | None = None,
         resolve_key: Callable[[str], Any] | None = None,
-        accredited_verifiers: set | None = None,
+        accredited_verifiers: set[str] | None = None,
     ) -> ValidationResult:
         """Validate an ORP document.
 
@@ -268,9 +268,11 @@ class ORPValidator:
     def _schema_dict(self, filename: str) -> dict[str, Any]:
         """Load a bundled schema file as a dict (importlib.resources, with a filesystem fallback)."""
         if files is not None:
-            return json.loads(files("orp_validator.schemas").joinpath(filename).read_text())
-        with open(Path(__file__).parent / "schemas" / filename, encoding="utf-8") as f:
-            return json.load(f)
+            text = files("orp_validator.schemas").joinpath(filename).read_text()
+        else:
+            text = (Path(__file__).parent / "schemas" / filename).read_text(encoding="utf-8")
+        schema: dict[str, Any] = json.loads(text)
+        return schema
 
     def _build_v03_validator(self, profile: str) -> Draft7Validator:
         """Build a Draft7 validator for a v0.3 profile, resolving cross-file $refs (core, v0.2 layer
@@ -304,7 +306,7 @@ class ORPValidator:
         doc_data: dict[str, Any],
         profile: str | None,
         resolve_key: Callable[[str], Any] | None,
-        accredited_verifiers: set | None = None,
+        accredited_verifiers: set[str] | None = None,
     ) -> ValidationResult:
         self.version = "0.3"
         if "extensions" in doc_data:
@@ -355,7 +357,7 @@ class ORPValidator:
         doc_data: dict[str, Any],
         schema_valid: bool,
         resolve_key: Callable[[str], Any] | None,
-        accredited_verifiers: set | None = None,
+        accredited_verifiers: set[str] | None = None,
     ) -> tuple[TrustTier, list[str]]:
         """Determine the v0.3 trust tier. Starts at self_declared; a verified attestation signature
         raises it to attested; a signature whose role is `verifier` AND whose `kid` is on the accredited
@@ -637,7 +639,7 @@ def validate(
     document: str | Path | dict[str, Any],
     profile: str | None = None,
     resolve_key: Callable[[str], Any] | None = None,
-    accredited_verifiers: set | None = None,
+    accredited_verifiers: set[str] | None = None,
 ) -> ValidationResult:
     """Validate an ORP document.
 

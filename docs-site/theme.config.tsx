@@ -120,7 +120,13 @@ const config: DocsThemeConfig = {
 
   // ─── Top Navigation ───────────────────────────────────────────────────────
   navbar: {
-    extraContent: null
+    extraContent: (
+      <div className="pr-navlinks">
+        <a href="/what-it-is">What it is</a>
+        <a href="/how-it-works">How it works</a>
+        <a href="/about">About</a>
+      </div>
+    )
   },
 
   // ─── Navigation arrows ────────────────────────────────────────────────────

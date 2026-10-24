@@ -33,6 +33,12 @@
   --nextra-primary-lightness: 58%;
 }
 
+/* Project links in the navbar */
+.pr-navlinks { display: flex; gap: 20px; align-items: center; font-family: var(--pr-display); font-size: 14px; margin-right: 6px; }
+.pr-navlinks a { color: var(--pr-muted) !important; white-space: nowrap; }
+.pr-navlinks a:hover { color: var(--pr-text) !important; }
+@media (max-width: 640px) { .pr-navlinks { display: none; } }
+
 /* Force the dark canvas across Nextra surfaces */
 html.dark, html.dark body { background: var(--pr-bg) !important; }
 html.dark { --nextra-bg: 15 16 18; color-scheme: dark; }

@@ -1,0 +1,31 @@
+name: Spec change proposal
+description: Propose a change to the OpenReason Protocol specification or schemas.
+labels: [spec]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does the current spec have?
+      description: Cite the section. Give a concrete document where the current rules produce the wrong outcome.
+    validations: { required: true }
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Normative text, schema diff, and the conformance case that would exercise it.
+    validations: { required: true }
+  - type: textarea
+    id: affected
+    attributes:
+      label: Who is affected and how do they migrate?
+      description: Existing documents, implementers, verifiers. Is the change additive?
+    validations: { required: true }
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Principles
+      options:
+        - label: This change keeps the protocol neutral (attests, never grades).
+          required: true
+        - label: This change does not introduce new cryptographic primitives.
+          required: true

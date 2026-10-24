@@ -188,9 +188,9 @@ export default function LiveProof() {
           <code>pip install orp-validator</code>
           <em>{pypi ? `v${pypi} · live` : 'Python 3.9+'}</em>
         </a>
-        <a className="pr-live-rail-item" href="https://github.com/PublicReasonProject/openreason">
+        <a className="pr-live-rail-item" href="https://github.com/openreasonprotocol/openreason">
           <span className="pr-k">Source</span>
-          <code>PublicReasonProject/openreason</code>
+          <code>openreasonprotocol/openreason</code>
           <em>Apache-2.0 · issues &amp; discussion</em>
         </a>
         <button className="pr-live-rail-item" onClick={copy}>

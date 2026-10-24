@@ -1,0 +1,33 @@
+name: Bug report
+description: The validator, SDK, MCP server or API did something the specification says it should not.
+labels: [bug]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options: [orp-validator (Python / CLI), "@openreason/sdk (JS)", "@openreason/mcp", Hosted REST API, Schemas / conformance fixtures, Docs site]
+    validations: { required: true }
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "`orp --version`, package version, or commit SHA"
+    validations: { required: true }
+  - type: textarea
+    id: document
+    attributes:
+      label: Minimal reproducing document or request
+      description: The smallest ORP document (YAML or JSON) or API call that shows the problem. Strip anything confidential.
+      render: yaml
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result, with the spec section that says so
+    validations: { required: true }
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations: { required: true }

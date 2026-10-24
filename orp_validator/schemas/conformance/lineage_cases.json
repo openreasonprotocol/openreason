@@ -1,0 +1,59 @@
+{
+  "description": "ORP v0.3 lineage / derivation-graph inheritance conformance fixtures (RFC §6.3).",
+  "cases": [
+    {
+      "name": "intersection_denies_when_ancestor_denies",
+      "registry": {"P": {"document_id": "P", "usage_policy": {"policy_id": "pol:P", "permissions": [{"permission_id": "pm", "purpose": "measurement"}]}}},
+      "doc": {"document_id": "L", "usage_policy": {"policy_id": "pol:L", "permissions": [{"permission_id": "pa", "purpose": "analytics"}]}, "lineage": {"derivations": [{"parent_id": "P", "transformation": "subset", "inherits": "full"}]}},
+      "context": {"purpose": "analytics"},
+      "expect_decision": "deny",
+      "denied_by": "P"
+    },
+    {
+      "name": "intersection_allows_when_all_allow",
+      "registry": {"P": {"document_id": "P", "usage_policy": {"policy_id": "pol:P", "permissions": [{"permission_id": "pa", "purpose": "analytics"}]}}},
+      "doc": {"document_id": "L", "usage_policy": {"policy_id": "pol:L", "permissions": [{"permission_id": "pa", "purpose": "analytics"}]}, "lineage": {"derivations": [{"parent_id": "P", "transformation": "subset", "inherits": "full"}]}},
+      "context": {"purpose": "analytics"},
+      "expect_decision": "allow"
+    },
+    {
+      "name": "trust_short_circuit_stops_at_verified",
+      "registry": {
+        "P": {"document_id": "P", "attestation": {"tier": "verified"}, "usage_policy": {"policy_id": "pol:P", "permissions": [{"permission_id": "pa", "purpose": "analytics"}]}, "lineage": {"derivations": [{"parent_id": "G", "transformation": "subset", "inherits": "full"}]}},
+        "G": {"document_id": "G", "usage_policy": {"policy_id": "pol:G", "permissions": [{"permission_id": "pm", "purpose": "measurement"}]}}
+      },
+      "doc": {"document_id": "L", "usage_policy": {"policy_id": "pol:L", "permissions": [{"permission_id": "pa", "purpose": "analytics"}]}, "lineage": {"derivations": [{"parent_id": "P", "transformation": "subset", "inherits": "full"}]}},
+      "context": {"purpose": "analytics"},
+      "expect_decision": "allow"
+    },
+    {
+      "name": "licensed_relaxation_uses_derivative_policy",
+      "registry": {"P": {
+        "document_id": "P",
+        "usage_policy": {"policy_id": "pol:P", "permissions": [{"permission_id": "p-lic", "purpose": "model_training", "derivation": "licensed"}], "prohibitions": [{"purpose": "model_training"}]},
+        "derivative_policy": {"policy_id": "pol:P:deriv", "permissions": [{"permission_id": "d1", "purpose": "model_training"}]}
+      }},
+      "doc": {"document_id": "L", "usage_policy": {"policy_id": "pol:L", "permissions": [{"permission_id": "pmt", "purpose": "model_training"}]}, "lineage": {"derivations": [{"parent_id": "P", "transformation": "training", "inherits": "relaxed", "relaxation_basis": "p-lic"}]}},
+      "context": {"purpose": "model_training"},
+      "expect_decision": "allow"
+    },
+    {
+      "name": "multi_parent_dag_denies_if_any_branch_denies",
+      "registry": {
+        "P1": {"document_id": "P1", "usage_policy": {"policy_id": "pol:P1", "permissions": [{"permission_id": "pa", "purpose": "analytics"}]}},
+        "P2": {"document_id": "P2", "usage_policy": {"policy_id": "pol:P2", "permissions": [{"permission_id": "pm", "purpose": "measurement"}]}}
+      },
+      "doc": {"document_id": "L", "usage_policy": {"policy_id": "pol:L", "permissions": [{"permission_id": "pa", "purpose": "analytics"}]}, "lineage": {"derivations": [{"parent_id": "P1", "transformation": "overlap", "inherits": "full"}, {"parent_id": "P2", "transformation": "overlap", "inherits": "full"}]}},
+      "context": {"purpose": "analytics"},
+      "expect_decision": "deny",
+      "denied_by": "P2"
+    },
+    {
+      "name": "unresolved_ancestor_fails_closed",
+      "registry": {},
+      "doc": {"document_id": "L", "usage_policy": {"policy_id": "pol:L", "permissions": [{"permission_id": "pa", "purpose": "analytics"}]}, "lineage": {"derivations": [{"parent_id": "MISSING", "transformation": "subset", "inherits": "full"}]}},
+      "context": {"purpose": "analytics"},
+      "expect_decision": "deny"
+    }
+  ]
+}

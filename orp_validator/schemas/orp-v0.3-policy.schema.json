@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/v0.3/policy.schema.json",
+  "title": "OpenReason Protocol v0.3 — ORP-Policy",
+  "description": "The v0.2 policy-reasoning shape, renamed (RFC C6). ORP-Core plus Layers 2 (Consequence Simulation) and 3 (Empathy Mapping) required. This is the profile the Danish-legislation flagship uses.",
+  "allOf": [
+    { "$ref": "https://schemas.publicreasonproject.org/orp/v0.3/core.schema.json" },
+    {
+      "type": "object",
+      "required": ["l2_consequence_simulation", "l3_empathy_mapping"],
+      "properties": {
+        "profile": { "const": "ORP-Policy" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/v0.3/lineage.schema.json",
+  "title": "ORP v0.3 Layer 5 — lineage (RFC change C4)",
+  "description": "Layer 5 becomes a derivation graph. `forks` keeps v0.2 semantics (alternative reasoning about the same question). `derivations` is new: this data product was produced from these ancestors, each edge carrying how constraints inherit. Enforcement walk: orp_validator.lineage.resolve_effective_decision.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "forks": {
+      "type": "array",
+      "description": "v0.2 forks, unchanged: alternative reasoning.",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "derivations": {
+      "type": "array",
+      "description": "This dataset was produced from these ancestors.",
+      "items": {
+        "type": "object",
+        "required": ["parent_id", "transformation", "inherits"],
+        "additionalProperties": true,
+        "properties": {
+          "parent_id": { "type": "string", "description": "Resolvable id of the ancestor data product." },
+          "parent_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "parent_policy_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "transformation": {
+            "type": "string",
+            "enum": ["subset", "overlap", "lookalike", "aggregation", "enrichment", "training", "other"]
+          },
+          "transformation_detail": { "type": "string" },
+          "inherits": { "type": "string", "enum": ["full", "relaxed"] },
+          "relaxation_basis": {
+            "type": "string",
+            "description": "Required if inherits == relaxed: the ancestor permission_id that grants derivation: licensed."
+          }
+        },
+        "if": { "properties": { "inherits": { "const": "relaxed" } } },
+        "then": { "required": ["relaxation_basis"] }
+      }
+    },
+    "this_document": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "forking_permitted": { "type": "boolean" },
+        "derivation_permitted": { "type": "string", "enum": ["none", "internal", "licensed"] }
+      }
+    }
+  }
+}

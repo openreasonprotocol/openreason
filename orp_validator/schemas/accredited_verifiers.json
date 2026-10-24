@@ -1,0 +1,5 @@
+{
+  "description": "ORP v0.3 accredited-verifier key list (RFC C7 §9.1). A signature with role 'verifier' only raises a document to the `verified`/`full` tier if its `kid` appears here AND the verifier is not the dataset's own owner. Empty by default: until a verifier is accredited, nothing reaches `verified` (fail safe). Rule: a verifier cannot verify its own datasets.",
+  "updated": "2026-10-24",
+  "verifiers": []
+}

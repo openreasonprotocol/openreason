@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/v0.3/ads.schema.json",
+  "title": "OpenReason Protocol v0.3 — ORP-Ads",
+  "description": "Data-product profile for audience segments (RFC C6). ORP-Core plus a segment vocabulary: every L1 dataset must carry reach (people/devices) and freshness. Full ODRL usage_policy + AdCP signals binding land with RFC R2/R3; these reach/freshness shapes are defined here now and move to Core in R2.",
+  "allOf": [
+    { "$ref": "https://schemas.publicreasonproject.org/orp/v0.3/core.schema.json" },
+    {
+      "type": "object",
+      "properties": {
+        "profile": { "const": "ORP-Ads" },
+        "l1_data_provenance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["reach", "freshness"],
+            "properties": {
+              "reach": {
+                "type": "object",
+                "required": ["estimate", "unit"],
+                "properties": {
+                  "estimate": { "type": "integer", "minimum": 0 },
+                  "unit": { "type": "string", "enum": ["people", "devices", "records", "tokens"] },
+                  "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+                  "as_of": { "type": "string", "format": "date" }
+                },
+                "additionalProperties": true
+              },
+              "freshness": {
+                "type": "object",
+                "required": ["refreshed_at"],
+                "properties": {
+                  "collected_to": { "type": "string", "format": "date" },
+                  "refreshed_at": { "type": "string", "format": "date" },
+                  "decay_days": { "type": "integer", "minimum": 0 }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

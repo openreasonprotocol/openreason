@@ -1,5 +1,7 @@
 """Validate command for ORP CLI."""
 
+from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
@@ -24,7 +26,13 @@ from orp_validator import validate as validate_document
     is_flag=True,
     help="Show detailed validation trace",
 )
-def validate(document: Path, output_json: bool, verbose: bool) -> None:
+@click.option(
+    "--profile",
+    type=click.Choice(["ORP-Core", "ORP-Policy", "ORP-Ads", "ORP-AI"]),
+    default=None,
+    help="v0.3 only: validate against a specific profile (default: the document's own `profile` field, else ORP-Core)",
+)
+def validate(document: Path, output_json: bool, verbose: bool, profile: str | None) -> None:
     """Validate an OpenReason Protocol (ORP) document.
 
     DOCUMENT: Path to the ORP document to validate
@@ -33,10 +41,11 @@ def validate(document: Path, output_json: bool, verbose: bool) -> None:
     Examples:
       orp validate my-proposal.yaml
       orp validate my-proposal.yaml --verbose
+      orp validate segment.yaml --profile ORP-Ads
       orp validate my-proposal.yaml --json > results.json
     """
     try:
-        result = validate_document(document)
+        result = validate_document(document, profile=profile)
 
         if output_json:
             # Machine-readable JSON output
@@ -72,6 +81,14 @@ def _print_human_readable(document: Path, result: Any, verbose: bool) -> None:
         click.secho("✓ Valid", fg="green", bold=True)
     else:
         click.secho("✗ Invalid", fg="red", bold=True)
+
+    # v0.3: profile + trust tier (shown only for v0.3 documents)
+    if getattr(result, "profile", None):
+        click.echo("\nProfile: ", nl=False)
+        click.secho(result.profile, fg="cyan", bold=True)
+    if getattr(result, "trust_tier", None):
+        click.echo("Trust Tier: ", nl=False)
+        click.secho(result.trust_tier.value, fg="magenta", bold=True)
 
     # Compliance level
     compliance_color = _get_compliance_color(result.compliance_level.value)

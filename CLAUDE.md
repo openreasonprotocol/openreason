@@ -19,8 +19,12 @@ Git commits should be clean and professional without AI attribution footers. The
 
 **OpenReason (ORP)** is an open-source protocol that standardizes how reasoning is documented, shared, and challenged in consequential decisions — particularly in public policy and AI systems.
 
-**Current Status:** Phase 0 (Foundation) — v0.1 draft
-**Goal:** Build transparency infrastructure for democratic decision-making and AI development
+**Current Status:** v0.3 implemented in `orp-validator` ≥ 0.5.0 (attestation, profiles, trust tiers,
+usage policy, lineage, usage records, conformance suite). v0.1/v0.2 still validate. See
+`docs/specs/ORP_V0.3_SPEC.md` (as-built normative spec), `docs/specs/ORP_V0.3_RFC.md` (the change proposal),
+and `docs/specs/ORP_V0.3_IMPLEMENTATION_STATUS.md` (R1–R8 status). License: **Apache-2.0**.
+**Goal:** Build transparency infrastructure for democratic decision-making and AI development — and the
+verifiable passport format for data products traded on agent-to-agent rails.
 
 ---
 
@@ -51,7 +55,13 @@ ORP documents consist of five layers plus a header:
 | **L4** | Accountability Ledger | Immutable log of decisions and who made them |
 | **L5** | Fork Registry | Track document lineage, forks, and responses |
 
-See `docs/specs/ORP_SPEC.md` for full technical specification.
+See `docs/specs/ORP_SPEC.md` (v0.1) and `docs/specs/ORP_V0.3_SPEC.md` (v0.3) for the technical specs.
+
+**v0.3 additions (all optional in ORP-Core; see `ORP_V0.3_SPEC.md`):** a signed `attestation` block
+(offline-verifiable, AdCP #4441-aligned Ed25519); **profiles** ORP-Core/Policy/Ads/AI; **trust tiers**
+(self_declared → attested → verified → full → posthoc); Layer-6 `usage_policy` (enforceable ODRL profile);
+Layer-5 `lineage` (derivation graph with constraint inheritance); Layer-4 `usage_records` (a rail's signed
+clearing receipt is one by construction); and extra Layer-1 legal/identifier/freshness/reach fields.
 
 ---
 
@@ -423,10 +433,19 @@ We'll know it's failing if:
   - `POST /api/v1/validate` - Full schema validation
   - `POST /api/v1/check` - Quick compliance check
   - `POST /api/v1/diff` - Document comparison
-- **Documentation:** https://api.publicreasonproject.org/docs (Swagger UI)
-- **Status:** Production-ready with 39 automated tests (96% coverage)
-- **Deployment:** DigitalOcean (134.209.250.174), Docker, nginx, SSL via Let's Encrypt
-- **CI/CD:** Automated testing on all commits via GitLab CI
+- **Documentation:** https://api.publicreasonproject.org/docs (Redoc) + `/openapi.json`
+- **Stack:** Cloudflare Worker (`openreason-api`), TypeScript (js-yaml + ajv). Source in `worker/`.
+- **Rate limiting:** Cloudflare WAF rule on `/api/v1/*` — 10 req/10s per IP (≈60/min).
+- **Note:** This is a parity-tested TS port of the original FastAPI service. The Python
+  app under `api/` is retained as the reference/spec oracle but is no longer deployed.
+
+### Docs Site
+- **URL:** https://docs.publicreasonproject.org
+- **Stack:** Cloudflare Pages (`openreason-docs`), Nextra static export from `docs-site/`.
+
+> **Hosting:** Migrated from DigitalOcean to Cloudflare's free tier on 2026-06-26
+> (sprint 1.8.0). The DO droplet `orp-api-fra` (134.209.250.174) was decommissioned.
+> Account: Cloudflare `085d6025...` (Asbjorn@bullrise.co). No more Docker/nginx/Let's Encrypt.
 
 ### Python Package
 - **PyPI:** https://pypi.org/project/orp-validator/
@@ -441,7 +460,7 @@ We'll know it's failing if:
 - **Founder:** Asbjørn (current steward during Phase 1)
 - **Governance:** See `docs/governance/GOVERNANCE.md`
 - **Repository:** https://gitlab.com/publicreason/orp
-- **License:** Creative Commons CC-BY (documentation), MIT (code)
+- **License:** Apache-2.0 (code and spec). Relicensed from MIT on 2026-10-24 (solo-authored; patent grant + standards-body alignment for a protocol others implement — see `docs/governance/AGENT-RAIL-AND-USE-CASE-TREE.md`). CC-BY-4.0 dual-licensing of spec prose remains an open option.
 
 ---
 

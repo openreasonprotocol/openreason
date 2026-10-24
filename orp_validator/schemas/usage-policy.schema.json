@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/v0.3/usage-policy.schema.json",
+  "title": "ORP v0.3 Layer 6 — usage_policy (RFC change C3)",
+  "description": "A profile of W3C ODRL 2.2 restricted to a fixed vocabulary, saying what may be done with a data product in a form a rail can enforce (see orp_validator.usage.evaluate_policy) and a lawyer can read. Shape only; evaluation semantics are in RFC §5.5.",
+  "type": "object",
+  "required": ["policy_id", "permissions"],
+  "additionalProperties": true,
+  "properties": {
+    "policy_id": { "type": "string", "description": "Resolvable policy identifier (https:// or did:)." },
+    "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["purpose"],
+        "additionalProperties": true,
+        "properties": {
+          "permission_id": { "type": "string" },
+          "purpose": { "type": "string", "enum": [
+            "advertising_targeting", "suppression", "measurement", "analytics",
+            "model_training", "fine_tuning", "evaluation", "retrieval", "inference", "resale", "research"
+          ] },
+          "assignee": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "array", "items": { "type": "string" } }
+            ],
+            "description": "'any' or a list of principal ids / DIDs."
+          },
+          "scope": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "geo": { "type": "array", "items": { "type": "string" } },
+              "media": { "type": "array", "items": { "type": "string" } },
+              "time": {
+                "type": "object",
+                "properties": { "from": { "type": "string" }, "to": { "type": "string" } },
+                "additionalProperties": true
+              }
+            }
+          },
+          "derivation": { "type": "string", "enum": ["none", "internal", "licensed"] },
+          "duties": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["attribution", "report_usage", "delete_on_expiry", "pay"] }
+          }
+        }
+      }
+    },
+    "prohibitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["purpose"],
+        "additionalProperties": true,
+        "properties": {
+          "purpose": { "type": "string" },
+          "scope": { "type": "object", "additionalProperties": true }
+        }
+      }
+    },
+    "expiry": { "type": "string", "format": "date-time" },
+    "revocable": { "type": "boolean" },
+    "governing_law": { "type": "string" }
+  }
+}

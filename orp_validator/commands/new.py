@@ -146,12 +146,12 @@ def _load_builtin_template(compliance: str) -> dict[str, Any]:
             template_content = (
                 files("orp_validator.templates").joinpath(f"orp-{compliance}.yaml").read_text()
             )
-            return yaml.safe_load(template_content)  # type: ignore[no-any-return]
         else:
             # Fallback for when importlib.resources is not available
             template_path = Path(__file__).parent.parent / "templates" / f"orp-{compliance}.yaml"
-            with open(template_path, encoding="utf-8") as f:
-                return yaml.safe_load(f)  # type: ignore[no-any-return]
+            template_content = template_path.read_text(encoding="utf-8")
+        loaded: dict[str, Any] = yaml.safe_load(template_content)
+        return loaded
     except FileNotFoundError:
         click.echo(f"Error: Template orp-{compliance}.yaml not found", err=True)
         sys.exit(1)
@@ -160,7 +160,8 @@ def _load_builtin_template(compliance: str) -> dict[str, Any]:
 def _load_custom_template(template_path: Path) -> dict[str, Any]:
     """Load custom template from file."""
     with open(template_path, encoding="utf-8") as f:
-        return yaml.safe_load(f)  # type: ignore[no-any-return]
+        loaded: dict[str, Any] = yaml.safe_load(f)
+        return loaded
 
 
 def _gather_info_interactive(

@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.publicreasonproject.org/orp/v0.3/ai.schema.json",
+  "title": "OpenReason Protocol v0.3 — ORP-AI",
+  "description": "Data-product profile for training corpora (RFC C6). ORP-Core plus a corpus vocabulary: every L1 dataset must carry rights_holders and optout_signals_honoured. Full legal-provenance fields land with RFC R2; these shapes are defined here now and move to Core in R2.",
+  "allOf": [
+    { "$ref": "https://schemas.publicreasonproject.org/orp/v0.3/core.schema.json" },
+    {
+      "type": "object",
+      "properties": {
+        "profile": { "const": "ORP-AI" },
+        "l1_data_provenance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["rights_holders", "optout_signals_honoured"],
+            "properties": {
+              "rights_holders": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "role"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "role": { "type": "string", "enum": ["author", "publisher", "licensor"] },
+                    "licence": { "type": "string", "description": "SPDX id or URL" }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "optout_signals_honoured": {
+                "type": "object",
+                "properties": {
+                  "robots_txt": { "type": ["boolean", "string"] },
+                  "tdm_reservation": { "type": ["boolean", "string"], "description": "EU DSM Directive art. 4 machine-readable reservation" },
+                  "ai_txt": { "type": ["boolean", "string"] }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

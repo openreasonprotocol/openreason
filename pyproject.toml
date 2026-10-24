@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "orp-validator"
-version = "0.4.0"
-description = "Validator for OpenReason Protocol (ORP) v0.1 and v0.2 documents"
+version = "0.5.0"
+description = "Validator for OpenReason Protocol (ORP) v0.1, v0.2 and v0.3 documents (profiles, trust tiers, attestation)"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.9"
-license = {text = "MIT"}
+license = {text = "Apache-2.0"}
 authors = [
     {name = "OpenReason Contributors", email = "hello@publicreasonproject.org"}
 ]
@@ -23,7 +23,7 @@ classifiers = [
     "Intended Audience :: Education",
     "Topic :: Scientific/Engineering",
     "Topic :: Software Development :: Quality Assurance",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -40,6 +40,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+attestation = [
+    # ORP v0.3 cryptographic attestation (change C1). Kept optional so core validation stays
+    # dependency-light and portable; signature verification degrades gracefully without it.
+    "cryptography>=42.0",
+]
 dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
@@ -48,6 +53,7 @@ dev = [
     "ruff>=0.1.6",
     "types-pyyaml>=6.0",
     "types-jsonschema>=4.20.0",
+    "cryptography>=42.0",  # so attestation/profile/conformance tests actually run in CI (not skip)
 ]
 
 [project.scripts]
@@ -66,7 +72,7 @@ packages = ["orp_validator", "orp_validator.commands", "orp_validator.schemas", 
 include-package-data = true
 
 [tool.setuptools.package-data]
-orp_validator = ["schemas/*.json", "templates/*.yaml"]
+orp_validator = ["schemas/*.json", "schemas/conformance/*.json", "schemas/accredited_verifiers.json", "templates/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -105,7 +111,11 @@ select = [
     "C4",  # flake8-comprehensions
     "UP",  # pyupgrade
 ]
-ignore = []
+# E501 (line-too-long) is owned by the Black formatter: Black wraps code to line-length 100 but
+# intentionally does not reflow comments, docstrings, or string literals. Enabling E501 on top of a
+# formatter is redundant and only nags about prose the formatter can't split (ruff's own docs recommend
+# disabling it when a formatter is in use). Black still guarantees code stays within 100.
+ignore = ["E501"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["orp_validator"]

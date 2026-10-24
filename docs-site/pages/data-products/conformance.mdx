@@ -1,0 +1,46 @@
+# Conformance
+
+An implementation claims conformance to ORP v0.3 by passing the bundled conformance suite. It ships with
+the `orp-validator` package, so a `pip install`ed copy can self-check.
+
+```bash
+orp conform
+```
+
+```
+ORP v0.3 conformance — 27/27 passed
+  ✓ [schema]   core_minimal_valid
+  ✓ [schema]   policy_missing_l3_invalid
+  ✓ [schema]   ads_missing_reach_invalid
+  ✓ [policy]   deny_prohibited_training
+  ✓ [lineage]  trust_short_circuit_stops_at_verified
+  ...
+CONFORMANT
+```
+
+Exit code is `0` on a full pass and `1` on any failure, so `orp conform` can gate CI or a release.
+
+## What the suite covers
+
+Three fixture families:
+
+- **schema** — per-profile positive and negative documents (ORP-Core / Policy / Ads / AI): valid documents
+  that must pass, invalid ones that must fail.
+- **policy** — [usage-policy](/data-products/usage-policy) evaluation decisions (allow / deny with reasons).
+- **lineage** — [derivation-graph](/data-products/lineage) inheritance decisions, including the
+  trust short-circuit and the multi-parent intersection.
+
+## From Python
+
+```python
+from orp_validator import conformance
+
+report = conformance.run()          # or run(profile="ORP-Ads")
+report["conformant"]                # True
+report["passed"], report["total"]   # 27, 27
+```
+
+## Next steps
+
+- [Overview](/data-products/overview)
+- [Specification](/protocol/specification)

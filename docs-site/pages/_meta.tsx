@@ -1,4 +1,4 @@
-import { Rocket, FileText, Wrench, BookOpen, Users, BarChart3 } from 'lucide-react'
+import { Rocket, FileText, Boxes, Wrench, BookOpen, Users, BarChart3 } from 'lucide-react'
 
 export default {
   "index": "Overview",
@@ -24,6 +24,18 @@ export default {
     )
   },
   "protocol": {
+    "display": "children"
+  },
+  "---data-products": {
+    "type": "separator",
+    "title": (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Boxes size={16} style={{ color: '#0066cc' }} />
+        <span>Data Products</span>
+      </div>
+    )
+  },
+  "data-products": {
     "display": "children"
   },
   "---tools": {

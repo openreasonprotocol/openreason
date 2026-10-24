@@ -1,0 +1,57 @@
+import { Callout } from 'nextra/components'
+
+# Trust Tiers
+
+v0.3 renames the v0.2 **compliance levels** to **trust tiers**: how much a reader may rely on a passport,
+and how that reliance was verified. The governing rule is simple — **a claimed tier never exceeds what the
+signatures prove.**
+
+| Tier | Requires | Verified how |
+|---|---|---|
+| `self_declared` | Core fields present; self/platform signature or none | Schema validation |
+| `attested` | A valid owner-key signature | Signature verification |
+| `verified` | A valid signature with `role: verifier` whose key is on the accredited list, and who is **not** the dataset's own owner | Verifier signature vs the accredited list |
+| `full` | `verified` plus an L3 impact statement where the profile requires it | As above + L3 |
+| `posthoc` | L1/L4 reconstructed, `post_hoc: true` | Schema validation |
+
+<Callout type="info">
+Mapping from v0.2: `ORP-Basic → self_declared`, `ORP-Standard → attested`, `ORP-Full → verified/full`,
+`ORP-PostHoc → posthoc`. Your existing `compliance_level` field still validates; v0.3 additionally reports
+a `trust_tier`.
+</Callout>
+
+## How a tier is earned
+
+- **No key resolver supplied** → a document with an attestation caps at `self_declared` (signatures present
+  but unverified).
+- **A valid owner signature** → `attested`.
+- **A valid `verifier`-role signature on the accredited list**, where the verifier is not also the owner →
+  `verified` (and `full` when an L3 impact statement is present).
+
+<Callout type="warning">
+**A verifier cannot verify its own datasets.** The `verified` tier is granted only when the verifier key is
+distinct from the owner's signing key, and the verifier's `kid` appears on the accredited-verifier list
+(`orp_validator/schemas/accredited_verifiers.json`, **empty by default** — until a verifier is accredited,
+nothing reaches `verified`, which fails safe).
+</Callout>
+
+## In Python
+
+```python
+from orp_validator import validate
+
+result = validate(
+    "segment.yaml",
+    profile="ORP-Ads",
+    resolve_key=my_resolver,
+    accredited_verifiers={"did:web:auditor.example#k1"},  # overrides the bundled list
+)
+print(result.trust_tier.value)  # e.g. "verified"
+```
+
+Rails and marketplaces may refuse purposes below a given tier; the protocol does not price tiers.
+
+## Next steps
+
+- [Attestation](/data-products/attestation) — the signatures a tier is built on
+- [Conformance](/data-products/conformance) — prove an implementation agrees

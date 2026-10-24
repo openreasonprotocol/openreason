@@ -1,0 +1,67 @@
+import { Callout } from 'nextra/components'
+
+# Usage Policy
+
+ORP describes *what a dataset is*. A trade also needs to say *what may be done with it* — in a form a rail
+can enforce automatically and a lawyer can read. v0.3 adds a Layer 6 `usage_policy`: a profile of W3C ODRL
+2.2 restricted to a fixed vocabulary.
+
+```yaml
+usage_policy:
+  policy_id: "https://..."
+  permissions:
+    - permission_id: "p1"
+      purpose: advertising_targeting      # from the purpose taxonomy below
+      assignee: any                        # 'any' or a list of principal ids / DIDs
+      scope: { geo: [DK], media: [ctv], time: { from, to } }
+      derivation: internal                 # none | internal | licensed
+      duties: [report_usage, delete_on_expiry]
+  prohibitions:
+    - { purpose: model_training }
+    - { purpose: resale }
+  expiry: "2027-10-24T00:00:00Z"
+  revocable: true
+  governing_law: "DK"
+```
+
+## Purpose taxonomy (normative)
+
+`advertising_targeting`, `suppression`, `measurement`, `analytics`, `model_training`, `fine_tuning`,
+`evaluation`, `retrieval`, `inference`, `resale`, `research`. Profiles may restrict this list, not extend
+it — extension goes through the spec.
+
+## Evaluation semantics
+
+Given an activation context `{ purpose, assignee?, geo?, media?, time?, derivation_requested? }`, an
+evaluator returns:
+
+- **`deny`** if any **prohibition** matches the purpose;
+- **`deny`** if **no permission** matches;
+- **`allow`** with the matching permission id otherwise.
+
+<Callout type="warning">
+**Unknown purpose or unknown scope key ⇒ `deny`.** The evaluator fails closed. Derivation is ordered
+`none < internal < licensed`: a grant permits itself and anything below it.
+</Callout>
+
+## Reference evaluator
+
+```python
+from orp_validator.usage import evaluate_policy
+
+d = evaluate_policy(policy, {"purpose": "advertising_targeting", "geo": "DK", "media": "ctv"})
+d.decision      # "allow"
+d.permission_id # "p1"
+d.duties        # ["report_usage", "delete_on_expiry"]
+
+evaluate_policy(policy, {"purpose": "model_training"}).decision  # "deny"  (prohibited)
+evaluate_policy(policy, {"purpose": "advertising_targeting", "geo": "US"}).decision  # "deny" (scope)
+```
+
+A rail calls this at activation time to decide whether a concrete use is allowed. When the data product is
+a derivative, the rail evaluates the **whole ancestry** — see [Lineage](/data-products/lineage).
+
+## Next steps
+
+- [Lineage](/data-products/lineage) — inherited constraints across derivations
+- [Usage Records](/data-products/usage-records) — prove what was actually done

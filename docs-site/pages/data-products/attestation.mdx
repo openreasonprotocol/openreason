@@ -1,0 +1,69 @@
+import { Callout } from 'nextra/components'
+
+# Attestation
+
+A v0.3 document can carry a top-level `attestation` block that makes it **verifiable without trusting the
+publisher**. An agent that has never met the publisher recomputes the content hash, verifies a detached
+Ed25519 signature against a key it resolves itself, and checks a key-purpose constraint and a short
+key lifetime — all offline.
+
+<Callout type="info">
+The attestation is deliberately the **same shape as an [AdCP #4441](https://adcontextprotocol.org) signed
+provenance claim**: RFC 8785 canonicalisation, Ed25519, a purpose-constrained short-lived key, and JWKS /
+`did:key` discovery. A rail that already verifies AdCP provenance verifies an ORP attestation with no new
+machinery.
+</Callout>
+
+## The block
+
+```yaml
+attestation:
+  hash: "sha256:<hex>"          # over the RFC 8785 canonical form of the document MINUS this block
+  version: 3                    # monotonically increasing per document / dataset id
+  previous_hash: "sha256:..."   # hash of the prior version; null for version 1
+  tier: attested                # see Trust Tiers
+  signatures:
+    - kid: "did:web:example.org#key-1"   # resolvable to an Ed25519 key (did:web / did:key / JWKS)
+      alg: Ed25519
+      use: orp-attestation      # key-purpose constraint; a key MUST NOT be accepted for another purpose
+      sig: "<base64url>"        # detached Ed25519 signature over the canonical bytes
+      role: data_steward        # who this key speaks for
+      signed_at: "2026-09-24T12:00:00Z"
+      key_expires: "2026-10-24T12:00:00Z"   # short-lived; a verifier rejects a past-expiry key
+```
+
+## What a verifier checks
+
+Every one of these is a hard failure, not a warning:
+
+1. The `hash` recomputes over the canonical bytes of the document **minus** the `attestation` block.
+2. `version` is a positive integer; `previous_hash` is null iff `version == 1`.
+3. For each signature: `use == orp-attestation`, `alg == Ed25519`, `key_expires` not in the past (with
+   clock-skew tolerance), a key resolvable from `kid`, and a signature that verifies over the canonical bytes.
+
+Verification must work **offline** given the key. Key *resolution* is the verifier's job — the reference
+library never fetches; you pass it a resolver.
+
+<Callout type="warning">
+**Short-lived keys over revocation lists.** Keys should be rotated (weeks, not years). A compromised key
+simply expires; a re-attestation under a fresh key supersedes the old one via `previous_hash` / `version`.
+No global revocation infrastructure required.
+</Callout>
+
+## Verifying in Python
+
+```python
+from orp_validator import validate
+
+# resolve_key maps a kid -> key material (raw32 / base64url / did:key / JWK / Ed25519PublicKey)
+result = validate("segment.yaml", profile="ORP-Ads", resolve_key=my_resolver)
+print(result.trust_tier)   # self_declared | attested | verified | full | posthoc
+```
+
+Without a `resolve_key`, a v0.3 document tops out at the `self_declared` tier — the signatures are present
+but unverified. Install the crypto extra to verify: `pip install "orp-validator[attestation]"`.
+
+## Next steps
+
+- [Trust Tiers](/data-products/trust-tiers) — what a verified signature earns
+- [Usage Records](/data-products/usage-records) — the same signature posture, applied to proof-of-use

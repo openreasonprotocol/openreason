@@ -41,11 +41,15 @@ Validate document against ORP JSON Schema.
 orp validate my-document.yaml
 orp validate doc.json --verbose
 orp validate doc.yaml --json  # Machine-readable output
+orp validate segment.yaml --profile ORP-Ads  # v0.3: validate against a profile
 ```
 
 **Options:**
 - `--verbose` - Show detailed validation report
 - `--json` - Output JSON format for automation
+- `--profile [ORP-Core|ORP-Policy|ORP-Ads|ORP-AI]` - v0.3 only: validate against a specific
+  [profile](/data-products/profiles) (default: the document's own `profile` field, else ORP-Core).
+  For v0.3 documents the report also shows the profile and the [trust tier](/data-products/trust-tiers).
 
 **Exit Codes:**
 - `0` - Valid document
@@ -73,6 +77,21 @@ Faster than `validate` for checking which layers are present.
 - `2` - ORP-Basic
 - `3` - Non-compliant
 - `4` - Error
+
+### `orp conform`
+
+Run the ORP v0.3 [conformance suite](/data-products/conformance) (schema, usage-policy, and lineage
+fixtures). An implementation claims conformance by passing it.
+
+```bash
+orp conform
+orp conform --profile ORP-Ads   # filter the schema fixtures to one profile
+orp conform --json              # machine-readable report
+```
+
+**Exit Codes:**
+- `0` - Conformant (all fixtures pass)
+- `1` - Not conformant
 
 ### `orp diff`
 

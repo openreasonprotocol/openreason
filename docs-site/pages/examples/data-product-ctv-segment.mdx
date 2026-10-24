@@ -1,0 +1,78 @@
+import { Callout } from 'nextra/components'
+
+# CTV Segment — a data-product passport (v0.3)
+
+A worked **ORP-Ads** example: a Danish connected-TV audience segment described as a tradeable data product.
+It carries legal provenance, `reach` + `freshness`, an enforceable [usage policy](/data-products/usage-policy),
+and a [derivation edge](/data-products/lineage). The full file ships in the repo at
+`examples/data_product_ctv_segment.v0.3.yaml`.
+
+<Callout type="info">
+Validate it: `orp validate examples/data_product_ctv_segment.v0.3.yaml --profile ORP-Ads`. With no
+signature attached it reports the `self_declared` [trust tier](/data-products/trust-tiers); add an
+`attestation` block and an accredited verifier to reach `attested` / `verified`.
+</Callout>
+
+```yaml
+orp_version: "0.3"
+profile: ORP-Ads
+document_id: "https://segments.example.org/dk-ctv-sports-households"
+title: "DK CTV sports-interested households"
+domain: ads
+authors:
+  - { name: "Segments Team", role: author, affiliation: "Example Data Co" }
+created: "2026-10-24"
+last_modified: "2026-10-24"
+status: draft
+summary: >
+  A Danish CTV audience segment of households with observed sports-content affinity, offered as a
+  tradeable data product with an enforceable usage policy and stated legal basis.
+
+l1_data_provenance:
+  - dataset_id: "https://segments.example.org/dk-ctv-sports-households"
+    name: "DK CTV sports-interested households"
+    source: "First-party CTV viewership logs, consented panel"
+    legal_basis: consent
+    consent_scope:
+      purposes: [advertising_targeting, measurement]
+      withdrawal_mechanism: "https://example.org/privacy/opt-out"
+    sensitive_categories: []
+    reach: { estimate: 1420000, unit: devices, confidence: medium, as_of: "2026-10-23" }
+    freshness: { collected_to: "2026-10-20", refreshed_at: "2026-10-23", decay_days: 30 }
+
+usage_policy:
+  policy_id: "https://segments.example.org/dk-ctv-sports-households/policy"
+  permissions:
+    - { permission_id: ads-dk-ctv, purpose: advertising_targeting, assignee: any,
+        scope: { geo: [DK], media: [ctv] }, derivation: internal, duties: [report_usage] }
+    - { permission_id: measure-dk, purpose: measurement, assignee: any, scope: { geo: [DK] } }
+  prohibitions:
+    - { purpose: model_training }
+    - { purpose: resale }
+  expiry: "2027-10-24T00:00:00Z"
+  revocable: true
+  governing_law: "DK"
+
+lineage:
+  this_document: { forking_permitted: false, derivation_permitted: internal }
+  derivations:
+    - parent_id: "https://segments.example.org/dk-ctv-all-households"
+      transformation: subset
+      inherits: full
+```
+
+## What a rail decides from it
+
+```python
+from orp_validator.usage import evaluate_policy
+pol = doc["usage_policy"]
+
+evaluate_policy(pol, {"purpose": "advertising_targeting", "geo": "DK", "media": "ctv"}).decision  # allow
+evaluate_policy(pol, {"purpose": "model_training"}).decision                                      # deny (prohibited)
+evaluate_policy(pol, {"purpose": "advertising_targeting", "geo": "US"}).decision                  # deny (out of scope)
+```
+
+## Next steps
+
+- [Data Products overview](/data-products/overview)
+- [Usage Policy](/data-products/usage-policy)

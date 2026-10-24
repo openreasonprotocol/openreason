@@ -1,0 +1,48 @@
+import { Callout } from 'nextra/components'
+
+# Profiles
+
+v0.3 splits the spec into a **domain-neutral core plus profiles**. The core stays small and general; a
+profile adds the requirements that a specific use needs. The validator takes `--profile`, or reads the
+document's own `profile` field, defaulting to `ORP-Core`.
+
+| Profile | Adds to ORP-Core | For |
+|---|---|---|
+| **ORP-Core** | Header + Layer 1 + optional attestation / L2 / L3 / L4 / L5 / L6 | Anything; the domain-neutral base |
+| **ORP-Policy** | Layers 2 (Consequence Simulation) and 3 (Empathy Mapping) **required** | Policy reasoning — the v0.2 shape, renamed |
+| **ORP-Ads** | Every L1 dataset carries `reach` + `freshness` | Audience segments |
+| **ORP-AI** | Every L1 dataset carries `rights_holders` + `optout_signals_honoured` | Training corpora |
+
+<Callout type="info">
+A valid v0.2 document (L1 + L2 + L3) **is** an ORP-Policy document. Declare `profile: ORP-Policy` to keep
+the v0.2 guarantee that consequence simulation and empathy mapping are present; omit it and it validates
+as ORP-Core.
+</Callout>
+
+## Layer 1 fields added in v0.3
+
+All optional in ORP-Core; the data-product profiles make the relevant subset required.
+
+**Legal provenance** — `legal_basis` (`consent | contract | legitimate_interest | public_task |
+public_source | licence | other`), `consent_scope`, `sensitive_categories` (an empty list is a valid,
+meaningful answer), `rights_holders`, `optout_signals_honoured` (`robots_txt`, `tdm_reservation`,
+`ai_txt`), `data_subject_contact`.
+
+**Identifier & access** — a resolvable `dataset_id`; `access` (`visibility`, `endpoints` of kind
+`sample | schema | full | activation`, `sample_hash`); `freshness` (`collected_to`, `refreshed_at`,
+`decay_days`); `reach` (`estimate`, `unit` of `people | devices | records | tokens`, `confidence`, `as_of`).
+
+## Validate against a profile
+
+```bash
+orp validate segment.yaml --profile ORP-Ads
+orp validate corpus.yaml  --profile ORP-AI
+```
+
+The result reports the profile it validated against and the [trust tier](/data-products/trust-tiers) it
+reached.
+
+## Next steps
+
+- [Usage Policy](/data-products/usage-policy) — what may be done with the data
+- [A worked ORP-Ads passport](/examples/data-product-ctv-segment)

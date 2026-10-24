@@ -1,6 +1,7 @@
 export default {
   'overview': 'Overview',
   'danish-property-tax': 'Danish Property Tax Reform',
+  'data-product-ctv-segment': 'CTV Segment (data product, v0.3)',
   '---': {
     type: 'separator'
   },

@@ -2,6 +2,8 @@
 
 OpenReason Protocol defines four compliance levels: three prospective levels (Basic, Standard, Full) for real-time decision-making, and one retrospective level (PostHoc) for analyzing past decisions. Choose based on your resource constraints, stakes, and audience.
 
+> **v0.3 renames compliance levels to _trust tiers_** (`self_declared` / `attested` / `verified` / `full` / `posthoc`) that additionally capture *how* a document was verified — signatures, not just which layers are present. The v0.1/v0.2 levels on this page remain valid and map 1:1. See [Trust Tiers](/data-products/trust-tiers) for the v0.3 model.
+
 ## Overview
 
 | Level | Layers | Use Case | Typical Time Investment |

@@ -171,8 +171,9 @@ pre, .nextra-code pre {
 }
 .pr-h1 {
   font-family: var(--pr-display); font-weight: 700;
-  font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1.02; letter-spacing: -0.03em;
-  margin: 0 0 22px; color: var(--pr-text); max-width: 16ch;
+  font-size: clamp(2.5rem, 5.4vw, 4.2rem); line-height: 1.04; letter-spacing: -0.03em;
+  margin: 0 0 22px; color: var(--pr-text); max-width: 26ch;
+  text-wrap: balance;
 }
 .pr-h1 .accent { color: var(--pr-accent); }
 .pr-lead { font-size: 1.15rem; line-height: 1.6; color: var(--pr-muted); max-width: 60ch; margin: 0 0 32px; }
@@ -223,6 +224,47 @@ pre, .nextra-code pre {
 .orp-card-link:hover { opacity: 0.85; }
 .orp-status-icon { display: inline-flex; align-items: center; vertical-align: middle; margin-right: 6px; }
 
+/* ─── "What it is" — animated ORP object (no code) ───────────────────────── */
+.pr-show { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 44px; align-items: center; }
+.pr-show .pr-copy h2 { margin: 0 0 14px; }
+
+.pr-obj {
+  background: var(--pr-bg-2); border: 1px solid var(--pr-line); border-radius: 8px;
+  padding: 16px; box-shadow: 0 20px 60px -30px rgba(0,0,0,.8);
+}
+.pr-obj-head {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--pr-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--pr-muted-2); margin-bottom: 14px;
+}
+.pr-obj-head .pr-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pr-accent); animation: prPulse 2s ease-in-out infinite; }
+.pr-layer {
+  display: flex; align-items: center; gap: 12px; padding: 9px 11px;
+  border: 1px solid var(--pr-line); border-radius: 5px; margin-bottom: 7px; background: var(--pr-bg);
+  opacity: 0; animation: prBuild 6.5s cubic-bezier(.2,.7,.2,1) infinite;
+}
+.pr-layer b { font-family: var(--pr-mono); color: var(--pr-accent); font-weight: 600; font-size: 11px; width: 22px; }
+.pr-layer span { color: var(--pr-text); font-size: 12.5px; flex: 1; }
+.pr-layer i { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid var(--pr-muted-2); }
+.pr-layers .pr-layer:nth-child(1) { animation-delay: 0s; }
+.pr-layers .pr-layer:nth-child(2) { animation-delay: .45s; }
+.pr-layers .pr-layer:nth-child(3) { animation-delay: .9s; }
+.pr-layers .pr-layer:nth-child(4) { animation-delay: 1.35s; }
+.pr-layers .pr-layer:nth-child(5) { animation-delay: 1.8s; }
+.pr-seal-row { display: flex; align-items: center; gap: 13px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--pr-line); }
+.pr-seal svg { width: 34px; height: 34px; display: block; }
+.pr-seal polygon { fill: none; stroke: var(--pr-accent); stroke-width: 2.2; stroke-linejoin: round; stroke-dasharray: 120; stroke-dashoffset: 120; animation: prDraw 6.5s ease-in-out infinite; }
+.pr-verified { font-family: var(--pr-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--pr-accent); opacity: 0; animation: prChip 6.5s ease infinite; }
+
+@keyframes prBuild { 0%,4% { opacity: 0; transform: translateY(8px); } 13%,84% { opacity: 1; transform: none; } 93%,100% { opacity: 0; transform: translateY(-4px); } }
+@keyframes prDraw  { 0%,34% { stroke-dashoffset: 120; } 48%,86% { stroke-dashoffset: 0; } 95%,100% { stroke-dashoffset: 120; } }
+@keyframes prChip  { 0%,44% { opacity: 0; transform: translateY(4px); } 56%,86% { opacity: 1; transform: none; } 94%,100% { opacity: 0; } }
+@keyframes prPulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) {
+  .pr-layer, .pr-seal polygon, .pr-verified, .pr-obj-head .pr-dot { animation: none !important; opacity: 1 !important; stroke-dashoffset: 0 !important; }
+}
+
+@media (max-width: 860px) { .pr-show { grid-template-columns: 1fr; } }
 @media (max-width: 760px) {
   .pr-two { grid-template-columns: 1fr; }
 }

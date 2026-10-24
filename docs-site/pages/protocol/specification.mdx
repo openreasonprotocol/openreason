@@ -1,10 +1,10 @@
 # OpenReason Protocol Specification
-## ORP v0.2
+## ORP v0.3
 
-The OpenReason Protocol (ORP) is a standardized schema for documenting, sharing, and challenging the reasoning behind consequential decisions in policy, AI, and democratic governance.
+The OpenReason Protocol (ORP) is a standardized schema for documenting, sharing, and challenging the reasoning behind consequential decisions in policy, AI, and democratic governance — and, since v0.3, for describing a **verifiable data product** a machine can check and enforce.
 
-**Current Version**: v0.2 (Released 2026-04-08)
-**Previous Versions**: [v0.1](/protocol/specification-v01)
+**Current Version**: v0.3 (implemented in `orp-validator` ≥ 0.5.0)
+**Previous Versions**: v0.2 (2026-04-08), [v0.1](/protocol/specification-v01)
 
 An ORP-compliant document is not a static report. It is a **simulatable object**: a structured representation of reasoning that any party can inspect, fork, and re-run with different assumptions to produce comparable outputs.
 
@@ -41,17 +41,34 @@ Nothing was removed or made stricter; `compliance_level` still validates (v0.3 a
 
 ## Document Structure
 
-An ORP-compliant document consists of five layers plus a header block:
+An ORP-compliant document consists of a header block plus layers. The five core layers below are the
+v0.1/v0.2 shape; v0.3 adds an optional attestation block and Layers 4–6 extensions, all additive.
 
 ```
 ORP Document
-├── Header (Required metadata)
-├── L1: Data Provenance (Required for all compliance levels)
-├── L2: Consequence Simulation (Standard and Full)
-├── L3: Empathy Mapping (Standard and Full)
-├── L4: Accountability Ledger (Full only)
-└── L5: Fork Registry (Full only)
+├── Header (Required metadata; v0.3 adds `profile`)
+├── attestation          (v0.3, optional — cryptographic signature; see Data Products)
+├── L1: Data Provenance  (Required; v0.3 adds legal / access / freshness / reach fields)
+├── L2: Consequence Simulation (required in ORP-Policy)
+├── L3: Empathy Mapping        (required in ORP-Policy)
+├── L4: Accountability Ledger  (v0.3 adds signed usage_records)
+├── L5: Lineage          (fork registry + v0.3 derivation graph)
+└── L6: usage_policy     (v0.3, optional — enforceable usage terms)
 ```
+
+### v0.3 additions
+
+v0.3 keeps every layer above and layers a machine-verifiable envelope on top. Each is documented in full
+under **[Data Products](/data-products/overview)**:
+
+- **[Attestation](/data-products/attestation)** — a detached Ed25519 signature a reader verifies offline (AdCP #4441-aligned)
+- **[Profiles](/data-products/profiles)** — ORP-Core / ORP-Policy / ORP-Ads / ORP-AI (validate with `--profile`)
+- **[Trust tiers](/data-products/trust-tiers)** — `self_declared` → `attested` → `verified` → `full`, replacing compliance levels as the v0.3 vocabulary
+- **[Usage policy](/data-products/usage-policy)** (L6) — an enforceable ODRL profile with a reference evaluator
+- **[Lineage](/data-products/lineage)** (L5) — a derivation graph so derivatives carry ancestors' constraints
+- **[Usage records](/data-products/usage-records)** (L4) — a rail's signed receipt as proof-of-use
+
+The complete normative v0.3 text is in the repo (`docs/specs/ORP_V0.3_SPEC.md`).
 
 ## Header Block
 
@@ -78,8 +95,9 @@ summary: |
 ### Optional Header Fields (v0.2)
 
 ```yaml
-post_hoc: true  # NEW: Flags retrospective reconstruction
-extensions:  # NEW: Domain-specific extensions
+post_hoc: true  # v0.2: Flags retrospective reconstruction
+profile: ORP-Policy  # v0.3: ORP-Core | ORP-Policy | ORP-Ads | ORP-AI (default ORP-Core)
+extensions:  # v0.2: Domain-specific extensions
   - "orp-ai-training-v1"
   - "orp-safety-v1"
 forked_from: "parent-document-id"  # If this is a fork
@@ -319,12 +337,15 @@ See [AI Training Examples](/examples/overview) for ORP-PostHoc demonstrations.
 ## Validation
 
 All ORP documents must validate against the JSON Schema:
+- **v0.3 documents**: `schemas/orp-v0.3-core.schema.json` + a profile overlay (`orp-v0.3-policy|ads|ai`)
 - **v0.2 documents**: `schemas/orp-v0.2.schema.json`
 - **v0.1 documents**: `schemas/orp-v0.1.schema.json` (still supported)
 
 Validate using CLI:
 ```bash
 orp validate your-document.yaml
+orp validate segment.yaml --profile ORP-Ads   # v0.3: pick a profile; reports tier
+orp conform                                    # v0.3: run the conformance suite
 ```
 
 Or via REST API:
@@ -346,6 +367,8 @@ The validator automatically detects version from `orp_version` field.
 ## Full Specifications
 
 The complete, authoritative specifications are maintained at:
-- **[ORP v0.2 Specification](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/ORP_V0.2_SPEC.md)** (Current)
+- **[ORP v0.3 Specification](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/ORP_V0.3_SPEC.md)** (Current)
+- **[ORP v0.2 Specification](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/ORP_V0.2_SPEC.md)**
 - **[ORP v0.1 Specification](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/ORP_SPEC.md)** (Legacy)
+- **[Migration Guide v0.2 → v0.3](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/MIGRATION_V0.2_TO_V0.3.md)**
 - **[Migration Guide v0.1 → v0.2](https://gitlab.com/publicreason/orp/-/blob/main/docs/specs/MIGRATION_V0.1_TO_V0.2.md)**

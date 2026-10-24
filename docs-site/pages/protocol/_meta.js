@@ -1,6 +1,6 @@
 export default {
   "overview": "Overview",
+  "philosophy": "Philosophy (REE)",
   "specification": "Specification",
-  "philosophy": "Philosophy",
   "compliance-levels": "Compliance Levels"
 }

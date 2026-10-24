@@ -3,20 +3,14 @@ import { DocsThemeConfig, useConfig } from 'nextra-theme-docs'
 const config: DocsThemeConfig = {
   // ─── Logo ─────────────────────────────────────────────────────────────────
   logo: (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-      <svg width="24" height="24" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-        <line x1="16" y1="30" x2="16" y2="16" stroke="#1a5490" strokeWidth="3" strokeLinecap="round"/>
-        <path d="M 16 16 Q 10 13, 4 10" fill="none" stroke="#1a5490" strokeWidth="3" strokeLinecap="round"/>
-        <circle cx="4" cy="10" r="3" fill="#1a5490"/>
-        <path d="M 16 16 Q 22 13, 28 10" fill="none" stroke="#1a5490" strokeWidth="3" strokeLinecap="round"/>
-        <circle cx="28" cy="10" r="3" fill="#1a5490"/>
-        <line x1="16" y1="16" x2="16" y2="2" stroke="#1a5490" strokeWidth="3" strokeLinecap="round"/>
-        <circle cx="16" cy="2" r="3" fill="#1a5490"/>
-        <circle cx="16" cy="16" r="3.5" fill="#d97706"/>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '11px' }}>
+      <svg width="26" height="26" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <polygon points="16,3 27,9.5 27,22.5 16,29 5,22.5 5,9.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        <circle cx="16" cy="16" r="3" fill="#FF5D2A" />
       </svg>
-      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
-        <span style={{ fontWeight: 700, fontSize: '16px' }}>Public Reason Project</span>
-        <span style={{ fontSize: '12px', color: '#666' }}>OpenReason Protocol</span>
+      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.15' }}>
+        <span style={{ fontFamily: "'Funnel Display', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.02em' }}>PUBLIC REASON</span>
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--pr-muted-2)' }}>OpenReason Protocol</span>
       </div>
     </div>
   ),
@@ -83,8 +77,9 @@ const config: DocsThemeConfig = {
   },
 
   // ─── Dark mode ────────────────────────────────────────────────────────────
-  // Force light mode
+  // Force dark (industrial console) mode
   darkMode: false,
+  nextThemes: { defaultTheme: 'dark', forcedTheme: 'dark' },
 
   // ─── Sidebar ──────────────────────────────────────────────────────────────
   sidebar: {

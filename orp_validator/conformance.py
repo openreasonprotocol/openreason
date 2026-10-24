@@ -35,9 +35,15 @@ FIXTURE_FILES = ("schema_cases.json", "policy_cases.json", "lineage_cases.json")
 
 
 def load_fixture(name: str) -> dict[str, Any]:
-    """Load a bundled conformance fixture (importlib.resources, filesystem fallback)."""
+    """Load a bundled conformance fixture (importlib.resources, filesystem fallback).
+
+    Note: chained single-arg joinpath — Traversable.joinpath only accepts one segment on Python
+    3.10/3.11 (multi-arg landed in 3.12), so joinpath(FIXTURE_DIR, name) would TypeError there.
+    """
     if files is not None:
-        return json.loads(files("orp_validator.schemas").joinpath(FIXTURE_DIR, name).read_text())
+        return json.loads(
+            files("orp_validator.schemas").joinpath(FIXTURE_DIR).joinpath(name).read_text()
+        )
     with open(Path(__file__).parent / "schemas" / FIXTURE_DIR / name, encoding="utf-8") as f:
         return json.load(f)
 

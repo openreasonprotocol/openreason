@@ -31,7 +31,7 @@ const config: DocsThemeConfig = {
     const { frontMatter, title } = useConfig()
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { asPath } = useRouter()
-    const pageTitle = title ? `${title} — OpenReason Protocol` : 'OpenReason Protocol'
+    const pageTitle = title && title !== 'OpenReason Protocol' ? `${title} — OpenReason Protocol` : 'OpenReason Protocol'
     const description =
       frontMatter.description ??
       'OpenReason Protocol (ORP) — A standard for transparent, reproducible, and accountable policy reasoning.'
@@ -47,7 +47,7 @@ const config: DocsThemeConfig = {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content={description} />
         <meta name="keywords" content="OpenReason, ORP, policy reasoning, transparency, accountability, data provenance, public policy, AI ethics, decision making" />
-        <meta name="author" content="Public Reason Project" />
+        <meta name="author" content="OpenReason" />
         <meta name="robots" content="index, follow" />
 
         {/* Open Graph / Facebook */}
@@ -114,7 +114,7 @@ const config: DocsThemeConfig = {
           color: '#4A4A4A',
         }}
       >
-        <span>© {new Date().getFullYear()} Public Reason Project — OpenReason Protocol</span>
+        <span>© {new Date().getFullYear()} OpenReason Protocol</span>
         <span style={{ display: 'flex', gap: '24px' }}>
           <a href="https://gitlab.com/publicreason/orp">GitLab</a>
           <a href="https://pypi.org/project/orp-validator/">PyPI</a>

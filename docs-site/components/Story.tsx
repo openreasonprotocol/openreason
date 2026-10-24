@@ -38,7 +38,7 @@ const SLIDES: Slide[] = [
   { tone: 'dark', m: 'seal', text: <>It honors what the data <b>allows</b> — and proves what it did.</>, sub: 'Usage rules ride along; every use leaves a receipt.' },
   { tone: 'dark', m: 'seal', text: <>So agents can act on each other’s reasoning <b>without blind trust</b>.</>, sub: 'The openness that works for people works for machines.' },
   { tone: 'dark', m: 'fork', text: <>Reasoning you can <b>verify</b> —</>, sub: 'by people and machines.' },
-  { tone: 'accent', m: 'fork', text: <>Open. Free. Built to be <b>forked</b>.</>, sub: 'The Public Reason Project.' },
+  { tone: 'accent', m: 'fork', text: <>Open. Free. Built to be <b>forked</b>.</>, sub: 'OpenReason.' },
 ]
 
 const pad = (n: number) => String(n).padStart(2, '0')

@@ -39,9 +39,14 @@
 .pr-navlinks a:hover { color: var(--pr-text) !important; }
 @media (max-width: 640px) { .pr-navlinks { display: none; } }
 
-/* Search on the right of the nav (desktop) */
+/* Search on the right of the nav (desktop).
+   Nextra renders: logo · page items · search · navbar.extraContent · hamburger —
+   so the search box would sit LEFT of our links. Flex `order` moves it after them. */
 @media (min-width: 768px) {
-  .nextra-nav-container nav .nextra-search { width: 16rem; margin-left: 14px !important; }
+  /* Nextra 3.3 gives the search root no `nextra-search` class — target it via its input. */
+  .nextra-nav-container nav > div:has(> input[type="search"]) { order: 1; margin-left: 14px; }
+  .nextra-nav-container nav .nextra-hamburger { order: 2; }
+  .pr-navlinks { margin-right: 0; }
 }
 
 /* Force the dark canvas across Nextra surfaces */

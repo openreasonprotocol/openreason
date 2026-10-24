@@ -3,11 +3,14 @@
 # Default image for all jobs
 image: python:3.11
 
-# Cache pip packages between jobs
+# Cache pip wheels between jobs (fast reinstalls). We deliberately do NOT cache .venv/:
+# a cached virtualenv can carry a stale/mismatched pytest+plugin set across runs (e.g. the 3.9
+# job hit `ImportError: cannot import name '_console_main' from '_pytest.config'`), and
+# `python -m venv` over an existing dir will not repair it. A fresh venv per job + the pip
+# wheel cache gives the same speed without the staleness.
 cache:
   paths:
     - .cache/pip
-    - .venv/
 
 # Define stages
 stages:
@@ -20,6 +23,7 @@ stages:
 before_script:
   - python --version
   - pip install --upgrade pip
+  - rm -rf .venv        # never reuse a cached virtualenv (see cache note); build fresh each job
   - python -m venv .venv
   - source .venv/bin/activate
   - pip install -e ".[dev]"

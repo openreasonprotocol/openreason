@@ -1,0 +1,85 @@
+# JavaScript SDK
+
+`@openreason/sdk` validates and cryptographically verifies OpenReason Protocol documents in Node and the browser.
+Attestation verification is a faithful port of the Python reference (`orp-validator`), so a signature produced on one side
+verifies on the other.
+
+> **Status:** source-available in the repository (`sdk-js/`), Apache-2.0. Publication to npm is **coming**; until then,
+> install from source as shown below.
+
+## Install (from source)
+
+```bash
+git clone https://github.com/PublicReasonProject/openreason.git
+cd openreason/sdk-js
+npm install && npm run build
+```
+
+Then reference it from your project:
+
+```bash
+npm install /path/to/openreason/sdk-js
+```
+
+## Validate a document
+
+```ts
+import { validateDocument, checkDocument } from "@openreason/sdk";
+import yaml from "js-yaml";
+
+const doc = yaml.load(await fs.readFile("decision.yaml", "utf8")) as Record<string, unknown>;
+
+const result = validateDocument(doc);   // schema validity + errors
+const check  = checkDocument(doc);      // compliance level + which layers are present
+
+console.log(result.valid, check.compliance_level);
+```
+
+`validateDocument` currently bundles the ORP **v0.1** and **v0.2** schemas. v0.3 profile validation (ORP-Core / Policy /
+Ads / AI) and trust-tier evaluation live in the Python validator today; v0.3 schema parity in the SDK is tracked in the
+repository.
+
+## Verify an attestation (offline)
+
+A v0.3 document can carry a detached Ed25519 attestation over its RFC 8785 (JCS) canonical bytes. Verification needs no
+network, only the public key:
+
+```ts
+import { verifyAttestation, type ResolveKey } from "@openreason/sdk";
+
+const resolveKey: ResolveKey = (kid) => {
+  if (kid.startsWith("did:key:")) return kid;        // self-describing public key
+  return myKeyDirectory[kid];                          // or look it up yourself
+};
+
+const verdict = await verifyAttestation(doc, resolveKey);
+console.log(verdict.valid, verdict.trust_tier, verdict.content_hash);
+```
+
+Key *resolution* is deliberately the caller's job: the SDK stays portable and makes no network calls.
+
+## Canonicalisation helpers
+
+```ts
+import { canonicalize, canonicalString, contentHash } from "@openreason/sdk";
+```
+
+These expose the same JCS canonical form and `sha256:<hex>` content hash the attestation is computed over, so you can
+produce signing input in your own key-management flow.
+
+## Exports
+
+| Export | Purpose |
+|---|---|
+| `validateDocument(doc)` | JSON-Schema validation (v0.1, v0.2) |
+| `checkDocument(doc)` | Compliance level and layer presence |
+| `verifyAttestation(doc, resolveKey)` | Offline Ed25519 attestation verification, trust tier |
+| `contentHash(doc)`, `attestedContent(doc)` | Hash and the exact bytes that were signed |
+| `canonicalize(value)`, `canonicalString(value)` | RFC 8785 canonical form |
+| `publicKeyFromDidKey(did)`, `b64uDecode(s)` | Key material helpers |
+
+## See also
+
+- [MCP server](/tools/mcp) — the same capabilities exposed to AI agents
+- [Python API](/tools/python-api) — the reference implementation
+- [Attestation](/data-products) — how v0.3 trust tiers are earned

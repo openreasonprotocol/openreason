@@ -1,0 +1,81 @@
+# MCP Server
+
+`@openreason/mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server that gives any AI agent native
+OpenReason capabilities: validate an ORP document, verify its cryptographic attestation offline, and explain the protocol.
+It wraps the [JavaScript SDK](/tools/javascript-sdk) and speaks stdio, so it plugs into Claude Desktop, Claude Code, Cursor
+and any other MCP host without extra infrastructure.
+
+> **Status:** source-available in the repository (`mcp/`), Apache-2.0. Publication to npm is **coming**; until then,
+> build from source as shown below.
+
+## Build
+
+```bash
+git clone https://github.com/PublicReasonProject/openreason.git
+cd openreason/sdk-js && npm install && npm run build
+cd ../mcp && npm install && npm run build
+```
+
+The server binary is `mcp/dist/index.js` (`openreason-mcp` once published).
+
+## Connect an agent
+
+Add the server to your MCP host configuration. For Claude Desktop (`claude_desktop_config.json`) or Claude Code
+(`.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "openreason": {
+      "command": "node",
+      "args": ["/absolute/path/to/openreason/mcp/dist/index.js"]
+    }
+  }
+}
+```
+
+On start the server logs `openreason-mcp: ready on stdio` to stderr and exposes three tools.
+
+## Tools
+
+### `orp_validate`
+
+Validate an ORP document (JSON or YAML string). Returns the compliance level, which of the five layers are present, and any
+errors or warnings.
+
+```json
+{ "document": "orp_version: \"0.2\"\n..." }
+```
+
+Bundles the v0.1 and v0.2 schemas today; v0.3 profile validation is available through the Python validator and REST API.
+
+### `orp_verify_attestation`
+
+Cryptographically verify a v0.3 document's attestation offline: recompute the canonical hash and check the Ed25519
+signatures. Returns validity, the trust tier, the computed hash, and a per-signature verdict.
+
+```json
+{
+  "document": "...",
+  "keys": { "publisher-2026": "did:key:z6Mk..." }
+}
+```
+
+`keys` maps a signature `kid` to key material (a `did:key`, a base64url raw key, or a JWK `x` value). A `kid` that is itself
+a `did:key` resolves without the map. Unknown keys fail closed.
+
+### `orp_explain`
+
+Plain-language explanation of a protocol concept for the agent's own reasoning. `topic` is one of `overview`, `layers`,
+`trust-tiers`, `attestation`, `compliance`.
+
+## Why an agent needs this
+
+An agent deciding in milliseconds whether to rely on a claim cannot read a PDF. With these tools it can take a signed ORP
+object, verify who attested to it and under which key, read the trust tier, and act under its own mandate, without
+trusting the publisher or OpenReason. That is the machine half of the [dual reader](/about) the protocol is built for.
+
+## See also
+
+- [JavaScript SDK](/tools/javascript-sdk) — the library the server wraps
+- [REST API](/tools/rest-api) — hosted validation for hosts that cannot run a local process

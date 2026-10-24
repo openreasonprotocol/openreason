@@ -1,6 +1,6 @@
 # Tools Overview
 
-OpenReason Protocol provides three ways to validate and work with ORP documents:
+OpenReason Protocol provides five ways to validate and work with ORP documents:
 
 ## 1. Command-Line Interface (CLI)
 
@@ -57,6 +57,41 @@ curl -X POST https://api.publicreasonproject.org/api/v1/validate \
 - 60 requests/minute rate limit
 
 [Full REST API Documentation →](/tools/rest-api)
+
+## 4. JavaScript SDK
+
+**Best for:** Node services and browser apps that must verify an attestation without trusting the publisher
+
+```ts
+import { validateDocument, verifyAttestation } from "@openreason/sdk";
+
+const verdict = await verifyAttestation(doc, (kid) => kid); // did:key kids self-resolve
+console.log(verdict.valid, verdict.trust_tier);
+```
+
+**Features:**
+- Schema validation (v0.1, v0.2) and compliance check
+- Offline Ed25519 attestation verification, interoperable with the Python reference
+- RFC 8785 canonicalisation helpers
+- Source-available now; npm publication coming
+
+[JavaScript SDK Documentation →](/tools/javascript-sdk)
+
+## 5. MCP Server
+
+**Best for:** AI agents — give any MCP host (Claude, Cursor, your own agent) native ORP tools
+
+```json
+{ "mcpServers": { "openreason": { "command": "node", "args": ["/path/to/openreason/mcp/dist/index.js"] } } }
+```
+
+**Features:**
+- `orp_validate`, `orp_verify_attestation`, `orp_explain`
+- stdio transport, no infrastructure
+- Fail-closed key handling
+- Source-available now; npm publication coming
+
+[MCP Server Documentation →](/tools/mcp)
 
 ## Which Tool Should I Use?
 

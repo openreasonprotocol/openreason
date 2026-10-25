@@ -196,6 +196,7 @@ release:pypi:
 release:gitlab:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
+  before_script: []   # the global before_script needs python; release-cli has none
   needs:
     - job: build:package
       artifacts: true

@@ -12,7 +12,7 @@ from orp_validator.validator import (
     validate,
 )
 
-__version__ = "0.5.0"  # v0.3: attestation (R1) + profiles & trust tiers (R6/R7)
+__version__ = "0.5.1"  # v0.3: attestation (R1) + profiles & trust tiers (R6/R7)
 SUPPORTED_ORP_VERSIONS = ["0.1", "0.2", "0.3"]
 
 __all__ = [

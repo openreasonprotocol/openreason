@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-25
+
+### Fixed — RFC §7.2 receipt equivalence, measured against a live Railu clear
+- `usage_record_from_receipt` now understands how a rail actually names things: buyer as `winner`, time as
+  `ts`, id as `execution_id` / `proof.iid`, and a single `signature: {alg, kid, sig}` object. A raw Railu
+  `/v1/execute` receipt maps to a well-formed record with no adapter.
+- `usage_record_from_receipt(..., embed_receipt=True)` embeds the rail's receipt verbatim (envelope
+  stripped) and `verify_usage_record` verifies the rail's signature over the **receipt** bytes and binds
+  `record_id` to the receipt's execution id. Previously the carried-over signature was checked over the
+  *record*, which a rail never signed, so it could never verify. Legacy record-mode is unchanged; the result
+  now reports `mode: receipt|record`.
+- `strip_receipt_envelope` + `DEFAULT_RECEIPT_ENVELOPE` for rails whose transport adds fields after signing.
+- Spec §7.2 clarified accordingly; `usage-record.schema.json` gains the optional `receipt` object.
+
 ## [0.5.0] - 2026-10-25
 
 v0.3 protocol spine complete: attestation, L1 extension fields, usage policy + usage records, lineage, profiles + trust tiers, conformance suite; Apache-2.0 relicense.
@@ -543,7 +557,8 @@ Code changes follow conventional commits and semantic versioning:
 
 ---
 
-[Unreleased]: https://gitlab.com/publicreason/orp/-/compare/v0.5.0...main
+[Unreleased]: https://github.com/openreasonprotocol/openreason/compare/v0.5.1...main
+[0.5.1]: https://github.com/openreasonprotocol/openreason/releases/tag/v0.5.1
 [0.5.0]: https://gitlab.com/publicreason/orp/-/tags/v0.5.0
 [0.1.0]: https://gitlab.com/publicreason/orp/-/tags/v0.1.0
 [0.0.0]: https://gitlab.com/publicreason/orp/-/commits/fefd565

@@ -154,6 +154,15 @@ and policy hashes **is** a usage record by construction. The ledger MAY live at 
 document (`usage_ledger: { url, query }` pointer). Reference: `orp_validator.usage.usage_record_from_receipt`
 and `verify_usage_record`.
 
+*Clarified in 0.5.1 (measured against a live Railu clear):* the rail signs its **receipt**, not the usage
+record. A usage record derived from a receipt therefore MUST carry that receipt verbatim under `receipt`
+(the exact object the rail signed, transport envelope stripped, plus its `signatures`), and a verifier MUST
+(a) bind `record_id` to the receipt's execution id and (b) verify the rail's signature over the canonical
+bytes of the embedded receipt. Copying the rail's signature into the record's own `signatures` is only valid
+when the rail signed the record itself. Receipts MAY name the buyer `principal`, `counterparty`, `buyer` or
+`winner`; the time `ts`, `timestamp` or `signed_at`; the id `iid`, `id`, `record_id`, `execution_id` or
+`proof.iid`.
+
 ---
 
 ## 7. Profiles (C6)

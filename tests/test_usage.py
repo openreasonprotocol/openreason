@@ -115,3 +115,98 @@ def test_usage_record_signature_verifies_and_tamper_fails():
     rec["counterparty"] = "did:ex:attacker"  # tamper
     bad = usage.verify_usage_record(rec, resolve_key=lambda kid: pub)
     assert not bad["valid"]
+
+
+# ---------------------------------------------------------------- 0.5.1: receipt equivalence, as a rail actually signs
+
+
+def _railu_style_receipt(sk):
+    """A Railu `/v1/execute`-shaped receipt: buyer is `winner`, id is `execution_id`, time is `ts`, one
+    `signature` object over the canonical receipt, plus a transport envelope added AFTER signing."""
+    signed = {
+        "jti": "j1",
+        "iat": 1761350400000,
+        "execution_id": "exec_abc",
+        "cleared": True,
+        "winner": "did:ex:buyer",
+        "cleared_micro": 12010,
+        "fee_micro": 240,
+        "ts": "2026-10-25T00:00:00Z",
+        "proof": {"iid": "exec_abc"},
+    }
+    sig = A.b64u_encode(sk.sign(A.canonicalize(signed)))
+    return {
+        **signed,
+        "signature": {"alg": "Ed25519", "kid": "key-2026-08", "sig": sig},
+        "verify": {"url": "https://rail/verify"},
+        "tracking": {"impression": "https://rail/i"},
+    }
+
+
+def _ids():
+    return {
+        "dataset_id": "https://ds/1",
+        "dataset_hash": "sha256:" + "a" * 64,
+        "policy_hash": "sha256:" + "b" * 64,
+        "purpose": "advertising_targeting",
+    }
+
+
+def test_receipt_aliases_winner_ts_execution_id_map():
+    sk, _pub, receipt = _receipt_and_key()
+    rc = _railu_style_receipt(sk)
+    rec = usage.usage_record_from_receipt(rc, **_ids())
+    ok, missing = usage.is_wellformed_usage_record(rec)
+    assert ok, missing
+    assert rec["record_id"] == "exec_abc"
+    assert rec["counterparty"] == "did:ex:buyer"
+    assert rec["timestamp"] == "2026-10-25T00:00:00Z"
+    assert rec["fee"] == {"amount": 240, "currency": "USD_micro"}
+    # legacy mode copies the single `signature` object into `signatures`
+    assert rec["signatures"][0]["kid"] == "key-2026-08" and rec["signatures"][0]["role"] == "rail"
+
+
+def test_legacy_record_mode_cannot_verify_a_receipt_signature():
+    """The bug the Railu rig found: the rail signed the receipt, not the record."""
+    sk, pub, _ = _receipt_and_key()
+    rec = usage.usage_record_from_receipt(_railu_style_receipt(sk), **_ids())
+    out = usage.verify_usage_record(rec, resolve_key=lambda kid: pub)
+    assert not out["valid"] and out["mode"] == "record"
+
+
+def test_embedded_receipt_verifies_over_receipt_bytes_and_binds_record():
+    sk, pub, _ = _receipt_and_key()
+    rc = _railu_style_receipt(sk)
+    rec = usage.usage_record_from_receipt(rc, embed_receipt=True, **_ids())
+    assert "signatures" not in rec and "receipt" in rec
+    assert "verify" not in rec["receipt"] and "tracking" not in rec["receipt"]  # envelope stripped
+    out = usage.verify_usage_record(rec, resolve_key=lambda kid: pub)
+    assert out["valid"], out
+    assert out["mode"] == "receipt"
+
+
+def test_embedded_receipt_tamper_fails():
+    sk, pub, _ = _receipt_and_key()
+    rec = usage.usage_record_from_receipt(_railu_style_receipt(sk), embed_receipt=True, **_ids())
+    rec["receipt"]["fee_micro"] = 1
+    out = usage.verify_usage_record(rec, resolve_key=lambda kid: pub)
+    assert not out["valid"] and any(
+        e.startswith("bad_signature") for e in out["signatures"][0]["errors"]
+    )
+
+
+def test_embedded_receipt_must_bind_to_record_id():
+    sk, pub, _ = _receipt_and_key()
+    rec = usage.usage_record_from_receipt(_railu_style_receipt(sk), embed_receipt=True, **_ids())
+    rec["record_id"] = "exec_other"  # a record claiming a receipt that is not its own
+    out = usage.verify_usage_record(rec, resolve_key=lambda kid: pub)
+    assert not out["valid"] and "record_not_bound_to_receipt" in out["errors"]
+
+
+def test_strip_receipt_envelope_custom_fields():
+    rc = {"a": 1, "signature": {"sig": "x"}, "trace": {}, "custom_envelope": 1}
+    assert usage.strip_receipt_envelope(rc) == {"a": 1, "custom_envelope": 1}
+    assert usage.strip_receipt_envelope(rc, {"signature", "custom_envelope"}) == {
+        "a": 1,
+        "trace": {},
+    }

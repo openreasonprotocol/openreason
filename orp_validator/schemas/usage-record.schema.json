@@ -1,46 +1,125 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://schemas.publicreasonproject.org/orp/v0.3/usage-record.schema.json",
-  "title": "ORP v0.3 Layer 4 — usage_record (RFC change C5)",
-  "description": "An append-only record of USE: who activated a data product, for what, under which policy, when. A rail's signed clearing receipt carrying dataset_hash + policy_hash + a rail signature is a valid usage record by construction (RFC §7.2).",
+  "title": "ORP v0.3 Layer 4 \u2014 usage_record (RFC change C5)",
+  "description": "An append-only record of USE: who activated a data product, for what, under which policy, when. A rail's signed clearing receipt carrying dataset_hash + policy_hash + a rail signature is a valid usage record by construction (RFC \u00a77.2).",
   "type": "object",
-  "required": ["record_id", "timestamp", "dataset_id", "dataset_hash", "policy_hash", "counterparty", "purpose"],
+  "required": [
+    "record_id",
+    "timestamp",
+    "dataset_id",
+    "dataset_hash",
+    "policy_hash",
+    "counterparty",
+    "purpose"
+  ],
   "additionalProperties": true,
   "properties": {
-    "record_id": { "type": "string" },
-    "timestamp": { "type": "string" },
-    "dataset_id": { "type": "string" },
-    "dataset_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
-    "policy_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
-    "counterparty": { "type": "string", "description": "Principal id or DID of the activating party." },
-    "purpose": { "type": "string" },
+    "record_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "dataset_id": {
+      "type": "string"
+    },
+    "dataset_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "policy_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "counterparty": {
+      "type": "string",
+      "description": "Principal id or DID of the activating party."
+    },
+    "purpose": {
+      "type": "string"
+    },
     "context": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
         "geo": {},
         "media": {},
-        "execution_id": { "type": "string" },
+        "execution_id": {
+          "type": "string"
+        },
         "volume": {}
       }
     },
     "fee": {
       "type": "object",
-      "properties": { "amount": {}, "currency": { "type": "string" } },
+      "properties": {
+        "amount": {},
+        "currency": {
+          "type": "string"
+        }
+      },
       "additionalProperties": true
     },
     "signatures": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["kid", "sig"],
+        "required": [
+          "kid",
+          "sig"
+        ],
         "properties": {
-          "kid": { "type": "string" },
-          "alg": { "type": "string" },
-          "sig": { "type": "string" },
-          "role": { "type": "string", "enum": ["rail", "licensee", "licensor"] }
+          "kid": {
+            "type": "string"
+          },
+          "alg": {
+            "type": "string"
+          },
+          "sig": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "rail",
+              "licensee",
+              "licensor"
+            ]
+          }
         },
         "additionalProperties": true
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "description": "0.5.1 \u2014 the rail's clearing receipt verbatim (the exact object the rail signed, transport envelope stripped) plus its signature(s). When present, verification checks the rail's signature over these bytes and binds record_id to the receipt's execution id.",
+      "properties": {
+        "signatures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "kid",
+              "alg",
+              "sig"
+            ],
+            "properties": {
+              "kid": {
+                "type": "string"
+              },
+              "alg": {
+                "type": "string"
+              },
+              "sig": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              }
+            }
+          }
+        }
       }
     }
   }
